@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Контакти — Julia Hajecka</title>
+  <meta name="description" content="WhatsApp, Telegram, офіс у Blizne Łaszczyńskiego під Варшавою.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=19">
+</head>
+<body>
+
+<header class="header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img class="lmark" src="img/mark-gold.png" alt="">
+      <span class="bt"><img class="lword" src="img/wordmark-navy.png" alt="Julia Hajecka"><span>Legalizacja pobytu cudzoziemców w Polsce</span></span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="poslugy.html">Послуги</a>
+      <a href="firmy.html">Dla pracodawców</a>
+      <a href="yak-pratsiuiemo.html">Як працюємо</a>
+      <a href="pro-mene.html">Про мене</a>
+      <a href="keisy.html">Кейси</a>
+      <a href="blog.html">Блог</a>
+      <a href="kontakty.html" class="on">Контакти</a>
+    </nav>
+    <div class="langdd" id="langdd">
+      <button class="langdd-btn" type="button" aria-haspopup="true" aria-expanded="false">UA<span class="car">▾</span></button>
+      <div class="langdd-menu"><span class="on">Українська</span><button type="button" data-soon="Polski">Polski</button><button type="button" data-soon="Русский">Русский</button><button type="button" data-soon="English">English</button></div>
+    </div>
+    <a class="btn btn-navy" href="kontakty.html">Написати</a>
+    <button class="burger" id="burger" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="page-hero">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Головна</a> / Контакти</div>
+      <span class="eyebrow">Контакти</span>
+      <h1>Розкажіть про свою ситуацію</h1>
+      <p>Напишіть у месенджер або залиште заявку — відповім і запропоную час консультації.</p>
+      
+    </div>
+  </div>
+  <section class="contact">
+    <div class="wrap">
+      <div>
+        <div class="msgs" style="margin-top:0">
+          <a class="btn btn-navy" href="https://wa.me/48791017254" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn btn-line" href="https://t.me/jhajecka" target="_blank" rel="noopener">Telegram</a>
+          <a class="btn btn-line" href="https://www.instagram.com/legalnie_w_polsce" target="_blank" rel="noopener">Instagram</a>
+        </div>
+        <ul class="clist">
+          <li><span>Телефон</span><a href="tel:+48791017254">+48 791 017 254</a></li>
+          <li><span>Email</span><div><span class="todo">буде додано</span></div></li>
+          <li><span>Офіс</span><div>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</div></li>
+          <li><span>Години</span><div>Пн–Пт з 9:00, зустрічі за попереднім записом</div></li>
+          <li><span>Мови</span><div>Українська, Polski, Русский</div></li>
+        </ul>
+      </div>
+      <form id="form">
+        <div class="f2">
+          <label><span>Ім'я</span><input name="name" required></label>
+          <label><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required></label>
+        </div>
+        <div class="f2">
+          <label><span>Зручний месенджер</span><select name="msgr"><option>WhatsApp</option><option>Telegram</option><option>Viber</option><option>Інше</option></select></label>
+          <label><span>Мова спілкування</span><select name="lang"><option>Українська</option><option>Polski</option><option>Русский</option><option>English</option></select></label>
+        </div>
+        <div class="f2">
+          <label><span>Ви</span><select name="who"><option>Приватна особа</option><option>Роботодавець</option></select></label>
+          <label><span>Послуга</span><select name="service"><option>Карта побиту</option><option>Blue Card</option><option>Резидент ЄС і сталий побит</option><option>Громадянство</option><option>Возз'єднання сім'ї</option><option>Зміна роботодавця</option><option>Довідки: суд, податкова, ZUS</option><option>Акти про народження і шлюб</option><option>Страхування</option><option>Консультація</option><option>Інше</option></select></label>
+        </div>
+        <label><span>Коротко про ситуацію</span><textarea name="msg"></textarea></label>
+        <button class="btn btn-gold" type="submit">Надіслати у WhatsApp</button>
+        <p class="fnote">Заявка відкриється у WhatsApp із готовим текстом — залишиться натиснути «Надіслати».</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="fat">
+  <div class="wrap">
+    <div class="fcols">
+      <div class="fbrand">
+        <img src="img/logo-full-gold.png" alt="Julia Hajecka — Legalizacja w Polsce">
+        <p>Легалізація перебування та праці іноземців у Польщі.</p>
+      </div>
+      <div>
+        <h4>Послуги</h4>
+        <a href="p-karta-pobytu.html">Карта побиту</a><a href="p-blue-card.html">Blue Card</a><a href="p-rezydent-ue.html">Резидент ЄС і сталий побит</a><a href="p-hromadianstvo.html">Громадянство</a><a href="p-vozziednannia-simi.html">Возз'єднання сім'ї</a><a href="p-zmina-robotodavtsia.html">Зміна роботодавця</a><a href="p-dovidky.html">Довідки: суд, податкова, ZUS</a><a href="p-akty-tsyvilnoho-stanu.html">Акти про народження і шлюб</a><a href="p-strakhuvannia.html">Страхування</a>
+        <a href="poslugy.html">Усі послуги та ціни</a>
+      </div>
+      <div>
+        <h4>Сайт</h4>
+        <a href="index.html">Головна</a>
+        <a href="firmy.html">Dla pracodawców</a><a href="yak-pratsiuiemo.html">Як працюємо</a><a href="pro-mene.html">Про мене</a><a href="keisy.html">Кейси</a><a href="blog.html">Блог</a><a href="kontakty.html">Контакти</a>
+      </div>
+      <div>
+        <h4>Контакти</h4>
+        <a href="tel:+48791017254">+48 791 017 254</a>
+        <div class="fmail">Email: <span class="todo">буде додано</span></div>
+        <a href="https://wa.me/48791017254" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://t.me/jhajecka" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://www.instagram.com/legalnie_w_polsce" target="_blank" rel="noopener">Instagram</a>
+        <p>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
+      </div>
+    </div>
+    <div class="fbottom">© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</div>
+  </div>
+</footer>
+
+<button class="totop off" id="totop" aria-label="Up">↑</button>
+
+<script src="app.js?v=19"></script>
+</body>
+</html>
