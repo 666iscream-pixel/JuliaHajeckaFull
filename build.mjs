@@ -44,7 +44,7 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="icon" href="favicon.ico?v=29" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=29">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=29">
-  <link rel="stylesheet" href="styles.css?v=30">
+  <link rel="stylesheet" href="styles.css?v=32">
 </head>
 <body>
 
@@ -878,18 +878,26 @@ page({
         <p class="lead">Przy stałej obsłudze lub większej liczbie pracowników przygotuję indywidualną ofertę.</p>
       </div>
       <div class="pricelist">
-        ${rows([
-          ["Konsultacja, 1 godzina", "dalej — połowa kwoty za każde 30 min", "300 zł"],
-          ["Karta pobytu pracownika — Start Legal", "konsultacja, sprawdzenie dokumentów, checklista, wypełnienie wniosku w MOS, złożenie elektroniczne", "800 zł"],
-          ["Karta pobytu pracownika — Full Support", "wszystko ze Start Legal + komplet dokumentów, przygotowanie dokumentów od pracodawcy, wsparcie przy składaniu, kontrola sprawy, bezpłatne odwołanie w razie odmowy", "1800 zł"],
-          ["Karta pobytu pracownika — Premium Fast Track", "wszystko z Full Support + ponaglenie, skarga do sądu administracyjnego, wsparcie przy odbiorze karty, Profil Zaufany, e-Doręczenia", "2100 zł"],
-          ["Blue Card — Niebieska Karta UE", "", "1000–2000 zł"],
-          ["Zmiana pracodawcy przy karcie pobytu", "", "500 zł"],
-          ["Oświadczenie o powierzeniu wykonywania pracy", "wraz z kopią umowy i zawiadomieniami o rozpoczęciu i zakończeniu pracy", "500 zł"],
-          ["Zawiadomienie wojewody o zakończeniu pracy", "po stronie pracodawcy", "300 zł"],
-          ["Zaproszenie dla cudzoziemca", "", "500 zł"],
-          ["Osobista asysta w urzędzie", "1 wyjazd", "300 zł"]
-        ])}
+        <div>
+          <h3 class="pl-h">Karta pobytu i Blue Card</h3>
+          ${rows([
+            ["Karta pobytu pracownika — Start Legal", "konsultacja, sprawdzenie dokumentów, checklista, wypełnienie wniosku w MOS, złożenie elektroniczne", "800 zł"],
+            ["Karta pobytu pracownika — Full Support", "wszystko ze Start Legal + komplet dokumentów, przygotowanie dokumentów od pracodawcy, wsparcie przy składaniu, kontrola sprawy, bezpłatne odwołanie w razie odmowy", "1800 zł"],
+            ["Karta pobytu pracownika — Premium Fast Track", "wszystko z Full Support + ponaglenie, skarga do sądu administracyjnego, wsparcie przy odbiorze karty, Profil Zaufany, e-Doręczenia", "2100 zł"],
+            ["Blue Card — Niebieska Karta UE", "", "1000–2000 zł"],
+            ["Zmiana pracodawcy przy karcie pobytu", "", "500 zł"]
+          ])}
+        </div>
+        <div>
+          <h3 class="pl-h">Dokumenty i formalności</h3>
+          ${rows([
+            ["Oświadczenie o powierzeniu wykonywania pracy", "wraz z kopią umowy i zawiadomieniami o rozpoczęciu i zakończeniu pracy", "500 zł"],
+            ["Zawiadomienie wojewody o zakończeniu pracy", "po stronie pracodawcy", "300 zł"],
+            ["Zaproszenie dla cudzoziemca", "", "500 zł"],
+            ["Konsultacja, 1 godzina", "dalej — połowa kwoty za każde 30 min", "300 zł"],
+            ["Osobista asysta w urzędzie", "1 wyjazd", "300 zł"]
+          ])}
+        </div>
       </div>
       <div class="terms">
         <div><b>Umowa i dokument sprzedaży</b> za każdą usługę.</div>
