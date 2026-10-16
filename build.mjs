@@ -857,7 +857,9 @@ page({
       <div class="pricelist">
         ${rows([
           ["Konsultacja, 1 godzina", "dalej — połowa kwoty za każde 30 min", "300 zł"],
-          ["Karta pobytu pracownika — pakiet Full Support", "pełne prowadzenie sprawy", "1800 zł"],
+          ["Karta pobytu pracownika — Start Legal", "konsultacja, sprawdzenie dokumentów, checklista, wypełnienie wniosku w MOS, złożenie elektroniczne", "800 zł"],
+          ["Karta pobytu pracownika — Full Support", "wszystko ze Start Legal + komplet dokumentów, przygotowanie dokumentów od pracodawcy, wsparcie przy składaniu, kontrola sprawy, bezpłatne odwołanie w razie odmowy", "1800 zł"],
+          ["Karta pobytu pracownika — Premium Fast Track", "wszystko z Full Support + ponaglenie, skarga do sądu administracyjnego, wsparcie przy odbiorze karty, Profil Zaufany, e-Doręczenia", "2100 zł"],
           ["Blue Card — Niebieska Karta UE", "", "1000–2000 zł"],
           ["Zmiana pracodawcy przy karcie pobytu", "", "500 zł"],
           ["Oświadczenie o powierzeniu wykonywania pracy", "wraz z kopią umowy i zawiadomieniami o rozpoczęciu i zakończeniu pracy", "500 zł"],
