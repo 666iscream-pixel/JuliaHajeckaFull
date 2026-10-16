@@ -8,6 +8,9 @@ const GOOGLE = "https://g.co/kgs/nrC4cam";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
 const IG = "https://www.instagram.com/legalnie_w_polsce";
+const MAP_ADDR = encodeURIComponent("Gościnna 11, 05-082 Blizne Łaszczyńskiego");
+const MAP_EMBED = `https://www.google.com/maps?q=${MAP_ADDR}&output=embed`;
+const MAP_DIR = `https://www.google.com/maps/dir/?api=1&destination=${MAP_ADDR}`;
 // Email Юлії: вписати адресу сюди — з'явиться в контактах і футері
 const EMAIL = "";
 const emailHtml = (ph) => EMAIL ? `<a href="mailto:${EMAIL}">${EMAIL}</a>` : `<span class="todo">${ph}</span>`;
@@ -38,7 +41,10 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css?v=23">
 </head>
 <body>
 
@@ -94,7 +100,7 @@ ${body}
 
 ${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${pl ? "#kontakt" : "kontakty.html"}"><span class="fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="fab-t">${pl ? "Umów konsultację" : "Записатися на консультацію"}</span></a>\n`}<button class="totop off" id="totop" aria-label="Up">↑</button>
 
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>
 `;
@@ -706,6 +712,29 @@ page({
         <button class="btn btn-gold" type="submit">Надіслати у WhatsApp</button>
         <p class="fnote">Заявка відкриється у WhatsApp із готовим текстом — залишиться натиснути «Надіслати».</p>
       </form>
+    </div>
+  </section>
+  <section class="light" id="dojazd">
+    <div class="wrap visit">
+      <div>
+        <span class="eyebrow">Як до нас дістатися</span>
+        <h2>Плануєте візит до нашого офісу?</h2>
+        <p class="plain">Будемо раді вас бачити! Офіс розташований у Blizne Łaszczyńskiego, неподалік варшавського Бемово. Дістатися можна автомобілем або громадським транспортом.</p>
+        <p class="visit-addr">ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
+        <ul class="visit-ways">
+          <li><b>Автомобілем.</b> Введіть адресу офісу в навігатор і оберіть зручний маршрут. Перед виїздом варто перевірити ситуацію на дорогах.</li>
+          <li><b>Громадським транспортом.</b> Перевірте актуальні сполучення в Google Maps і оберіть маршрут, зручний саме з вашого місця.</li>
+        </ul>
+        <p class="plain">Не знаєте, як краще доїхати? Напишіть нам — допоможемо спланувати візит.</p>
+        <a class="btn btn-line" href="${MAP_DIR}" target="_blank" rel="noopener">Прокласти маршрут у Google Maps</a>
+      </div>
+      <div class="map" id="map" data-src="${MAP_EMBED}">
+        <div class="map-ph">
+          <span class="pin" aria-hidden="true">●</span>
+          <p>Карта завантажується з Google Maps.</p>
+          <button class="btn btn-gold" type="button" id="mapLoad">Показати карту</button>
+        </div>
+      </div>
     </div>
   </section>`
 });

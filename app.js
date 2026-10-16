@@ -76,3 +76,18 @@ if (dd) {
   document.addEventListener("click", () => set(false));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
 }
+
+// Карта Google вантажиться лише після натискання — без cookies Google до згоди відвідувача
+const mapBox = document.getElementById("map");
+const mapBtn = document.getElementById("mapLoad");
+if (mapBox && mapBtn) {
+  mapBtn.addEventListener("click", () => {
+    const f = document.createElement("iframe");
+    f.src = mapBox.dataset.src;
+    f.title = "Google Maps";
+    f.loading = "lazy";
+    f.referrerPolicy = "no-referrer-when-downgrade";
+    mapBox.innerHTML = "";
+    mapBox.appendChild(f);
+  });
+}

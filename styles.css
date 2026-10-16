@@ -539,3 +539,18 @@ footer.fat .wrap { display: block; }
 .who-card .checks { align-content: start; }
 
 .about p.pull { margin-top: 22px; padding: 18px 22px; border-left: 3px solid var(--gold); background: var(--paper); color: var(--navy); font-family: "Playfair Display", serif; font-size: 19px; line-height: 1.5; }
+
+/* visit + map */
+.visit { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+.visit h2 { margin-bottom: 4px; }
+.visit-addr { margin-top: 18px; font-weight: 700; color: var(--navy); font-size: 17px; line-height: 1.5; }
+.visit-ways { list-style: none; padding: 0; margin: 16px 0 6px; display: grid; gap: 10px; }
+.visit-ways li { padding-left: 16px; border-left: 2px solid var(--gold); color: var(--muted); }
+.visit-ways b { color: var(--navy); }
+.visit .btn { margin-top: 20px; }
+.map { aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--navy); }
+.map iframe { width: 100%; height: 100%; border: 0; display: block; }
+.map-ph { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; color: rgba(255,255,255,.75); padding: 20px; }
+.map-ph .pin { color: var(--gold-soft); font-size: 26px; }
+.map-ph .btn { margin-top: 4px; }
+@media (max-width: 980px) { .visit { grid-template-columns: 1fr; } }
