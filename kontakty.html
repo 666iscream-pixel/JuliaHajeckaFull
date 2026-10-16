@@ -11,7 +11,7 @@
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=23">
+  <link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
 
@@ -60,7 +60,7 @@
         </div>
         <ul class="clist">
           <li><span>Телефон</span><a href="tel:+48791017254">+48 791 017 254</a></li>
-          <li><span>Email</span><div><span class="todo">буде додано</span></div></li>
+          <li><span>Email</span><div><a href="mailto:jhajecka@pobyt-legalny.com">jhajecka@pobyt-legalny.com</a></div></li>
           <li><span>Офіс</span><div>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</div></li>
           <li><span>Години</span><div>Пн–Пт з 9:00, зустрічі за попереднім записом</div></li>
           <li><span>Мови</span><div>Українська, Polski, Русский</div></li>
@@ -92,17 +92,12 @@
         <h2>Плануєте візит до нашого офісу?</h2>
         <p class="plain">Будемо раді вас бачити! Офіс розташований у Blizne Łaszczyńskiego, неподалік варшавського Бемово. Дістатися можна автомобілем або громадським транспортом.</p>
         <p class="visit-addr">ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
-        <ul class="visit-ways">
-          <li><b>Автомобілем.</b> Введіть адресу офісу в навігатор і оберіть зручний маршрут. Перед виїздом варто перевірити ситуацію на дорогах.</li>
-          <li><b>Громадським транспортом.</b> Перевірте актуальні сполучення в Google Maps і оберіть маршрут, зручний саме з вашого місця.</li>
-        </ul>
-        <p class="plain">Не знаєте, як краще доїхати? Напишіть нам — допоможемо спланувати візит.</p>
         <a class="btn btn-line" href="https://www.google.com/maps/dir/?api=1&destination=Go%C5%9Bcinna%2011%2C%2005-082%20Blizne%20%C5%81aszczy%C5%84skiego" target="_blank" rel="noopener">Прокласти маршрут у Google Maps</a>
       </div>
       <div class="map" id="map" data-src="https://www.google.com/maps?q=Go%C5%9Bcinna%2011%2C%2005-082%20Blizne%20%C5%81aszczy%C5%84skiego&output=embed">
         <div class="map-ph">
           <span class="pin" aria-hidden="true">●</span>
-          <p>Карта завантажується з Google Maps.</p>
+          <p>Карта Google Maps з'явиться після згоди на cookies.</p>
           <button class="btn btn-gold" type="button" id="mapLoad">Показати карту</button>
         </div>
       </div>
@@ -130,19 +125,30 @@
       <div>
         <h4>Контакти</h4>
         <a href="tel:+48791017254">+48 791 017 254</a>
-        <div class="fmail">Email: <span class="todo">буде додано</span></div>
+        <div class="fmail">Email: <a href="mailto:jhajecka@pobyt-legalny.com">jhajecka@pobyt-legalny.com</a></div>
         <a href="https://wa.me/48791017254" target="_blank" rel="noopener">WhatsApp</a>
         <a href="https://t.me/jhajecka" target="_blank" rel="noopener">Telegram</a>
         <a href="https://www.instagram.com/legalnie_w_polsce" target="_blank" rel="noopener">Instagram</a>
         <p>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
       </div>
     </div>
-    <div class="fbottom">© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</div>
+    <div class="fbottom">
+      <span>© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</span>
+      <span class="flegal"><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="klauzula-informacyjna.html">Klauzula informacyjna RODO</a><button type="button" data-cc-open>Налаштування cookies</button></span>
+    </div>
   </div>
 </footer>
 
 <button class="totop off" id="totop" aria-label="Up">↑</button>
 
-<script src="app.js?v=23"></script>
+<div class="cc" id="cc" hidden>
+  <p>Ми використовуємо необхідні cookies. За вашою згодою також завантажуємо карту Google Maps, яка зберігає власні cookies.
+    <a href="polityka-prywatnosci.html">Polityka prywatności</a></p>
+  <div class="cc-btns">
+    <button type="button" class="btn btn-line" data-cc="necessary">Лише необхідні</button>
+    <button type="button" class="btn btn-gold" data-cc="all">Прийняти всі</button>
+  </div>
+</div>
+<script src="app.js?v=24"></script>
 </body>
 </html>

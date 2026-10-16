@@ -77,17 +77,34 @@ if (dd) {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
 }
 
-// Карта Google вантажиться лише після натискання — без cookies Google до згоди відвідувача
+// Згода на cookies (RODO): необхідні завжди; карта Google — лише після згоди
+const CC_KEY = "cookie-consent";
+const getCC = () => { try { return localStorage.getItem(CC_KEY); } catch (e) { return null; } };
+const setCC = (v) => { try { localStorage.setItem(CC_KEY, v); } catch (e) {} };
+
 const mapBox = document.getElementById("map");
-const mapBtn = document.getElementById("mapLoad");
-if (mapBox && mapBtn) {
-  mapBtn.addEventListener("click", () => {
-    const f = document.createElement("iframe");
-    f.src = mapBox.dataset.src;
-    f.title = "Google Maps";
-    f.loading = "lazy";
-    f.referrerPolicy = "no-referrer-when-downgrade";
-    mapBox.innerHTML = "";
-    mapBox.appendChild(f);
-  });
+const loadMap = () => {
+  if (!mapBox || mapBox.querySelector("iframe")) return;
+  const f = document.createElement("iframe");
+  f.src = mapBox.dataset.src;
+  f.title = "Google Maps";
+  f.loading = "lazy";
+  f.referrerPolicy = "no-referrer-when-downgrade";
+  mapBox.innerHTML = "";
+  mapBox.appendChild(f);
+};
+
+const ccBar = document.getElementById("cc");
+if (ccBar) {
+  if (!getCC()) ccBar.hidden = false;
+  ccBar.querySelectorAll("[data-cc]").forEach((b) => b.addEventListener("click", () => {
+    setCC(b.dataset.cc);
+    ccBar.hidden = true;
+    if (b.dataset.cc === "all") loadMap();
+  }));
 }
+document.querySelectorAll("[data-cc-open]").forEach((b) => b.addEventListener("click", () => { if (ccBar) ccBar.hidden = false; }));
+
+const mapBtn = document.getElementById("mapLoad");
+if (mapBtn) mapBtn.addEventListener("click", () => { setCC("all"); if (ccBar) ccBar.hidden = true; loadMap(); });
+if (getCC() === "all") loadMap();

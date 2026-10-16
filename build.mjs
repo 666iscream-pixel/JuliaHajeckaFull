@@ -1,5 +1,5 @@
 // Генерує статичні сторінки v2: node build.mjs
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -12,7 +12,7 @@ const MAP_ADDR = encodeURIComponent("Gościnna 11, 05-082 Blizne Łaszczyńskieg
 const MAP_EMBED = `https://www.google.com/maps?q=${MAP_ADDR}&output=embed`;
 const MAP_DIR = `https://www.google.com/maps/dir/?api=1&destination=${MAP_ADDR}`;
 // Email Юлії: вписати адресу сюди — з'явиться в контактах і футері
-const EMAIL = "";
+const EMAIL = "jhajecka@pobyt-legalny.com";
 const emailHtml = (ph) => EMAIL ? `<a href="mailto:${EMAIL}">${EMAIL}</a>` : `<span class="todo">${ph}</span>`;
 
 const NAV = {
@@ -44,7 +44,7 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=23">
+  <link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
 
@@ -94,13 +94,26 @@ ${body}
         <p>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
       </div>
     </div>
-    <div class="fbottom">© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</div>
+    <div class="fbottom">
+      <span>© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</span>
+      <span class="flegal"><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="klauzula-informacyjna.html">Klauzula informacyjna RODO</a><button type="button" data-cc-open>${pl ? "Ustawienia cookies" : "Налаштування cookies"}</button></span>
+    </div>
   </div>
 </footer>
 
 ${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${pl ? "#kontakt" : "kontakty.html"}"><span class="fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="fab-t">${pl ? "Umów konsultację" : "Записатися на консультацію"}</span></a>\n`}<button class="totop off" id="totop" aria-label="Up">↑</button>
 
-<script src="app.js?v=23"></script>
+<div class="cc" id="cc" hidden>
+  <p>${pl
+    ? "Używamy niezbędnych plików cookies. Za Twoją zgodą ładujemy też mapę Google Maps, która zapisuje własne cookies."
+    : "Ми використовуємо необхідні cookies. За вашою згодою також завантажуємо карту Google Maps, яка зберігає власні cookies."}
+    <a href="polityka-prywatnosci.html">${pl ? "Polityka prywatności" : "Polityka prywatności"}</a></p>
+  <div class="cc-btns">
+    <button type="button" class="btn btn-line" data-cc="necessary">${pl ? "Tylko niezbędne" : "Лише необхідні"}</button>
+    <button type="button" class="btn btn-gold" data-cc="all">${pl ? "Akceptuję wszystkie" : "Прийняти всі"}</button>
+  </div>
+</div>
+<script src="app.js?v=24"></script>
 </body>
 </html>
 `;
@@ -721,17 +734,12 @@ page({
         <h2>Плануєте візит до нашого офісу?</h2>
         <p class="plain">Будемо раді вас бачити! Офіс розташований у Blizne Łaszczyńskiego, неподалік варшавського Бемово. Дістатися можна автомобілем або громадським транспортом.</p>
         <p class="visit-addr">ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
-        <ul class="visit-ways">
-          <li><b>Автомобілем.</b> Введіть адресу офісу в навігатор і оберіть зручний маршрут. Перед виїздом варто перевірити ситуацію на дорогах.</li>
-          <li><b>Громадським транспортом.</b> Перевірте актуальні сполучення в Google Maps і оберіть маршрут, зручний саме з вашого місця.</li>
-        </ul>
-        <p class="plain">Не знаєте, як краще доїхати? Напишіть нам — допоможемо спланувати візит.</p>
         <a class="btn btn-line" href="${MAP_DIR}" target="_blank" rel="noopener">Прокласти маршрут у Google Maps</a>
       </div>
       <div class="map" id="map" data-src="${MAP_EMBED}">
         <div class="map-ph">
           <span class="pin" aria-hidden="true">●</span>
-          <p>Карта завантажується з Google Maps.</p>
+          <p>Карта Google Maps з'явиться після згоди на cookies.</p>
           <button class="btn btn-gold" type="button" id="mapLoad">Показати карту</button>
         </div>
       </div>
@@ -835,5 +843,32 @@ page({
     </div>
   </section>`
 });
+
+
+// Dokumenty prawne Zamawiającego (po polsku) — treść w content/
+for (const [file, title, h1] of [
+  ["polityka-prywatnosci.html", "Polityka prywatności", "Polityka prywatności"],
+  ["klauzula-informacyjna.html", "Klauzula informacyjna RODO", "Klauzula informacyjna dotycząca przetwarzania danych osobowych"]
+]) {
+  page({
+    file, lang: "pl",
+    title: `${title} — Julia Hajecka`,
+    desc: `${title} — Julia Hajecka LEGALIZACJA POBYTU CUDZOZIEMCÓW W POLSCE.`,
+    body: `
+  <div class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">RODO</span>
+      <h1>${h1}</h1>
+    </div>
+  </div>
+  <section>
+    <div class="wrap">
+      <div class="prose legal">
+        ${readFileSync(join(OUT, "content", file), "utf8")}
+      </div>
+    </div>
+  </section>`
+  });
+}
 
 console.log("ok");
