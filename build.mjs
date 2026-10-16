@@ -41,10 +41,10 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <link rel="icon" href="favicon.ico?v=27" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=27">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=27">
-  <link rel="stylesheet" href="styles.css?v=27">
+  <link rel="icon" href="favicon.ico?v=29" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=29">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=29">
+  <link rel="stylesheet" href="styles.css?v=29">
 </head>
 <body>
 
@@ -113,7 +113,7 @@ ${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${file === 
     <button type="button" class="btn btn-gold" data-cc="all">${pl ? "Akceptuję wszystkie" : "Прийняти всі"}</button>
   </div>
 </div>
-<script src="app.js?v=27"></script>
+<script src="app.js?v=29"></script>
 </body>
 </html>
 `;
@@ -263,10 +263,25 @@ const SERVICES = [
     intro: "Отримую за вас довідки, які вимагають уженди, банки та роботодавці.",
     does: ["Довідка про відсутність податкової заборгованості", "Довідка із ZUS про історію працевлаштування", "Довідки із суду", "PESEL, Profil Zaufany, EKUZ"],
     lines: [["Довідка з податкової", "150 zł"], ["Довідка із ZUS", "150 zł"], ["Номер PESEL", "150 zł"], ["Profil Zaufany (ePUAP)", "150 zł"], ["Карта EKUZ", "150 zł"], ["Довідки із суду", "за запитом"]] },
-  { slug: "akty-tsyvilnoho-stanu", name: "Акти про народження і шлюб", h1: "Реєстрація іноземних актів та визнання батьківства", price: "800 zł",
-    short: "Внесення закордонних свідоцтв до польського реєстру, визнання батьківства.",
-    intro: "Вношу закордонні свідоцтва про народження та шлюб до польського реєстру актів цивільного стану (umiejscowienie) і допомагаю з визнанням батьківства.",
-    does: ["Перевіряю документи та організовую присяжний переклад", "Готую і подаю заяву до USC", "Отримую польський відпис акта", "Супроводжую процедуру визнання батьківства"],
+  { slug: "akty-tsyvilnoho-stanu", name: "Акти про народження і шлюб", h1: "Транскрипція іноземних актів цивільного стану", price: "800 zł",
+    short: "Внесення закордонних свідоцтв про народження і шлюб до польського реєстру, визнання батьківства.",
+    intro: "Внесення закордонного свідоцтва про народження чи шлюб до польського реєстру актів цивільного стану (umiejscowienie zagranicznych aktów).",
+    about: [
+      "Транскрипція — це офіційний процес визнання закордонних документів у Польщі. Свідоцтво про народження або шлюб, видане за кордоном, переноситься до польських книг актів цивільного стану. У результаті ви отримуєте польський документ, який повністю відповідає оригіналу, але має юридичну силу на території Польщі.",
+      "Оригінали іноземних документів під час процедури вилучаються, тому заздалегідь рекомендуємо оформити дублікати, якщо вони можуть знадобитися вам у подальшому."
+    ],
+    when: [
+      "якщо ви плануєте подавати документи на отримання польського громадянства;",
+      "якщо ви хочете оформити ВНЖ або ПМЖ для члена сім'ї за програмою возз'єднання і не маєте можливості проставити апостиль у країні походження (вимога більшості установ з 1 червня 2025 року)."
+    ],
+    doesTitle: "Чим ми допомагаємо",
+    does: ["Проводимо консультацію щодо вашої ситуації та аналізуємо документи", "Доступно й зрозуміло пояснюємо кожен етап процедури", "Організовуємо професійний присяжний переклад", "Готуємо й подаємо заяву з усіма документами до Urząd Stanu Cywilnego", "Отримуємо готовий польський акт і передаємо його вам", "Супроводжуємо також процедуру визнання батьківства"],
+    faq: [
+      ["Скільки триває процедура?", "Зазвичай до 30 днів."],
+      ["Чи впливає кількість документів на вартість?", "Ціна залежить не від кількості, а від складності документів."],
+      ["Чи забирають оригінали свідоцтв про народження та шлюб?", "Так, оригінали вилучаються, тому рекомендуємо заздалегідь оформити дублікати в країні видачі."],
+      ["Чи можна подати нотаріально завірені копії?", "Ні, приймаються лише оригінали свідоцтва про народження (а також свідоцтва про шлюб)."]
+    ],
     lines: [["Внесення акта до реєстру", "800 zł"], ["Визнання батьківства", ASK], ["Присяжний переклад", "за запитом"]],
     note: "Додатково оплачуються державні збори та присяжний переклад документів." },
   { slug: "strakhuvannia", name: "Страхування", h1: "Усі види страхування", price: ASK,
@@ -578,7 +593,9 @@ for (const s of SERVICES) {
   <section>
     <div class="wrap two">
       <div>
-        <h2 class="subh">Що я роблю</h2>
+        ${s.about ? `<h2 class="subh">Про процедуру</h2>${s.about.map((p) => `<p class="plain">${p}</p>`).join("")}` : ""}
+        ${s.when ? `<h3 class="subh3">Коли це потрібно</h3><ul class="dots">${s.when.map((w) => `<li>${w}</li>`).join("")}</ul>` : ""}
+        <h2 class="subh${s.about ? " gap" : ""}">${s.doesTitle || "Що я роблю"}</h2>
         ${s.chips ? `<div class="chips">${s.chips.map((c) => `<span class="chip">${c}</span>`).join("")}</div>` : ""}
         <ul class="checks">${s.does.map((d) => `<li>${d}</li>`).join("")}</ul>
         ${s.note ? `<p class="plain">${s.note}</p>` : ""}
@@ -593,6 +610,12 @@ for (const s of SERVICES) {
       </aside>
     </div>
   </section>
+  ${s.faq ? `<section class="light">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Поширені запитання</span><h2>Відповіді на часті питання</h2></div>
+      <div class="faq">${s.faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("")}</div>
+    </div>
+  </section>` : ""}
   ${s.packs ? `<section class="light">
     <div class="wrap">
       <div class="section-head">

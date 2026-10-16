@@ -577,3 +577,15 @@ footer.fat .wrap { display: block; }
 .pack.hot .pack-note { color: #fff; }
 .packs.two-packs { grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: center; }
 @media (max-width: 980px) { .packs.two-packs { grid-template-columns: 1fr; } }
+
+/* service page: about, when, faq */
+.subh.gap { margin-top: 36px; }
+.subh3 { font-family: "Manrope", sans-serif; font-size: 17px; font-weight: 700; color: var(--navy); margin: 22px 0 8px; }
+ul.dots { margin: 0; padding-left: 20px; color: var(--muted); font-size: 16.5px; display: grid; gap: 6px; }
+.faq { display: grid; gap: 12px; max-width: 820px; }
+.faq details { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; }
+.faq summary { cursor: pointer; font-weight: 700; color: var(--navy); font-size: 16.5px; list-style: none; position: relative; padding-right: 28px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 0; top: -2px; font-size: 22px; color: var(--gold); font-weight: 400; }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { margin-top: 10px; color: var(--muted); }
