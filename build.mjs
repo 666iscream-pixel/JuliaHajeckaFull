@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const OUT = dirname(fileURLToPath(import.meta.url));
+// Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
+const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
 const GOOGLE = "https://g.co/kgs/nrC4cam";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
@@ -38,12 +40,22 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
   <meta name="description" content="${desc}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce">
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${desc}">
+  <meta property="og:url" content="${SITE}/${file === "index.html" ? "" : file}">
+  <meta property="og:image" content="${SITE}/img/og-image.jpg?v=33">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="${lang === "pl" ? "pl_PL" : "uk_UA"}">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.ico?v=29" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=29">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=29">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=33">
   <link rel="stylesheet" href="styles.css?v=32">
 </head>
 <body>
