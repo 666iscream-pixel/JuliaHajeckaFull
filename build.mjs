@@ -6,12 +6,14 @@ import { dirname, join } from "node:path";
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
-const GOOGLE = "https://g.co/kgs/nrC4cam";
+const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
 const IG = "https://www.instagram.com/legalnie_w_polsce";
-const MAP_ADDR = encodeURIComponent("Gościnna 11, 05-082 Blizne Łaszczyńskiego");
-const MAP_EMBED = `https://www.google.com/maps?q=${MAP_ADDR}&output=embed`;
+// Картка Google Business Юлії (cid) — карта показує саме її, з назвою та відгуками
+const MAP_CID = "10085399209972979363";
+const MAP_ADDR = encodeURIComponent("Julia Hajecka - legalizacja pobytu cudzoziemców w Polsce, Gościnna 11, 05-082 Blizne Łaszczyńskiego");
+const MAP_EMBED = `https://maps.google.com/maps?cid=${MAP_CID}&hl=uk&output=embed`;
 const MAP_DIR = `https://www.google.com/maps/dir/?api=1&destination=${MAP_ADDR}`;
 // Email Юлії: вписати адресу сюди — з'явиться в контактах і футері
 const EMAIL = "jhajecka@pobyt-legalny.com";
@@ -56,7 +58,7 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="icon" href="favicon.ico?v=29" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=29">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=33">
-  <link rel="stylesheet" href="styles.css?v=32">
+  <link rel="stylesheet" href="styles.css?v=34">
 </head>
 <body>
 
@@ -806,7 +808,10 @@ page({
         <h2>Плануєте візит до нашого офісу?</h2>
         <p class="plain">Будемо раді вас бачити! Офіс розташований у Blizne Łaszczyńskiego, неподалік варшавського Бемово. Дістатися можна автомобілем або громадським транспортом.</p>
         <p class="visit-addr">ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
-        <a class="btn btn-line" href="${MAP_DIR}" target="_blank" rel="noopener">Прокласти маршрут у Google Maps</a>
+        <div class="visit-btns">
+          <a class="btn btn-line" href="${MAP_DIR}" target="_blank" rel="noopener">Прокласти маршрут</a>
+          <a class="btn btn-line" href="${GOOGLE}" target="_blank" rel="noopener">Картка в Google</a>
+        </div>
       </div>
       <div class="map" id="map" data-src="${MAP_EMBED}">
         <div class="map-ph">
