@@ -44,7 +44,7 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="icon" href="favicon.ico?v=29" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=29">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=29">
-  <link rel="stylesheet" href="styles.css?v=29">
+  <link rel="stylesheet" href="styles.css?v=30">
 </head>
 <body>
 
@@ -113,7 +113,7 @@ ${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${file === 
     <button type="button" class="btn btn-gold" data-cc="all">${pl ? "Akceptuję wszystkie" : "Прийняти всі"}</button>
   </div>
 </div>
-<script src="app.js?v=29"></script>
+<script src="app.js?v=30"></script>
 </body>
 </html>
 `;
@@ -819,8 +819,8 @@ page({
   <div class="page-hero">
     <div class="wrap">
       <span class="eyebrow">Dla pracodawców</span>
-      <h1>Legalne zatrudnienie cudzoziemców — formalności po mojej stronie</h1>
-      <p>Od 2017 roku zajmuję się zezwoleniami na pracę i pobyt pracowników spoza Polski. Przygotowuję dokumenty, pilnuję terminów i wspieram nowych pracowników w pierwszych miesiącach w kraju.</p>
+      <h1>Kompleksowe wsparcie dla pracodawców i cudzoziemców</h1>
+      <p>Oferujemy kompleksową obsługę w zakresie legalizacji pobytu i pracy cudzoziemców w Polsce — od pierwszych dokumentów związanych z podjęciem pracy, przez legalizację zatrudnienia, aż po zezwolenie na pobyt i kartę pobytu.</p>
       <div class="hero-cta">
         <a class="btn btn-gold" href="#kontakt">Zapytaj o współpracę</a>
         <a class="btn btn-ghost" href="#cennik">Cennik</a>
@@ -828,22 +828,46 @@ page({
     </div>
   </div>
 
-  <section id="zakres">
+  <section>
+    <div class="wrap two-text">
+      <div>
+        <span class="eyebrow">Dlaczego z nami</span>
+        <h2>Formalności bez zbędnego stresu</h2>
+      </div>
+      <div>
+        <p class="plain">Zatrudnianie cudzoziemców wiąże się z szeregiem formalności, obowiązków oraz procedur administracyjnych. Zmieniające się przepisy, różne podstawy legalizacji pracy i pobytu oraz konieczność terminowego składania dokumentów sprawiają, że prawidłowe przeprowadzenie całego procesu może być dla pracodawcy czasochłonne i wymagające.</p>
+        <p class="plain">Wspieramy zarówno pracodawców zatrudniających cudzoziemców, jak i samych pracowników. Naszym celem jest zapewnienie Państwu bezpieczeństwa, oszczędności czasu oraz prawidłowo przygotowanej dokumentacji, zgodnej z wymaganiami właściwych urzędów.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="zakres" class="light">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Zakres</span>
-        <h2>W czym pomagamy firmom</h2>
-        <p class="lead">Zatrudniasz cudzoziemców i chcesz mieć pewność, że wszystkie formalności są prawidłowo dopełnione? Wspieramy firmy w legalnym zatrudnianiu obcokrajowców.</p>
+        <span class="eyebrow">Zakres współpracy</span>
+        <h2>W czym pomagamy</h2>
       </div>
-      <div class="grid3">
-        <div class="card"><h3>Zezwolenia na pracę</h3><p>Dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</p></div>
-        <div class="card"><h3>Oświadczenia o powierzeniu pracy</h3><p>Przygotowanie dokumentacji i przeprowadzenie procedury oświadczenia o powierzeniu pracy cudzoziemcowi.</p></div>
-        <div class="card"><h3>Powiadomienia dla obywateli Ukrainy</h3><p>Weryfikacja obowiązków i dopełnienie formalności przy powierzeniu pracy obywatelom Ukrainy, jeśli dana procedura ma zastosowanie.</p></div>
-        <div class="card"><h3>Dobór właściwej procedury</h3><p>Ustalenie, jakie dokumenty są potrzebne w konkretnej sytuacji.</p></div>
-        <div class="card"><h3>Ograniczanie ryzyka prawnego</h3><p>Weryfikacja formalności związanych z zatrudnieniem cudzoziemców i minimalizowanie ryzyka sankcji za naruszenie przepisów.</p></div>
-        <div class="card"><h3>Karty pobytu i zaproszenia</h3><p>Karty pobytu i Blue Card dla pracowników, zmiana pracodawcy, zaproszenia dla cudzoziemców.</p></div>
+      <div class="grid3 numbered">
+        <div class="card"><span class="no">01</span><h3>Weryfikacja możliwości zatrudnienia cudzoziemca</h3><p>Ustalamy, jaka procedura ma zastosowanie i jakie dokumenty są potrzebne w konkretnej sytuacji.</p></div>
+        <div class="card"><span class="no">02</span><h3>Legalizacja pracy obywateli Ukrainy</h3><p>Powiadomienia o powierzeniu pracy obywatelom Ukrainy — weryfikacja obowiązków i dopełnienie wymaganych formalności.</p></div>
+        <div class="card"><span class="no">03</span><h3>Oświadczenie o powierzeniu wykonywania pracy cudzoziemcowi</h3><p>Przygotowanie i złożenie oświadczenia w przypadkach, w których procedura ma zastosowanie (obywatele Armenii, Białorusi, Mołdawii i Ukrainy), oraz wsparcie przy kolejnych obowiązkach związanych z procedurą.</p></div>
+        <div class="card"><span class="no">04</span><h3>Zezwolenie na pracę — A–S</h3><p>Dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</p></div>
+        <div class="card"><span class="no">05</span><h3>Pobyt czasowy i praca</h3><p>Jednolite zezwolenie na pobyt czasowy i pracę prowadzimy kompleksowo — od przygotowania dokumentów i złożenia wniosku aż do uzyskania karty pobytu. Cudzoziemiec nie musi samodzielnie organizować kolejnych etapów, a pracodawca otrzymuje wsparcie w zakresie dokumentów dotyczących zatrudnienia.</p></div>
+        <div class="card"><span class="no">06</span><h3>Zmiana pracodawcy przy posiadanej karcie pobytu</h3><p>Jeżeli chcą Państwo zatrudnić pracownika, który ma kartę pobytu w związku z pracą, analizujemy jego sytuację i ustalamy, jakie formalności należy przeprowadzić. Pomagamy też pracownikom, którzy kończą zatrudnienie u dotychczasowego pracodawcy.</p></div>
       </div>
-      <p class="tagline">Formalności bez zbędnego stresu.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap two-text">
+      <div>
+        <span class="eyebrow">Dokumenty i dane</span>
+        <h2>Bezpieczeństwo powierzonych dokumentów</h2>
+      </div>
+      <div>
+        <p class="plain">Współpraca z cudzoziemcami i urzędami wymaga przekazywania wielu dokumentów oraz danych. Dokumentacja przekazywana w ramach sprawy — w tym dokumenty firmy, dane rachunku bankowego, informacje podatkowe czy dokumenty ZUS — jest wykorzystywana wyłącznie w celu realizacji konkretnej procedury.</p>
+        <p class="plain">Dzięki formalnej współpracy i jasno określonemu zakresowi usług mają Państwo kontrolę nad tym, komu przekazują dokumenty i w jakim celu są one wykorzystywane. Zależy nam na tym, aby klient miał jasność co do każdego etapu prowadzonej sprawy.</p>
+      </div>
     </div>
   </section>
 
