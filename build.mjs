@@ -38,7 +38,7 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=19">
+  <link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body>
 
@@ -94,7 +94,7 @@ ${body}
 
 ${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${pl ? "#kontakt" : "kontakty.html"}"><span class="fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="fab-t">${pl ? "Umów konsultację" : "Записатися на консультацію"}</span></a>\n`}<button class="totop off" id="totop" aria-label="Up">↑</button>
 
-<script src="app.js?v=19"></script>
+<script src="app.js?v=20"></script>
 </body>
 </html>
 `;
@@ -235,7 +235,10 @@ const OTHER = [
   ["Аналіз та впорядкування документів щодо перебування", "залежно від кількості документів і складності справи", "350–500 zł"],
   ["Віза до Великої Британії", "", "2000 zł"],
   ["Присяжний переклад документів", "PL→UA, PL→RU", "за запитом"],
-  ["Повідомлення воєводи про припинення роботи", "200 zł для іноземця, 300 zł для роботодавця", "200 / 300 zł"]
+  ["Повідомлення воєводи про припинення роботи", "200 zł для іноземця, 300 zł для роботодавця", "200 / 300 zł"],
+  ["Обмін посвідчення водія", "", ASK],
+  ["Оскарження рішення установи", "у пакеті Full Support апеляція у разі відмови безкоштовна", ASK],
+  ["Реєстрація перебування громадян ЄС", "", ASK]
 ];
 const rows = (list) => list.map(([n, s, p]) => `<div class="row"><span class="n">${n}${s ? `<small>${s}</small>` : ""}</span><span class="p">${p}</span></div>`).join("\n        ");
 
@@ -395,20 +398,42 @@ page({
     </div>
   </section>
 
-  <section class="biz">
+  <section class="light" id="komu">
     <div class="wrap">
-      <div>
-        <span class="eyebrow">Для бізнесу</span>
-        <h2>Наймаєте іноземців?</h2>
-        <p>Беру на себе формальності: дозволи на роботу, заяви, повідомлення до уженду та супровід працівників у перші місяці в Польщі.</p>
-        <a class="btn btn-gold" href="firmy.html">Сторінка для роботодавців</a>
+      <div class="section-head">
+        <span class="eyebrow">Кому ми допомагаємо</span>
+        <h2>Реальна підтримка для іноземців і роботодавців у Польщі</h2>
+        <p class="lead">Пропонуємо спеціалізовані послуги, підібрані під індивідуальні потреби. Ми зосереджуємося на тому, щоб зрозуміти вашу ситуацію і дати дієве, практичне рішення.</p>
       </div>
-      <ul>
-        <li>Дозволи на роботу та заяви про доручення роботи</li>
-        <li>Blue Card і карти побиту для працівників</li>
-        <li>Перевірка легальності працевлаштування</li>
-        <li>Повідомлення воєводи та зміна умов</li>
-      </ul>
+      <div class="who-grid">
+        <div class="who-card">
+          <h3>Для іноземців</h3>
+          <p>Хочете врегулювати перебування в Польщі, залагодити справи в установах або почати власну справу? Допоможемо пройти через формальності.</p>
+          <ul class="checks">
+            <li><b>Легалізація перебування</b> — отримання карти тимчасового або сталого побиту.</li>
+            <li><b>Польське громадянство</b> — підготовка до подання заяви про надання або визнання громадянином Польщі.</li>
+            <li><b>Обмін документів</b> — карти побиту та посвідчення водія, а також отримання номера PESEL.</li>
+            <li><b>Оскарження рішень</b> — допомога у разі відмови у видачі документа чи дозволу.</li>
+            <li><b>Реєстрація перебування громадян ЄС</b> — формальності, пов'язані з перебуванням у Польщі.</li>
+            <li><b>Транскрипція іноземних актів цивільного стану</b> — внесення закордонних документів до польського реєстру.</li>
+            <li><b>Profil Zaufany</b> — доступ до онлайн-послуг державної адміністрації.</li>
+          </ul>
+          <a class="btn btn-line" href="poslugy.html">Послуги та ціни</a>
+        </div>
+        <div class="who-card dark">
+          <h3>Dla pracodawców</h3>
+          <p>Zatrudniasz cudzoziemców i chcesz mieć pewność, że wszystkie formalności są prawidłowo dopełnione? Wspieramy firmy w legalnym zatrudnianiu obcokrajowców.</p>
+          <ul class="checks">
+            <li><b>Zezwolenia na pracę</b> — dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</li>
+            <li><b>Oświadczenia o powierzeniu pracy cudzoziemcowi</b> — przygotowanie dokumentacji i przeprowadzenie procedury.</li>
+            <li><b>Powiadomienia o powierzeniu pracy obywatelom Ukrainy</b> — weryfikacja obowiązków i dopełnienie formalności, jeśli dana procedura ma zastosowanie.</li>
+            <li><b>Dobór właściwej procedury</b> — ustalenie, jakie dokumenty są potrzebne w konkretnej sytuacji.</li>
+            <li><b>Ograniczanie ryzyka prawnego</b> — weryfikacja formalności i minimalizowanie ryzyka sankcji za naruszenie przepisów.</li>
+          </ul>
+          <a class="btn btn-gold" href="firmy.html">Dla pracodawców</a>
+        </div>
+      </div>
+      <p class="tagline">Формальності без зайвого стресу.</p>
     </div>
   </section>
 
@@ -703,15 +728,20 @@ page({
 
   <section id="zakres">
     <div class="wrap">
-      <div class="section-head"><span class="eyebrow">Zakres</span><h2>W czym pomagam firmom</h2></div>
-      <div class="grid3">
-        <div class="card"><h3>Zezwolenia i oświadczenia</h3><p>Zezwolenia na pracę oraz oświadczenia o powierzeniu wykonywania pracy cudzoziemcowi.</p></div>
-        <div class="card"><h3>Karty pobytu pracowników</h3><p>Pobyt czasowy i praca, Blue Card, zmiana pracodawcy przy ważnej karcie.</p></div>
-        <div class="card"><h3>Weryfikacja zatrudnienia</h3><p>Sprawdzam, czy dokumenty pracownika i warunki pracy są zgodne z przepisami.</p></div>
-        <div class="card"><h3>Zawiadomienia do urzędu</h3><p>Zawiadomienie wojewody o podjęciu, zmianie lub zakończeniu pracy.</p></div>
-        <div class="card"><h3>Zaproszenia</h3><p>Zaproszenie dla cudzoziemca i dokumenty potrzebne do przyjazdu.</p></div>
-        <div class="card"><h3>Wsparcie pracownika</h3><p>PESEL, Profil Zaufany, EKUZ, zaświadczenia z ZUS i urzędu skarbowego.</p></div>
+      <div class="section-head">
+        <span class="eyebrow">Zakres</span>
+        <h2>W czym pomagamy firmom</h2>
+        <p class="lead">Zatrudniasz cudzoziemców i chcesz mieć pewność, że wszystkie formalności są prawidłowo dopełnione? Wspieramy firmy w legalnym zatrudnianiu obcokrajowców.</p>
       </div>
+      <div class="grid3">
+        <div class="card"><h3>Zezwolenia na pracę</h3><p>Dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</p></div>
+        <div class="card"><h3>Oświadczenia o powierzeniu pracy</h3><p>Przygotowanie dokumentacji i przeprowadzenie procedury oświadczenia o powierzeniu pracy cudzoziemcowi.</p></div>
+        <div class="card"><h3>Powiadomienia dla obywateli Ukrainy</h3><p>Weryfikacja obowiązków i dopełnienie formalności przy powierzeniu pracy obywatelom Ukrainy, jeśli dana procedura ma zastosowanie.</p></div>
+        <div class="card"><h3>Dobór właściwej procedury</h3><p>Ustalenie, jakie dokumenty są potrzebne w konkretnej sytuacji.</p></div>
+        <div class="card"><h3>Ograniczanie ryzyka prawnego</h3><p>Weryfikacja formalności związanych z zatrudnieniem cudzoziemców i minimalizowanie ryzyka sankcji za naruszenie przepisów.</p></div>
+        <div class="card"><h3>Karty pobytu i zaproszenia</h3><p>Karty pobytu i Blue Card dla pracowników, zmiana pracodawcy, zaproszenia dla cudzoziemców.</p></div>
+      </div>
+      <p class="tagline">Formalności bez zbędnego stresu.</p>
     </div>
   </section>
 

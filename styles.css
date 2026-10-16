@@ -521,3 +521,18 @@ footer.fat .wrap { display: block; }
   .nav { display: flex; position: static; flex-direction: row; padding: 0; border: 0; background: none; gap: 18px; }
   .nav a { padding: 0; border: 0; font-size: 14px; }
 }
+
+/* who we help */
+.who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.who-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 32px 30px; display: flex; flex-direction: column; }
+.who-card h3 { font-size: 26px; color: var(--navy); }
+.who-card > p { color: var(--muted); margin-top: 10px; }
+.who-card .checks { flex: 1; margin-bottom: 24px; }
+.who-card .checks li { font-size: 15.5px; }
+.who-card .btn { align-self: flex-start; }
+.who-card.dark { background: var(--navy); border-color: var(--navy); color: #fff; }
+.who-card.dark h3 { color: #fff; }
+.who-card.dark > p { color: rgba(255,255,255,.75); }
+.who-card.dark .checks li::before { color: var(--gold-soft); }
+.tagline { text-align: center; font-family: "Playfair Display", serif; font-size: 24px; color: var(--navy); margin-top: 40px; }
+@media (max-width: 980px) { .who-grid { grid-template-columns: 1fr; } }
