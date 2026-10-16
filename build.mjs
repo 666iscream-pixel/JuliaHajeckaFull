@@ -38,7 +38,7 @@ function page({ file, title, desc, body, lang = "uk", active = "" }) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
 </head>
 <body>
 
@@ -94,7 +94,7 @@ ${body}
 
 ${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${pl ? "#kontakt" : "kontakty.html"}"><span class="fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="fab-t">${pl ? "Umów konsultację" : "Записатися на консультацію"}</span></a>\n`}<button class="totop off" id="totop" aria-label="Up">↑</button>
 
-<script src="app.js?v=21"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>
 `;
@@ -572,16 +572,18 @@ page({
 page({
   file: "pro-mene.html", active: "pro-mene.html",
   title: "Про мене — Julia Hajecka",
-  desc: "З 2019 року працюю з легалізацією перебування та праці іноземців у Польщі.",
+  desc: "З 2017 року допомагаю іноземцям, їхнім родинам і підприємцям у справах легалізації перебування та праці в Польщі.",
   body: `${pageHero({ crumbs: [["", "Про мене"]], eyebrow: "Про мене", h1: "Julia Hajecka", lead: "Спеціаліст з легалізації перебування та праці іноземців у Польщі." })}
   <section class="about">
     <div class="wrap">
       ${portrait}
       <div>
-        <h2 class="subh">Сім років щоденної практики</h2>
-        <p>Уже понад 7 років, з 2019 року, щодня працюю з легалізацією перебування та праці іноземців у Польщі — як для приватних осіб, так і для компаній, що наймають працівників з-за кордону.</p>
-        <p>Знаю процес з обох боків: і як його бачить іноземець, і які документи має підготувати роботодавець. Тому справи, де підстава побиту — робота, веду особливо впевнено.</p>
-        <p>Веду справи українською, польською та російською. Пояснюю просто, кажу чесно про шанси й терміни та залишаюся на зв'язку до результату.</p>
+        <h2 class="subh">Більше, ніж документи</h2>
+        <p>Легалізація перебування — це значно більше, ніж документи та адміністративні процедури. Це безпека родини, стабільність роботи й можливість спокійно будувати майбутнє в Польщі.</p>
+        <p>З 2017 року я допомагаю іноземцям, їхнім родинам і підприємцям у справах легалізації перебування та праці в Польщі. Сьогодні поєдную власний досвід зі знаннями команди перевірених фахівців: визначаю напрям дій, стежу за єдиною стратегією та якістю обслуговування на кожному етапі.</p>
+        <p>Я не вірю в універсальні рішення. Перш ніж діяти, ми аналізуємо обставини справи, потреби клієнта та доступні правові можливості — і дивимося ширше за одну заяву: на довгострокові плани, ризики та наступні етапи перебування в Польщі.</p>
+        <p>Мені допомагають освіта в галузі політології зі спеціалізацією з прикордонного руху та курс юридичного перекладу. Я постійно стежу за змінами в законодавстві, щоб кожне рішення спиралося на актуальні знання.</p>
+        <p class="pull">Понад 1500 родин довірили мені свої справи. За цим числом — конкретні історії та люди, для яких легалізація означає можливість жити разом, працювати й планувати майбутнє в Польщі.</p>
       </div>
     </div>
   </section>
@@ -718,7 +720,7 @@ page({
     <div class="wrap">
       <span class="eyebrow">Dla pracodawców</span>
       <h1>Legalne zatrudnienie cudzoziemców — formalności po mojej stronie</h1>
-      <p>Od 2019 roku zajmuję się zezwoleniami na pracę i pobyt pracowników spoza Polski. Przygotowuję dokumenty, pilnuję terminów i wspieram nowych pracowników w pierwszych miesiącach w kraju.</p>
+      <p>Od 2017 roku zajmuję się zezwoleniami na pracę i pobyt pracowników spoza Polski. Przygotowuję dokumenty, pilnuję terminów i wspieram nowych pracowników w pierwszych miesiącach w kraju.</p>
       <div class="hero-cta">
         <a class="btn btn-gold" href="#kontakt">Zapytaj o współpracę</a>
         <a class="btn btn-ghost" href="#cennik">Cennik</a>
