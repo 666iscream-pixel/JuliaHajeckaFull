@@ -22,8 +22,15 @@ if (form) {
 }
 
 const fab = document.querySelector(".fab");
-if (fab && document.querySelector(".hero-cta")) {
-  const upd = () => fab.classList.toggle("off", scrollY < 500);
+if (fab) {
+  // ховаємо кнопку на першому екрані (де вже є своя кнопка) і біля нижніх посилань футера
+  const hasHero = !!document.querySelector(".hero-cta");
+  let atBottom = false;
+  const upd = () => fab.classList.toggle("off", atBottom || (hasHero && scrollY < 500));
+  const bottom = document.querySelector(".fbottom");
+  if (bottom && "IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => { atBottom = e.isIntersecting; upd(); }).observe(bottom);
+  }
   addEventListener("scroll", upd, { passive: true });
   upd();
 }

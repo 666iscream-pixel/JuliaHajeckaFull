@@ -571,3 +571,9 @@ footer.fat .wrap { display: block; }
 .prose.legal h3 { font-size: 17px; color: var(--navy); margin: 20px 0 8px; font-family: "Manrope", sans-serif; font-weight: 700; }
 .prose.legal p, .prose.legal ul { font-size: 15.5px; }
 @media (max-width: 640px) { .cc { left: 12px; right: 12px; bottom: 12px; max-width: none; } }
+
+/* packages: note line, two-package sets */
+.pack .pack-note { font-size: 14px; font-weight: 600; color: var(--navy); margin: -8px 0 18px; padding-left: 12px; border-left: 2px solid var(--gold); }
+.pack.hot .pack-note { color: #fff; }
+.packs.two-packs { grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: center; }
+@media (max-width: 980px) { .packs.two-packs { grid-template-columns: 1fr; } }
