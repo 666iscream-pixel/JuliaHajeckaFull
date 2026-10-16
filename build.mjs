@@ -519,7 +519,6 @@ page({
           <a class="btn btn-gold" href="firmy.html">Dla pracodawców</a>
         </div>
       </div>
-      <p class="tagline">Формальності без зайвого стресу.</p>
     </div>
   </section>
 
