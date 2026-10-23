@@ -401,7 +401,7 @@ export default {
     packsH: "Karta pobytu czasowego: pakiety wsparcia",
     packsLead: "Pomoc w przygotowaniu dokumentów, złożeniu wniosku i prowadzeniu procedury legalizacji pobytu w Polsce.",
     allEyebrow: "Wszystkie usługi", allH: "Wybierz usługę", priceEyebrow: "Cennik", priceH: "Usługi dodatkowe",
-    toc: ["Na tej stronie", "Pakiety wsparcia", "Usługi główne", "Usługi dodatkowe", "Opłaty skarbowe"],
+    toc: ["Na tej stronie", "Pakiety wsparcia — karta pobytu", "Usługi główne", "Usługi dodatkowe", "Opłaty skarbowe"],
     feesEyebrow: "Opłaty urzędowe", feesH: "Opłaty skarbowe", feesLead: "Opłaty wnosi się do właściwego organu, osobno od wynagrodzenia za nasze usługi."
   },
   how: {

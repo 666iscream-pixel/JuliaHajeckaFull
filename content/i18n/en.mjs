@@ -401,7 +401,7 @@ export default {
     packsH: "Temporary residence card: support packages",
     packsLead: "Help with preparing documents, submitting the application and handling the procedure to legalise your stay in Poland.",
     allEyebrow: "All services", allH: "Choose a service", priceEyebrow: "Price list", priceH: "Additional services",
-    toc: ["On this page", "Support packages", "Main services", "Additional services", "State fees"],
+    toc: ["On this page", "Residence card support packages", "Main services", "Additional services", "State fees"],
     feesEyebrow: "Opłaty skarbowe", feesH: "State fees", feesLead: "Fees are paid to the relevant authority, separately from the cost of our services."
   },
   how: {
