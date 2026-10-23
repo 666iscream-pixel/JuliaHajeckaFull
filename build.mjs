@@ -12,7 +12,7 @@ import en from "./content/i18n/en.mjs";
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
-const V = "39"; // версія файлів для скидання кешу браузера
+const V = "40"; // версія файлів для скидання кешу браузера
 const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
@@ -28,7 +28,7 @@ const DIR = { uk: "", pl: "pl/", ru: "ru/", en: "en/" };
 const WRITTEN = new Set();
 
 // Сторінки лише польською: для роботодавців і юридичні документи
-const PL_ONLY = ["firmy.html", "polityka-prywatnosci.html", "klauzula-informacyjna.html"];
+const PL_ONLY = ["polityka-prywatnosci.html", "klauzula-informacyjna.html"];
 
 /* ---------- Шаблон сторінки ---------- */
 
@@ -39,7 +39,7 @@ function page(C, { file, title, desc, body, active = "" }) {
   const isPlOnly = PL_ONLY.includes(file);
   const href = (x, f) => `${A}${DIR[x.meta.lang]}${f}`;
   const altLinks = isPlOnly ? "" : LANGS.map((x) => `  <link rel="alternate" hreflang="${x.meta.lang}" href="${SITE}/${DIR[x.meta.lang]}${file === "index.html" ? "" : file}">`).join("\n") + "\n";
-  const NAV = [["poslugy.html", C.nav.services], [plOnly("firmy.html"), "Dla pracodawców"], ["yak-pratsiuiemo.html", C.nav.how], ["pro-nas.html", C.nav.about], ["keisy.html", C.nav.cases], ["blog.html", C.nav.blog], ["kontakty.html", C.nav.contacts]];
+  const NAV = [["poslugy.html", C.nav.services], ["firmy.html", "Dla pracodawców"], ["yak-pratsiuiemo.html", C.nav.how], ["pro-nas.html", C.nav.about], ["keisy.html", C.nav.cases], ["blog.html", C.nav.blog], ["kontakty.html", C.nav.contacts]];
   const langs = `<div class="langdd" id="langdd">
       <button class="langdd-btn" type="button" aria-haspopup="true" aria-expanded="false">${C.meta.code}<span class="car">▾</span></button>
       <div class="langdd-menu">${LANGS.map((x) => x === C
@@ -81,7 +81,7 @@ ${altLinks}  <meta property="og:type" content="website">
       <span class="bt"><img class="lword" src="${A}img/wordmark-navy.png" alt="Julia Hajecka"><span>Legalizacja pobytu cudzoziemców w Polsce</span></span>
     </a>
     <nav class="nav" id="nav">
-      ${NAV.map(([h, t]) => `<a href="${h}"${h === active || (active && h.endsWith(active) && active === "firmy.html") ? ' class="on"' : ""}>${t}</a>`).join("\n      ")}
+      ${NAV.map(([h, t]) => `<a href="${h}"${h === active || false ? ' class="on"' : ""}>${t}</a>`).join("\n      ")}
     </nav>
     ${langs}
     <a class="btn btn-navy" href="kontakty.html">${C.ui.write}</a>
@@ -284,7 +284,7 @@ const feesSection = (C) => `<section class="light" id="oplaty">
 for (const C of LANGS) {
   const L = C.meta.lang;
   const A = L === "uk" ? "" : "../";
-  const firmy = L === "pl" ? "firmy.html" : `${A}pl/firmy.html`;
+  const firmy = "firmy.html";
   const H = C.home;
 
   // Головна
@@ -673,15 +673,24 @@ for (const C of LANGS) {
   });
 }
 
+// Для роботодавців — текст сторінки в content/firmy/<мова>.html
+const FIRMY_META = {
+  uk: ["Для роботодавців — легальне працевлаштування іноземців | Julia Hajecka", "Дозволи на роботу, oświadczenia, Blue Card і карти побиту для працівників. Супровід компаній, які працевлаштовують іноземців."],
+  pl: ["Dla pracodawców — legalne zatrudnienie cudzoziemców | Julia Hajecka", "Zezwolenia na pracę, oświadczenia, Blue Card i karty pobytu dla pracowników. Obsługa firm zatrudniających cudzoziemców."],
+  ru: ["Для работодателей — легальное трудоустройство иностранцев | Julia Hajecka", "Разрешения на работу, oświadczenia, Blue Card и карты побыта для работников. Сопровождение компаний, которые трудоустраивают иностранцев."],
+  en: ["For employers — legal employment of foreigners | Julia Hajecka", "Work permits, declarations, Blue Card and residence cards for employees. Support for companies employing foreigners."]
+};
+for (const C of LANGS) {
+  const [title, desc] = FIRMY_META[C.meta.lang];
+  page(C, {
+    file: "firmy.html", active: "firmy.html", title, desc,
+    body: readFileSync(join(OUT, "content", "firmy", `${C.meta.lang}.html`), "utf8").replace("${FEES}", feesSection(C))
+  });
+}
+
 /* ---------- Сторінки лише польською ---------- */
 
-// Для роботодавців
-page(pl, {
-  file: "firmy.html", active: "firmy.html",
-  title: "Dla pracodawców — legalne zatrudnienie cudzoziemców | Julia Hajecka",
-  desc: "Zezwolenia na pracę, oświadczenia, Blue Card i karty pobytu dla pracowników. Obsługa firm zatrudniających cudzoziemców.",
-  body: readFileSync(join(OUT, "content", "firmy.html"), "utf8").replaceAll("${WA}", WA).replaceAll("${TG}", TG).replaceAll("${EMAIL}", EMAIL).replace("${FEES}", feesSection(pl))
-});
+
 
 // Документи RODO Замовника — тексти в content/
 for (const [file, title, h1] of [
