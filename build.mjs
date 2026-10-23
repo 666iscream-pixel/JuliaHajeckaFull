@@ -318,7 +318,7 @@ const SERVICES = [
           <p class="vnote">Перевага для сім'ї: коли справи оформлюються в межах одного сімейного процесу, вартість супроводу для чоловіка або дружини та дітей є нижчою.</p>
         </div>
         <div class="variant">
-          <h3>Варіант 2. Справа основного заявника вже на розгляді</h3>
+          <h3>Варіант 2. Основний заявник уже подав документи, і його справа перебуває на розгляді</h3>
           <p>Якщо чоловік або дружина вже подали заяву на тимчасове перебування та роботу, а справа розглядається воєводським управлінням, інший із подружжя може подати окрему заяву на тимчасове перебування на відповідній правовій підставі.</p>
           <div class="vrow"><span>Заява чоловіка або дружини на тимчасове перебування</span><b>1500 zł</b></div>
           <div class="vrow"><span>Заява дитини до 18 років</span><b>500 zł за дитину</b></div>
@@ -414,16 +414,16 @@ const FEES = [
   ["Дозвіл на тимчасове перебування (інші випадки, зокрема карта побиту CUKR)", "Zezwolenie na pobyt czasowy (pozostałe przypadki)", "340 zł"],
   ["Дозвіл на сталий побит", "Zezwolenie na pobyt stały", "640 zł"],
   ["Дозвіл на перебування резидента довгострокового ЄС", "Zezwolenie na pobyt rezydenta długoterminowego UE", "640 zł"],
-  ["Зміна дозволу на перебування та роботу", "Zmiana zezwolenia na pobyt i pracę", "220 zł"],
-  ["Видача або обмін карти побиту (зокрема CUKR, для дорослих і дітей)", "Wydanie lub wymiana karty pobytu", "100 zł"],
-  ["Видача або обмін карти побиту для неповнолітніх до 16 років на дату подання заяви, учнів старших шкіл і студентів", "Wydanie lub wymiana karty pobytu — małoletni, uczniowie, studenci", "50 zł"],
-  ["Визнання громадянином Польщі", "Uznanie za obywatela polskiego", "1000 zł"],
-  ["Надання громадянства Польщі Президентом", "Nadanie obywatelstwa polskiego przez Prezydenta RP", "1669 zł"],
   ["Внесення запрошення до реєстру запрошень", "Wpis zaproszenia do ewidencji zaproszeń", "27 zł"],
+  ["Дублікат рішення", "Duplikat decyzji", "5 zł за кожну розпочату сторінку"],
+  ["Зміна дозволу на перебування та роботу", "Zmiana zezwolenia na pobyt i pracę", "220 zł"],
   ["Рішення про грошову виплату для власника Карти поляка", "Decyzja — świadczenie pieniężne dla posiadacza Karty Polaka", "10 zł"],
   ["Видача довідки", "Wydanie zaświadczenia", "17 zł"],
   ["Довіреність", "Pełnomocnictwo", "17 zł"],
-  ["Дублікат рішення", "Duplikat decyzji", "5 zł за кожну розпочату сторінку"]
+  ["Видача або обмін карти побиту (зокрема CUKR, для дорослих і дітей)", "Wydanie lub wymiana karty pobytu", "100 zł"],
+  ["Видача або обмін карти побиту для неповнолітніх до 16 років на дату подання заяви, учнів старших шкіл і студентів", "Wydanie lub wymiana karty pobytu — małoletni, uczniowie, studenci", "50 zł"],
+  ["Визнання громадянином Польщі", "Uznanie za obywatela polskiego", "1000 zł"],
+  ["Надання громадянства Польщі Президентом", "Nadanie obywatelstwa polskiego przez Prezydenta RP", "1669 zł"]
 ];
 const rows = (list) => list.map(([n, s, p]) => `<div class="row"><span class="n">${n}${s ? `<small>${s}</small>` : ""}</span><span class="p">${p}</span></div>`).join("\n        ");
 
