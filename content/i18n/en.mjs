@@ -215,7 +215,7 @@ const FEES = [
   ["Permanent residence permit", "Zezwolenie na pobyt stały", "640 zł"],
   ["EU long-term resident permit", "Zezwolenie na pobyt rezydenta długoterminowego UE", "640 zł"],
   ["Entry of an invitation into the register of invitations", "Wpis zaproszenia do ewidencji zaproszeń", "27 zł"],
-  ["Duplicate of a decision", "Duplikat decyzji", "5 zł per page started"],
+  ["Duplicate of a decision", "Duplikat decyzji", "5 zł per page or part thereof"],
   ["Amendment of a residence and work permit", "Zmiana zezwolenia na pobyt i pracę", "220 zł"],
   ["Decision on a cash benefit for a Pole's Card holder", "Decyzja — świadczenie pieniężne dla posiadacza Karty Polaka", "10 zł"],
   ["Issuing a certificate", "Wydanie zaświadczenia", "17 zł"],
