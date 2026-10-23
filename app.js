@@ -7,15 +7,23 @@ if (form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const f = new FormData(form);
+    // Підписи заявки мовою сторінки
+    const TT = {
+      uk: ["Добрий день! Заявка з сайту.", "Ім'я", "Телефон", "Зручний месенджер", "Хто", "Мова", "Послуга", "Ситуація"],
+      pl: ["Dzień dobry! Zgłoszenie ze strony.", "Imię", "Telefon", "Komunikator", "Kto", "Język", "Usługa", "Sytuacja"],
+      ru: ["Добрый день! Заявка с сайта.", "Имя", "Телефон", "Удобный мессенджер", "Кто", "Язык", "Услуга", "Ситуация"],
+      en: ["Hello! A request from the website.", "Name", "Phone", "Messenger", "Who", "Language", "Service", "Situation"]
+    };
+    const [hi, ...k] = TT[document.documentElement.lang] || TT.uk;
     const lines = [
-      "Добрий день! Заявка з сайту.",
-      `Ім'я: ${f.get("name")}`,
-      `Телефон: ${f.get("phone")}`,
-      `Зручний месенджер: ${f.get("msgr")}`,
-      `Хто: ${f.get("who")}`,
-      `Мова: ${f.get("lang")}`,
-      `Послуга: ${f.get("service")}`,
-      f.get("msg") ? `Ситуація: ${f.get("msg")}` : ""
+      hi,
+      `${k[0]}: ${f.get("name")}`,
+      `${k[1]}: ${f.get("phone")}`,
+      `${k[2]}: ${f.get("msgr")}`,
+      `${k[3]}: ${f.get("who")}`,
+      `${k[4]}: ${f.get("lang")}`,
+      `${k[5]}: ${f.get("service")}`,
+      f.get("msg") ? `${k[6]}: ${f.get("msg")}` : ""
     ].filter(Boolean);
     window.open(`https://wa.me/48791017254?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener");
   });
@@ -64,16 +72,6 @@ document.querySelectorAll(".reviews-section").forEach((sec) => {
   }));
 });
 
-// Заглушки мовних версій
-document.querySelectorAll("[data-soon]").forEach((b) => b.addEventListener("click", () => {
-  let t = document.getElementById("toast");
-  if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; document.body.appendChild(t); }
-  t.textContent = `${b.dataset.soon}: ця мовна версія з'явиться незабаром`;
-  t.classList.add("show");
-  clearTimeout(t._h);
-  t._h = setTimeout(() => t.classList.remove("show"), 2600);
-}));
-
 // Випадаючий список мов
 const dd = document.getElementById("langdd");
 if (dd) {
@@ -107,11 +105,23 @@ if (ccBar) {
   ccBar.querySelectorAll("[data-cc]").forEach((b) => b.addEventListener("click", () => {
     setCC(b.dataset.cc);
     ccBar.hidden = true;
+    ccBar.classList.remove("cc-modal");
     if (b.dataset.cc === "all") loadMap();
   }));
 }
 document.querySelectorAll("[data-cc-open]").forEach((b) => b.addEventListener("click", () => { if (ccBar) ccBar.hidden = false; }));
 
 const mapBtn = document.getElementById("mapLoad");
-if (mapBtn) mapBtn.addEventListener("click", () => { setCC("all"); if (ccBar) ccBar.hidden = true; loadMap(); });
+// Без згоди карта не вантажиться: натискання відкриває вікно згоди по центру екрана
+if (mapBtn) mapBtn.addEventListener("click", () => {
+  if (getCC() === "all") return loadMap();
+  if (!ccBar) return;
+  ccBar.classList.add("cc-modal");
+  ccBar.hidden = false;
+  const acc = ccBar.querySelector('[data-cc="all"]');
+  if (acc) acc.focus();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && ccBar && ccBar.classList.contains("cc-modal")) { ccBar.classList.remove("cc-modal"); if (getCC()) ccBar.hidden = true; }
+});
 if (getCC() === "all") loadMap();

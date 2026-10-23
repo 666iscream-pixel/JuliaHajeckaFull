@@ -1,11 +1,18 @@
-// Генерує статичні сторінки v2: node build.mjs
-import { writeFileSync, readFileSync } from "node:fs";
+// Генерує статичні сторінки: node build.mjs
+// Чотири мовні версії: українська в корені, польська, російська й англійська — у підпапках pl/, ru/, en/.
+// Усі тексти — у content/i18n/<мова>.mjs; тут лише шаблони.
+import { writeFileSync, readFileSync, mkdirSync, readdirSync, unlinkSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import uk from "./content/i18n/uk.mjs";
+import pl from "./content/i18n/pl.mjs";
+import ru from "./content/i18n/ru.mjs";
+import en from "./content/i18n/en.mjs";
 
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
+const V = "39"; // версія файлів для скидання кешу браузера
 const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
@@ -13,68 +20,71 @@ const IG = "https://www.instagram.com/legalnie_w_polsce";
 // Картка Google Business Юлії (cid) — карта показує саме її, з назвою та відгуками
 const MAP_CID = "10085399209972979363";
 const MAP_ADDR = encodeURIComponent("Julia Hajecka - legalizacja pobytu cudzoziemców w Polsce, Gościnna 11, 05-082 Blizne Łaszczyńskiego");
-const MAP_EMBED = `https://maps.google.com/maps?cid=${MAP_CID}&hl=uk&output=embed`;
 const MAP_DIR = `https://www.google.com/maps/dir/?api=1&destination=${MAP_ADDR}`;
-// Email Юлії: вписати адресу сюди — з'явиться в контактах і футері
 const EMAIL = "biuro@pobyt-legalny.com";
-const emailHtml = (ph) => EMAIL ? `<a href="mailto:${EMAIL}">${EMAIL}</a>` : `<span class="todo">${ph}</span>`;
 
-const NAV = {
-  uk: [["poslugy.html", "Послуги"], ["firmy.html", "Dla pracodawców"], ["yak-pratsiuiemo.html", "Як працюємо"], ["pro-nas.html", "Про нас"], ["keisy.html", "Кейси"], ["blog.html", "Блог"], ["kontakty.html", "Контакти"]],
-  pl: [["poslugy.html", "Usługi"], ["firmy.html", "Dla pracodawców"], ["yak-pratsiuiemo.html", "Jak pracujemy"], ["pro-nas.html", "O nas"], ["keisy.html", "Case studies"], ["blog.html", "Blog"], ["kontakty.html", "Kontakt"]]
-};
-
+const LANGS = [uk, pl, ru, en];
+const DIR = { uk: "", pl: "pl/", ru: "ru/", en: "en/" };
 const WRITTEN = new Set();
 
-function page({ file, title, desc, body, lang = "uk", active = "" }) {
-  const pl = lang === "pl";
-  // Перемикач мов: поки що заглушки, перекладених версій ще немає
-  const LANGS = [["uk", "UA", "Українська"], ["pl", "PL", "Polski"], ["ru", "RU", "Русский"], ["en", "EN", "English"]];
-  const langs = () => `<div class="langdd" id="langdd">
-      <button class="langdd-btn" type="button" aria-haspopup="true" aria-expanded="false">${LANGS.find(([c]) => c === lang)[1]}<span class="car">▾</span></button>
-      <div class="langdd-menu">${LANGS.map(([c, t, n]) =>
-        c === lang ? `<span class="on">${n}</span>`
-          : c === "uk" ? `<a href="index.html">${n}</a>`
-          : `<button type="button" data-soon="${n}">${n}</button>`).join("")}</div>
+// Сторінки лише польською: для роботодавців і юридичні документи
+const PL_ONLY = ["firmy.html", "polityka-prywatnosci.html", "klauzula-informacyjna.html"];
+
+/* ---------- Шаблон сторінки ---------- */
+
+function page(C, { file, title, desc, body, active = "" }) {
+  const L = C.meta.lang;
+  const A = L === "uk" ? "" : "../";            // шлях до кореня сайту
+  const plOnly = (f) => (L === "pl" ? f : `${A}pl/${f}`);
+  const isPlOnly = PL_ONLY.includes(file);
+  const href = (x, f) => `${A}${DIR[x.meta.lang]}${f}`;
+  const altLinks = isPlOnly ? "" : LANGS.map((x) => `  <link rel="alternate" hreflang="${x.meta.lang}" href="${SITE}/${DIR[x.meta.lang]}${file === "index.html" ? "" : file}">`).join("\n") + "\n";
+  const NAV = [["poslugy.html", C.nav.services], [plOnly("firmy.html"), "Dla pracodawców"], ["yak-pratsiuiemo.html", C.nav.how], ["pro-nas.html", C.nav.about], ["keisy.html", C.nav.cases], ["blog.html", C.nav.blog], ["kontakty.html", C.nav.contacts]];
+  const langs = `<div class="langdd" id="langdd">
+      <button class="langdd-btn" type="button" aria-haspopup="true" aria-expanded="false">${C.meta.code}<span class="car">▾</span></button>
+      <div class="langdd-menu">${LANGS.map((x) => x === C
+        ? `<span class="on">${x.meta.name}</span>`
+        : `<a href="${href(x, isPlOnly ? "index.html" : file)}" data-setlang="${x.meta.lang}" hreflang="${x.meta.lang}">${x.meta.name}</a>`).join("")}</div>
     </div>`;
+  const icon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>`;
   const html = `<!doctype html>
-<html lang="${lang}">
+<html lang="${L}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
   <meta name="description" content="${desc}">
-  <meta property="og:type" content="website">
+${altLinks}  <meta property="og:type" content="website">
   <meta property="og:site_name" content="Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce">
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${desc}">
-  <meta property="og:url" content="${SITE}/${file === "index.html" ? "" : file}">
+  <meta property="og:url" content="${SITE}/${DIR[L]}${file === "index.html" ? "" : file}">
   <meta property="og:image" content="${SITE}/img/og-image.jpg?v=33">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:locale" content="${lang === "pl" ? "pl_PL" : "uk_UA"}">
+  <meta property="og:locale" content="${C.meta.og}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Federo&family=Manrope:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <link rel="icon" href="favicon.ico?v=29" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=29">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=33">
-  <link rel="stylesheet" href="styles.css?v=36">
+  <link rel="icon" href="${A}favicon.ico?v=29" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="${A}img/favicon-32.png?v=29">
+  <link rel="apple-touch-icon" href="${A}img/apple-touch-icon.png?v=33">
+  <link rel="stylesheet" href="${A}styles.css?v=${V}">
 </head>
 <body>
 
 <header class="header">
   <div class="wrap">
     <a class="brand" href="index.html">
-      <img class="lmark" src="img/mark-gold.png" alt="">
-      <span class="bt"><img class="lword" src="img/wordmark-navy.png" alt="Julia Hajecka"><span>Legalizacja pobytu cudzoziemców w Polsce</span></span>
+      <img class="lmark" src="${A}img/mark-gold.png" alt="">
+      <span class="bt"><img class="lword" src="${A}img/wordmark-navy.png" alt="Julia Hajecka"><span>Legalizacja pobytu cudzoziemców w Polsce</span></span>
     </a>
     <nav class="nav" id="nav">
-      ${NAV[lang].map(([h, t]) => `<a href="${h}"${h === active ? ' class="on"' : ""}>${t}</a>`).join("\n      ")}
+      ${NAV.map(([h, t]) => `<a href="${h}"${h === active || (active && h.endsWith(active) && active === "firmy.html") ? ' class="on"' : ""}>${t}</a>`).join("\n      ")}
     </nav>
-    ${langs()}
-    <a class="btn btn-navy" href="kontakty.html">${pl ? "Napisz" : "Написати"}</a>
+    ${langs}
+    <a class="btn btn-navy" href="kontakty.html">${C.ui.write}</a>
     <button class="burger" id="burger" aria-label="Menu">☰</button>
   </div>
 </header>
@@ -87,63 +97,60 @@ ${body}
   <div class="wrap">
     <div class="fcols">
       <div class="fbrand">
-        <img src="img/logo-full-gold.png" alt="Julia Hajecka — Legalizacja w Polsce">
-        <p>${pl ? "Legalizacja pobytu i pracy cudzoziemców w Polsce." : "Легалізація перебування та праці іноземців у Польщі."}</p>
+        <img src="${A}img/logo-full-gold.png" alt="Julia Hajecka — Legalizacja w Polsce">
+        <p>${C.ui.footerTag}</p>
       </div>
       <div>
-        <h4>${pl ? "Usługi" : "Послуги"}</h4>
-        ${SERVICES.map((s) => `<a href="p-${s.slug}.html">${s.name}</a>`).join("")}
-        <a href="poslugy.html">${pl ? "Cennik" : "Усі послуги та ціни"}</a>
+        <h4>${C.ui.fServices}</h4>
+        ${C.services.map((s) => `<a href="p-${s.slug}.html">${s.name}</a>`).join("")}
+        <a href="poslugy.html">${C.ui.fAll}</a>
       </div>
       <div>
-        <h4>${pl ? "Strona" : "Сайт"}</h4>
-        <a href="index.html">${pl ? "Strona główna" : "Головна"}</a>
-        ${NAV[lang].filter(([h]) => h !== "poslugy.html").map(([h, t]) => `<a href="${h}">${t}</a>`).join("")}
+        <h4>${C.ui.fSite}</h4>
+        <a href="index.html">${C.ui.home}</a>
+        ${NAV.filter(([h]) => h !== "poslugy.html").map(([h, t]) => `<a href="${h}">${t}</a>`).join("")}
       </div>
       <div>
-        <h4>${pl ? "Kontakt" : "Контакти"}</h4>
+        <h4>${C.ui.fContacts}</h4>
         <a href="tel:+48791017254">+48 791 017 254</a>
-        <div class="fmail">Email: ${emailHtml(pl ? "do uzupełnienia" : "буде додано")}</div>
+        <div class="fmail">Email: <a href="mailto:${EMAIL}">${EMAIL}</a></div>
         <a href="${WA}" target="_blank" rel="noopener">WhatsApp</a>
         <a href="${TG}" target="_blank" rel="noopener">Telegram</a>
         <a href="${IG}" target="_blank" rel="noopener">Instagram</a>
         <p>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
       </div>
     </div>
-    <p class="disclaimer">${pl
-      ? "Treści publikowane na stronie internetowej Julia Hajecka — Legalizacja pobytu cudzoziemców mają charakter informacyjny i edukacyjny. Nie stanowią indywidualnej porady prawnej ani podatkowej lub formalnej opinii prawnej i nie zastępują analizy konkretnej sprawy."
-      : "Матеріали на сайті Julia Hajecka — Legalizacja pobytu cudzoziemców мають інформаційний та освітній характер. Вони не є індивідуальною юридичною чи податковою консультацією або офіційним правовим висновком і не замінюють аналізу конкретної справи."}</p>
+    <p class="disclaimer">${C.ui.disclaimer}</p>
     <div class="fbottom">
       <span>© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</span>
-      <span class="flegal"><a href="polityka-prywatnosci.html">Polityka prywatności</a><a href="klauzula-informacyjna.html">Klauzula informacyjna RODO</a><button type="button" data-cc-open>${pl ? "Ustawienia cookies" : "Налаштування cookies"}</button></span>
+      <span class="flegal"><a href="${plOnly("polityka-prywatnosci.html")}">Polityka prywatności</a><a href="${plOnly("klauzula-informacyjna.html")}">Klauzula informacyjna RODO</a><button type="button" data-cc-open>${C.ui.cookieSettings}</button></span>
     </div>
   </div>
 </footer>
 
-${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${file === "firmy.html" ? "#kontakt" : "kontakty.html"}"><span class="fab-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="fab-t">${pl ? "Umów konsultację" : "Записатися на консультацію"}</span></a>\n`}<button class="totop off" id="totop" aria-label="Up">↑</button>
+${file === "kontakty.html" ? "" : `<a class="btn btn-gold fab" href="${file === "firmy.html" ? "#kontakt" : "kontakty.html"}"><span class="fab-ic">${icon}</span><span class="fab-t">${C.ui.consult}</span></a>\n`}<button class="totop off" id="totop" aria-label="Up">↑</button>
 
 <div class="cc" id="cc" hidden>
-  <p>${pl
-    ? "Używamy niezbędnych plików cookies. Za Twoją zgodą ładujemy też mapę Google Maps, która zapisuje własne cookies."
-    : "Ми використовуємо необхідні cookies. За вашою згодою також завантажуємо карту Google Maps, яка зберігає власні cookies."}
-    <a href="polityka-prywatnosci.html">${pl ? "Polityka prywatności" : "Polityka prywatności"}</a></p>
+  <p>${C.ui.ccText}
+    <a href="${plOnly("polityka-prywatnosci.html")}">Polityka prywatności</a></p>
   <div class="cc-btns">
-    <button type="button" class="btn btn-line" data-cc="necessary">${pl ? "Tylko niezbędne" : "Лише необхідні"}</button>
-    <button type="button" class="btn btn-gold" data-cc="all">${pl ? "Akceptuję wszystkie" : "Прийняти всі"}</button>
+    <button type="button" class="btn btn-line" data-cc="necessary">${C.ui.ccNecessary}</button>
+    <button type="button" class="btn btn-gold" data-cc="all">${C.ui.ccAll}</button>
   </div>
 </div>
-<script src="app.js?v=37"></script>
+<script src="${A}app.js?v=${V}"></script>
 </body>
 </html>
 `;
-  writeFileSync(join(OUT, file), html);
-  WRITTEN.add(file);
+  const rel = DIR[L] + file;
+  if (DIR[L]) mkdirSync(join(OUT, DIR[L]), { recursive: true });
+  writeFileSync(join(OUT, rel), html);
+  WRITTEN.add(rel);
 }
 
-const rating = (text = "41 відгук у Google") =>
-  `<a class="rating" href="${GOOGLE}" target="_blank" rel="noopener"><b>5,0</b><span class="stars">★★★★★</span><span class="t">${text}</span></a>`;
+/* ---------- Спільні блоки ---------- */
 
-const band = (h = "Розкажіть про свою ситуацію", p = "Напишіть у месенджер — відповімо і запропонуємо час консультації.") => `
+const band = (C, h = C.ui.bandH, p = C.ui.bandP) => `
   <div class="band">
     <div class="wrap">
       <div><h2>${h}</h2><p>${p}</p></div>
@@ -151,15 +158,15 @@ const band = (h = "Розкажіть про свою ситуацію", p = "Н
         <a class="btn btn-gold" href="${WA}" target="_blank" rel="noopener">WhatsApp</a>
         <a class="btn btn-ghost" href="${TG}" target="_blank" rel="noopener">Telegram</a>
         <a class="btn btn-ghost" href="${IG}" target="_blank" rel="noopener">Instagram</a>
-        <a class="btn btn-ghost" href="kontakty.html">Залишити заявку</a>
+        <a class="btn btn-ghost" href="kontakty.html">${C.ui.request}</a>
       </div>
     </div>
   </div>`;
 
-const pageHero = ({ crumbs = [], eyebrow, h1, lead, extra = "" }) => `
+const pageHero = (C, { crumbs = [], eyebrow, h1, lead, extra = "" }) => `
   <div class="page-hero">
     <div class="wrap">
-      ${crumbs.length ? `<div class="crumbs"><a href="index.html">Головна</a>${crumbs.map(([h, t]) => ` / ${h ? `<a href="${h}">${t}</a>` : t}`).join("")}</div>` : ""}
+      ${crumbs.length ? `<div class="crumbs"><a href="index.html">${C.ui.home}</a>${crumbs.map(([h, t]) => ` / ${h ? `<a href="${h}">${t}</a>` : t}`).join("")}</div>` : ""}
       <span class="eyebrow">${eyebrow}</span>
       <h1>${h1}</h1>
       ${lead ? `<p>${lead}</p>` : ""}
@@ -167,372 +174,65 @@ const pageHero = ({ crumbs = [], eyebrow, h1, lead, extra = "" }) => `
     </div>
   </div>`;
 
-/* ---------- Дані ---------- */
-
-// Назви пакетів: pl — польська версія (від Юлії), en — англійська (як було раніше)
-const PACKS = [
-  { name: "Базовий супровід", pl: "Pakiet Standard", en: "Start Legal", price: "1000",
-    f: "Для тих, хто хоче самостійно пройти процедуру, отримавши професійну допомогу з підготовкою документів.",
-    li: ["Індивідуальна консультація щодо вашої справи", "Персональний чек-лист необхідних документів", "Перевірка комплекту документів — 1 раз", "Визначення відсутніх документів і необхідних доповнень", "Підготовка заяви в системі MOS", "Підготовка документів до електронного подання"],
-    note: "Ви отримуєте підготовлений пакет документів і розумієте, які кроки потрібно виконати самостійно." },
-  { tag: "Рекомендований", hot: true, name: "Комплексний супровід", pl: "Pakiet Kompleksowy", en: "Full Support", price: "1800",
-    f: "Для тих, хто хоче довірити підготовку документів і основний супровід справи фахівцю.",
-    inc: "Усе, що входить до базового пакета, а також:",
-    li: ["Допомога зі збором і впорядкуванням документів", "Підготовка документів, які має надати роботодавець", "Супровід під час електронного подання заяви", "Контроль стану справи та важливих процесуальних строків", "Перевірка комплекту документів — 1 раз до подання", "Підготовка та подання 1 скарги на бездіяльність органу (ponaglenie), якщо є законні підстави", "Підготовка до 2 стандартних відповідей на запити органу", "Підготовка до 2 додаткових комплектів документів у межах справи", "Апеляція, якщо є законні підстави"] },
-  { name: "Розширений супровід", pl: "Pakiet Premium", en: "Premium Fast Track", price: "2100",
-    f: "Для тих, кому потрібна розширена підтримка, зокрема у випадках затримки розгляду справи.",
-    inc: "Усе, що входить до комплексного пакета, а також:",
-    li: ["Перевірка комплекту документів — до 2 разів до подання", "Підготовка до 3 стандартних відповідей на запити органу", "Підготовка до 3 додаткових комплектів документів у межах справи", "Аналіз процесуальної ситуації у разі затримки розгляду", "Підготовка та подання 1 скарги на бездіяльність органу (ponaglenie), якщо є законні підстави", "Допомога з оформленням Profil Zaufany", "Допомога з налаштуванням e-Doręczenia", "Супровід під час отримання карти побиту в межах погодженого обсягу"] }
-];
-
-const PACKS_BIZ = [
-  { name: "Базовий супровід підприємця", pl: "Pakiet Start", price: "1200", pay: "Оплата у 2 етапи",
-    f: "Для підприємців, які готові самостійно проходити процедуру за професійної підтримки на етапі підготовки.",
-    li: ["Індивідуальна консультація щодо процедури", "Попередній аналіз ситуації підприємця та основних вимог", "Персональний чек-лист документів", "Перевірка наданого комплекту документів — 1 раз", "Підготовка заяви в системі MOS 2.0", "Підготовка документів до електронного подання"] },
-  { tag: "Рекомендований", hot: true, name: "Комплексний супровід бізнесу", pl: "Pakiet Biznes", price: "2400", pay: "Оплата у 2 етапи",
-    f: "Для підприємців, які хочуть делегувати підготовку документів і основний супровід справи.",
-    inc: "Усе, що входить до базового пакета, а також:",
-    li: ["Детальніший аналіз документів підприємства в частині, важливій для процедури", "Перевірка реєстраційних, бухгалтерських і фінансових документів у погодженому обсязі", "Допомога зі збором та впорядкуванням необхідної документації", "Рекомендації щодо підтвердження ведення підприємницької діяльності", "Допомога з отриманням необхідних документів від контрагентів", "Перевірка комплекту документів — 1 раз до подання", "Підготовка та подання 1 скарги на бездіяльність органу (ponaglenie), якщо є законні підстави", "Контроль стану справи та важливих процесуальних строків", "Підготовка до 2 стандартних відповідей на запити органу", "Підготовка до 2 додаткових комплектів документів у межах справи", "Супровід під час отримання карти побиту в межах погодженого обсягу"] },
-  { name: "Розширений супровід бізнесу", pl: "Pakiet Biznes Premium", price: "2800", pay: "Оплата у 2 етапи",
-    f: "Для підприємців, яким потрібен ширший супровід, включно з можливими діями у разі затримки розгляду справи.",
-    inc: "Усе, що входить до комплексного пакета, а також:",
-    li: ["Перевірка комплекту документів — до 2 разів до подання", "Підготовка до 3 стандартних відповідей на запити органу", "Підготовка до 3 додаткових комплектів документів у межах справи", "Аналіз процесуальної ситуації у разі затримки розгляду", "Підготовка та подання 1 скарги на бездіяльність органу (ponaglenie), якщо є законні підстави", "Консультація щодо подальших дій у разі бездіяльності органу", "Допомога зі створенням Profil Zaufany", "Допомога з налаштуванням e-Doręczenia", "Супровід під час отримання карти побиту в межах погодженого обсягу"] }
-];
-
-const PACKSETS = {
-  main: { title: "Пакети супроводу", lead: "Допомога з підготовкою документів, поданням заяви та супроводом процедури легалізації перебування в Польщі.", list: PACKS },
-  biz: { title: "Пакети для підприємців", lead: "Тимчасове перебування на підставі ведення підприємницької діяльності.", list: PACKS_BIZ }
-};
-
-const packsHtml = (list = PACKS) => `
+const packsHtml = (C, list) => `
       <div class="packs${list.length === 2 ? " two-packs" : ""}">${list.map((p) => `
         <div class="pack${p.hot ? " hot" : ""}">
           ${p.tag ? `<span class="tag">${p.tag}</span>` : ""}
           <h3>${p.name}<sup>*</sup></h3>
-          <div class="price">${Number(p.price).toLocaleString("uk-UA")} <small>zł</small></div>
+          <div class="price">${Number(p.price).toLocaleString(C.meta.locale)} <small>zł</small></div>
           <p class="for">${p.f}</p>
           ${p.inc ? `<p class="inc">${p.inc}</p>` : ""}
           <ul>${p.li.map((x) => `<li>${x}</li>`).join("")}</ul>
           ${p.note ? `<p class="pack-note">${p.note}</p>` : ""}
           ${p.pay ? `<p class="pay">${p.pay}</p>` : ""}
-          <a class="btn ${p.hot ? "btn-gold" : "btn-line"}" href="kontakty.html">Обрати пакет</a>
+          <a class="btn ${p.hot ? "btn-gold" : "btn-line"}" href="kontakty.html">${C.ui.choose}</a>
         </div>`).join("")}
       </div>`;
 
-const TERMS = `
-      <div class="terms">
-        <div><b>Офіційний договір двома мовами</b> та чеки на всі оплати.</div>
-        <div>Ціни вказані без державних зборів за заяву й довіреність та без витрат на переклад документів.</div>
-        <div>Ціни остаточні для стандартних справ. Якщо справа потребує додаткових дій або нестандартного пакета документів, вартість визначається індивідуально.</div>
-      </div>`;
-
-// Умови під пакетами (від Юлії)
-const TERMS_PACKS = `
-      <div class="conds">
-        <div class="cond">
-          <h3>* Спеціальні умови для сімей</h3>
-          <p>Оформлюйте документи для кількох членів сім'ї одночасно та користуйтеся спеціальними цінами:</p>
-          <ul>
-            <li>Кожен наступний повнолітній член сім'ї — <b>1300 zł</b></li>
-            <li>Дитина до 18 років — <b>500 zł</b></li>
-          </ul>
-        </div>
-        <div class="cond">
-          <h3>* Загальні умови для всіх пакетів</h3>
-          <ul>
-            <li>Ціни стосуються стандартних справ.</li>
-            <li>Державні збори (<a href="poslugy.html#oplaty">перелік</a>), витрати на довіреність, переклади та інші зовнішні витрати оплачуються окремо.</li>
-            <li>Кількість перевірок документів означає кількість перевірок комплекту документів у погодженому обсязі, а не необмежене редагування кожного документа.</li>
-            <li>Стандартною відповіддю вважається підготовка відповіді на типовий запит у межах поточної справи. Складні запити, нові обставини або значний додатковий аналіз оцінюються окремо.</li>
-            <li>Додаткові роботи виконуються після попереднього погодження обсягу та вартості з клієнтом.</li>
-            <li>Підготовка та подання скарги на бездіяльність органу (ponaglenie) або іншої скарги здійснюються лише за наявності відповідних законних підстав.</li>
-            <li>Рішення та строки розгляду справи залежать від компетентного органу. Жоден пакет не гарантує позитивного рішення чи прискорення процедури.</li>
-          </ul>
-        </div>
-      </div>`;
-
-const ASK = "після консультації";
-
-const SERVICES = [
-  { slug: "karta-pobytu", name: "Карта побиту", h1: "Карта тимчасового побиту", price: "від 1000 zł",
-    short: "Тимчасовий побит на підставі роботи, сім'ї або навчання.",
-    intro: "Допомога з підготовкою документів, поданням заяви та супроводом процедури легалізації перебування в Польщі — на підставі роботи, сім'ї або навчання.",
-    chips: ["Робота", "Сім'я", "Навчання"],
-    does: ["Аналізуємо вашу ситуацію та підставу для побиту", "Складаємо персональний чек-лист документів", "Готуємо заяву в системі MOS і документи до електронного подання", "Контролюємо справу та важливі процесуальні строки", "Готуємо ponaglenie або апеляцію, якщо є законні підстави"],
-    lines: [["Базовий супровід", "1 000 zł"], ["Комплексний супровід", "1 800 zł"], ["Розширений супровід", "2 100 zł"]], packs: "main" },
-  { slug: "karta-cukr", name: "Карта побиту CUKR", h1: "Карта побиту CUKR для українців у Польщі", price: "650 zł",
-    short: "Комплексний супровід оформлення карти побиту CUKR для громадян України.",
-    intro: "Допомагаємо підготувати документи та пройти процедуру оформлення карти побиту CUKR: від перевірки відповідності вимогам до контролю перебігу справи.",
-    alert: { text: "Не зволікайте — встигніть подати заяву до 4 березня 2027 року!" },
-    doesTitle: "Що входить у послугу",
-    does: ["<b>Консультація спеціаліста</b> — аналіз вашої ситуації та перевірка відповідності вимогам процедури CUKR.", "<b>Перевірка документів</b> — визначення необхідних документів і перевірка їхньої комплектності.", "<b>Підготовка заяви</b> — заповнення заяви в системі MOS 2.0 та допомога з її електронним поданням.", "<b>Електронні інструменти</b> — допомога з Profil Zaufany, електронним підписом і створенням скриньки e-Doręczenia, якщо це необхідно для процедури.", "<b>Контроль справи</b> — відстеження перебігу провадження та інформування про необхідні подальші дії.", "<b>Ponaglenie</b> — аналіз підстав і підготовка ponaglenie у разі бездіяльності або затягування провадження, якщо є законні підстави.", "<b>Супровід до отримання карти</b> — консультаційна підтримка щодо завершальних етапів процедури."],
-    lines: [["Комплексний супровід оформлення карти побиту CUKR", "650 zł"]] },
-  { slug: "karta-biznes", name: "Карта побиту на підставі бізнесу", h1: "Тимчасове перебування на підставі ведення підприємницької діяльності", price: "від 1200 zł",
-    short: "Дозвіл на перебування для іноземців, які ведуть власну справу в Польщі.",
-    intro: "Супроводжуємо заяву на тимчасове перебування на підставі ведення підприємницької діяльності в Польщі — від аналізу ситуації підприємця до отримання карти.",
-    does: ["Аналізуємо ситуацію підприємця та основні вимоги", "Складаємо персональний чек-лист документів", "Перевіряємо документи підприємства та допомагаємо отримати документи від контрагентів", "Готуємо заяву в MOS 2.0 і документи до електронного подання", "Контролюємо справу та готуємо ponaglenie, якщо є законні підстави"],
-    lines: [["Базовий супровід підприємця", "1 200 zł"], ["Комплексний супровід бізнесу", "2 400 zł"], ["Розширений супровід бізнесу", "2 800 zł"]], packs: "biz" },
-  { slug: "blue-card", name: "Blue Card", h1: "Blue Card — Блакитна карта ЄС", price: "1000–2000 zł",
-    short: "Дозвіл на перебування та роботу для висококваліфікованих спеціалістів.",
-    intro: "Ваш професійний розвиток у Польщі — з легальним перебуванням і роботою.",
-    aboutTitle: "Про послугу",
-    about: ["Блакитна карта ЄС — це дозвіл на тимчасове перебування та роботу для висококваліфікованих спеціалістів, які відповідають установленим законом вимогам.", "Ми супроводжуємо процес у співпраці з вами та вашим роботодавцем — від перевірки умов працевлаштування до рішення Воєводи."],
-    doesTitle: "Що входить у супровід",
-    does: ["<b>Перевірка відповідності вимогам</b> — аналізуємо кваліфікацію, договір, посаду, заробітну плату та інші необхідні умови.", "<b>Підготовка документів</b> — формуємо перелік документів для працівника й роботодавця та перевіряємо їхню відповідність вимогам.", "<b>Комплексна підготовка заяви</b> — готуємо пакет документів і допомагаємо з поданням заяви.", "<b>Супровід справи</b> — контролюємо перебіг провадження та допомагаємо підготувати відповіді на запити уженду в межах погодженого пакета.", "<b>Зміна роботодавця</b> — консультуємо щодо необхідних формальностей і супроводжуємо процедуру зміни умов працевлаштування або роботодавця відповідно до вашої ситуації."],
-    forWhom: "Для іноземних спеціалістів, які планують працювати в Польщі на посаді, що відповідає вимогам Blue Card, а також для власників Блакитної карти, яким необхідно змінити роботодавця чи умови працевлаштування.",
-    closing: "Ваша кваліфікація заслуговує на професійний супровід. Зверніться до нас — перевіримо вашу ситуацію, визначимо необхідні документи та пояснимо наступні кроки.",
-    stagesNote: "Етапи співпраці адаптуємо до потреб компанії та особливостей кожної справи.",
-    lines: [["Супровід справи", "1000–2000 zł"], ["Консультація, 1 год", "300 zł"]] },
-  { slug: "rezydent-ue", name: "Сталий побит і резидент ЄС", h1: "Карта сталого побиту та резидента довгострокового ЄС", price: "від 1000 zł",
-    short: "Право на постійне проживання в Польщі — сталий побит або статус резидента ЄС.",
-    intro: "Допомагаємо отримати право на постійне проживання в Польщі — від перевірки підстав до супроводу справи в уженді.",
-    aboutTitle: "Про послугу",
-    about: ["Кожна підстава має свої вимоги до документів, строків перебування та підтвердження обставин. Ми аналізуємо вашу ситуацію й допомагаємо підготувати документи відповідно до обраної процедури."],
-    doesTitle: "Що входить у супровід",
-    does: ["<b>Перевірка підстав</b> — аналізуємо можливість отримання дозволу на сталий побит або статусу резидента довгострокового ЄС.", "<b>Аналіз історії перебування</b> — перевіряємо безперервність перебування та враховуємо виїзди з Польщі.", "<b>Підготовка документів</b> — аналізуємо й упорядковуємо документи за попередні роки, визначаємо, чого бракує.", "<b>Підготовка та подання заяви</b> — формуємо пакет документів відповідно до вашої підстави.", "<b>Контроль справи</b> — відстежуємо перебіг провадження та допомагаємо підготувати відповіді на запити уженду в межах погодженого пакета."],
-    whichTitle: "Який дозвіл вам підходить?",
-    which: ["<b>Сталий побит</b> — зокрема, для осіб із польським походженням, власників Карти поляка та інших категорій, які відповідають законодавчим вимогам.", "<b>Резидент довгострокового ЄС</b> — для осіб, які відповідають вимогам щодо строку та легальності перебування, стабільного доходу, медичного страхування й інших установлених законом умов."],
-    closing: "Не впевнені, яка підстава підходить саме вам? Ми проаналізуємо вашу ситуацію та допоможемо визначити подальші кроки.",
-    chips: ["Польське походження", "Карта поляка", "Резидент ЄС"],
-    lines: [["Сталий побит за польським походженням", "2000–3000 zł"], ["Сталий побит на підставі Карти поляка", "1000–2000 zł"], ["Карта резидента ЄС", "1000–2500 zł"], ["Аналіз документів щодо перебування", "350–500 zł"]] },
-  { slug: "hromadianstvo", name: "Громадянство", h1: "Польське громадянство", price: "від 3000 zł",
-    short: "Супровід процедури визнання громадянином Польщі.",
-    intro: "Супроводжуємо процедуру визнання громадянином Польщі через Воєводу — для іноземців, які відповідають законодавчим вимогам.",
-    aboutTitle: "Про послугу",
-    about: ["Кожна ситуація індивідуальна. Ми аналізуємо вашу історію перебування, перевіряємо документи та визначаємо, чи відповідаєте ви законодавчим вимогам."],
-    doesTitle: "Що входить у супровід",
-    does: ["<b>Аналіз вашої ситуації</b> — визначаємо відповідну законодавчу підставу.", "<b>Перевірка документів</b> — оцінюємо історію перебування, доходи, житло та інші необхідні обставини.", "<b>Підготовка заяви</b> — готуємо заяву та необхідні додатки.", "<b>Супровід справи</b> — контролюємо перебіг процедури та допомагаємо реагувати на запити органу в межах погодженого пакета.", "<b>Підтримка до рішення</b> — супроводжуємо вас на всіх передбачених договором етапах."],
-    forWhom: "Допомагаємо оцінити можливість отримання громадянства, зокрема на підставі тривалого перебування в Польщі, шлюбу з громадянином Польщі, польського походження або Карти поляка, статусу біженця, а також в інших випадках, передбачених законом.",
-    closing: "Ваш шлях до польського громадянства починається з правильної оцінки ситуації.",
-    lines: [["Визнання громадянином Польщі (uznanie za obywatela polskiego)", "від 3000 zł"], ["Консультація, 1 год", "300 zł"]] },
-  { slug: "vozziednannia-simi", name: "Возз'єднання сім'ї", h1: "Карта побиту по возз'єднанню родини", price: "від 1300 zł",
-    short: "Легалізація перебування чоловіка або дружини, дітей і батьків.",
-    intro: "Допомагаємо сім'ям пройти процедуру легалізації перебування в Польщі — від перевірки документів до супроводу справи в ужонді.",
-    pre: `<h2 class="subh">Вартість супроводу</h2>
-        <p class="plain">Вартість залежить від того, чи подається основний заявник одночасно з членами сім'ї, чи його справа вже перебуває на розгляді в ужонді.</p>
-        <div class="variant">
-          <h3>Варіант 1. Основний заявник подається на побит по роботі</h3>
-          <p>Якщо один із членів сім'ї подає заяву на тимчасове перебування та роботу, чоловік або дружина і діти можуть скористатися спеціальною ціною на супровід своїх справ.</p>
-          <div class="vrow"><span>Заява чоловіка або дружини на тимчасове перебування</span><b>1300 zł</b></div>
-          <div class="vrow"><span>Заява дитини до 18 років</span><b>500 zł за дитину</b></div>
-          <p class="vnote">Перевага для сім'ї: коли справи оформлюються в межах одного сімейного процесу, вартість супроводу для чоловіка або дружини та дітей є нижчою.</p>
-        </div>
-        <div class="variant">
-          <h3>Варіант 2. Основний заявник уже подав документи, і його справа перебуває на розгляді</h3>
-          <p>Якщо чоловік або дружина вже подали заяву на тимчасове перебування та роботу, а справа розглядається воєводським управлінням, інший із подружжя може подати окрему заяву на тимчасове перебування на відповідній правовій підставі.</p>
-          <div class="vrow"><span>Заява чоловіка або дружини на тимчасове перебування</span><b>1500 zł</b></div>
-          <div class="vrow"><span>Заява дитини до 18 років</span><b>500 zł за дитину</b></div>
-          <p class="vnote">Ми перевіримо вашу ситуацію, визначимо відповідну правову підставу та підготуємо документи відповідно до вимог процедури.</p>
-        </div>`,
-    doesTitle: "Що входить у вартість супроводу (варіанти 1 і 2)",
-    does: ["Аналіз ситуації сім'ї та перевірка правової підстави для подання заяви", "Індивідуальний перелік необхідних документів", "Перевірка документів заявника та підтверджень родинних зв'язків", "Підготовка та заповнення заяви на тимчасове перебування", "Перевірка комплектності документів перед поданням", "Супровід процедури подання заяви в межах погодженого обсягу послуг", "Контроль перебігу справи та інформування про необхідні подальші дії"],
-    post: `<div class="variant parents">
-          <h3>Легалізація перебування батьків повнолітніх дітей у Польщі</h3>
-          <div class="vrow"><span>Повний супровід, за одну особу</span><b>1800 zł</b></div>
-          <p class="lbl2">Що входить у послугу:</p>
-          <ul class="checks">
-            <li>Попередній аналіз ситуації батьків і правового статусу повнолітньої дитини в Польщі</li>
-            <li>Перевірка, чи існують законні підстави для отримання дозволу на тимчасове перебування з огляду на сімейні обставини</li>
-            <li>Індивідуальний перелік необхідних документів</li>
-            <li>Перевірка документів, що підтверджують родинні зв'язки, фінансове забезпечення, житло та інші обставини справи</li>
-            <li>Підготовка заяви та необхідних додатків відповідно до обраної правової підстави</li>
-            <li>Допомога з поданням документів через відповідну процедуру</li>
-            <li>Контроль перебігу справи та інформування про основні процесуальні дії</li>
-            <li>Підготовка до двох стандартних відповідей на запити органу в межах погодженого обсягу послуги</li>
-          </ul>
-          <p class="lbl2">Важливо знати</p>
-          <p>Возз'єднання батьків із повнолітніми дітьми не є автоматично доступною процедурою лише на підставі спорідненості. До початку співпраці необхідно оцінити правовий статус дитини в Польщі та конкретні сімейні обставини. У деяких випадках потрібно розглядати іншу правову підставу для легалізації перебування.</p>
-          <p>Ціна стосується послуг супроводу. Державні збори, переклади, нотаріальні витрати та інші зовнішні витрати оплачуються окремо. Складні додаткові запити органу, апеляція та судове оскарження не входять у базовий пакет і погоджуються окремо.</p>
-        </div>`,
-    lines: [["Чоловік або дружина — одночасна подача", "1300 zł"], ["Чоловік або дружина — справа основного заявника на розгляді", "1500 zł"], ["Дитина до 18 років", "500 zł"], ["Батьки повнолітніх дітей, за особу", "1800 zł"]] },
-  { slug: "zmina-robotodavtsia", name: "Зміна роботодавця", h1: "Зміна роботодавця з картою побиту", price: "500 zł",
-    short: "Щоб нова робота не поставила під загрозу ваш легальний статус.",
-    intro: "Зміна місця роботи з чинною картою побиту вимагає формальностей і дотримання термінів. Беремо це на себе.",
-    does: ["Перевіряємо, що саме потрібно у вашому випадку", "Готуємо заяву про зміну або нову заяву", "Повідомляємо воєводу про припинення роботи", "Контактуємо з новим роботодавцем щодо документів"],
-    lines: [["Зміна роботодавця", "500 zł"], ["Повідомлення воєводи (іноземець)", "200 zł"]] },
-  { slug: "dovidky", name: "Довідки: суд, податкова, ZUS", h1: "Довідки із суду, податкової та ZUS", price: "від 150 zł",
-    short: "Отримуємо довідки, потрібні для побиту, громадянства чи банку.",
-    intro: "Отримуємо за вас довідки, які вимагають уженди, банки та роботодавці.",
-    does: ["Довідка про відсутність податкової заборгованості", "Довідка із ZUS про історію працевлаштування", "Довідки із суду", "PESEL, Profil Zaufany, EKUZ"],
-    lines: [["Довідка з податкової", "150 zł"], ["Довідка із ZUS", "150 zł"], ["Номер PESEL", "150 zł"], ["Profil Zaufany (ePUAP)", "150 zł"], ["Карта EKUZ", "150 zł"], ["Довідки із суду", "за запитом"]] },
-  { slug: "akty-tsyvilnoho-stanu", name: "Акти про народження і шлюб", h1: "Транскрипція іноземних актів цивільного стану", price: "800 zł",
-    short: "Внесення закордонних свідоцтв про народження і шлюб до польського реєстру, визнання батьківства.",
-    intro: "Внесення закордонного свідоцтва про народження чи шлюб до польського реєстру актів цивільного стану (umiejscowienie zagranicznych aktów).",
-    about: [
-      "Транскрипція — це офіційний процес визнання закордонних документів у Польщі. Свідоцтво про народження або шлюб, видане за кордоном, переноситься до польських книг актів цивільного стану. У результаті ви отримуєте польський документ, який повністю відповідає оригіналу, але має юридичну силу на території Польщі.",
-      "Оригінали іноземних документів під час процедури вилучаються, тому заздалегідь рекомендуємо оформити дублікати, якщо вони можуть знадобитися вам у подальшому."
-    ],
-    when: [
-      "якщо ви плануєте подавати документи на отримання польського громадянства;",
-      "якщо ви хочете оформити ВНЖ або ПМЖ для члена сім'ї за програмою возз'єднання і не маєте можливості проставити апостиль у країні походження (вимога більшості установ з 1 червня 2025 року)."
-    ],
-    doesTitle: "Чим ми допомагаємо",
-    does: ["Проводимо консультацію щодо вашої ситуації та аналізуємо документи", "Доступно й зрозуміло пояснюємо кожен етап процедури", "Організовуємо професійний присяжний переклад", "Готуємо й подаємо заяву з усіма документами до Urząd Stanu Cywilnego", "Отримуємо готовий польський акт і передаємо його вам", "Супроводжуємо також процедуру визнання батьківства"],
-    faq: [
-      ["Скільки триває процедура?", "Зазвичай до 30 днів."],
-      ["Чи впливає кількість документів на вартість?", "Ціна залежить не від кількості, а від складності документів."],
-      ["Чи забирають оригінали свідоцтв про народження та шлюб?", "Так, оригінали вилучаються, тому рекомендуємо заздалегідь оформити дублікати в країні видачі."],
-      ["Чи можна подати нотаріально завірені копії?", "Ні, приймаються лише оригінали свідоцтва про народження (а також свідоцтва про шлюб)."]
-    ],
-    lines: [["Внесення акта до реєстру", "800 zł"], ["Визнання батьківства", ASK], ["Присяжний переклад", "за запитом"]],
-    note: "Додатково оплачуються державні збори та присяжний переклад документів." },
-  { slug: "strakhuvannia", name: "Страхування", h1: "Усі види страхування", price: ASK,
-    short: "Медичне та інше страхування — зокрема поліси, потрібні для побиту.",
-    intro: "Підбираємо страхування для вас і вашої родини, зокрема медичні поліси, які вимагаються у справах про побит.",
-    does: ["Підбираємо поліс під вашу ситуацію та вимоги уженду", "Оформлюємо медичне страхування для членів сім'ї", "Допомагаємо отримати карту EKUZ", "Пояснюємо, що покриває поліс"],
-    lines: [["Підбір і оформлення поліса", ASK], ["Карта EKUZ", "150 zł"]] }
-];
-
-const svcCards = (list = SERVICES) => `
+const svcCards = (C, list = C.services) => `
       <div class="svc-grid">${list.map((s) => `
         <a class="svc" href="p-${s.slug}.html">
           <h3>${s.name}</h3>
           <p>${s.short}</p>
-          <div class="bottom"><span>Докладніше та ціна</span><span>→</span></div>
+          <div class="bottom"><span>${C.ui.more}</span><span>→</span></div>
         </a>`).join("")}
       </div>`;
 
-const OTHER = [
-  ["Консультація, 1 година", "перша година оплачується повністю, далі — половина суми за кожні 30 хв", "300 zł"],
-  ["Особистий супровід в уженді", "1 виїзд", "300 zł"],
-  ["Паспорт іноземця", "Dokument podróży", "350 zł"],
-  ["Заява про доручення виконання роботи іноземцю", "Oświadczenie o powierzeniu pracy — включно з копією договору та повідомленнями про початок і припинення роботи", "500 zł"],
-  ["Запрошення для іноземця", "Zaproszenie dla cudzoziemca", "500 zł"],
-  ["Аналіз та впорядкування документів щодо перебування", "залежно від кількості документів і складності справи", "350–500 zł"],
-  ["Віза до Великої Британії", "", "2000 zł"],
-  ["Повідомлення воєводи про припинення роботи", "200 zł для іноземця, 300 zł для роботодавця", "200 / 300 zł"],
-  ["Перевірка статусу справи", "з'ясування стану справи, ознайомлення з матеріалами за довіреністю, аналіз, план дій та одне офіційне звернення до Воєводи (запит, заява або ponaglenie). Без оскарження та подальшого ведення справи", "1000 zł"],
-  ["Переклад та легалізація документів", "апостиль на польських документах, присяжні переклади, перевірка вимог до документів", "індивідуально"],
-  ["Обмін іноземного посвідчення водія на польське", "а також заміна польського посвідчення після закінчення строку дії: аналіз, документи, переклад, подання заяви, контроль статусу", "800 zł"],
-  ["Оскарження рішення установи", "у комплексному та розширеному пакетах апеляція входить, якщо є законні підстави", ASK],
-  ["Реєстрація перебування громадян ЄС", "", ASK]
-];
-// Державні збори (opłaty skarbowe) — перелік від Юлії
-const FEES = [
-  ["Дозвіл на тимчасове перебування та роботу", "Zezwolenie na pobyt czasowy i pracę", "440 zł"],
-  ["Блакитна карта ЄС", "Niebieska Karta UE", "440 zł"],
-  ["Дозвіл на тимчасове перебування (інші випадки, зокрема карта побиту CUKR)", "Zezwolenie na pobyt czasowy (pozostałe przypadki)", "340 zł"],
-  ["Дозвіл на сталий побит", "Zezwolenie na pobyt stały", "640 zł"],
-  ["Дозвіл на перебування резидента довгострокового ЄС", "Zezwolenie na pobyt rezydenta długoterminowego UE", "640 zł"],
-  ["Внесення запрошення до реєстру запрошень", "Wpis zaproszenia do ewidencji zaproszeń", "27 zł"],
-  ["Дублікат рішення", "Duplikat decyzji", "5 zł за кожну розпочату сторінку"],
-  ["Зміна дозволу на перебування та роботу", "Zmiana zezwolenia na pobyt i pracę", "220 zł"],
-  ["Рішення про грошову виплату для власника Карти поляка", "Decyzja — świadczenie pieniężne dla posiadacza Karty Polaka", "10 zł"],
-  ["Видача довідки", "Wydanie zaświadczenia", "17 zł"],
-  ["Довіреність", "Pełnomocnictwo", "17 zł"],
-  ["Видача або обмін карти побиту (зокрема CUKR, для дорослих і дітей)", "Wydanie lub wymiana karty pobytu", "100 zł"],
-  ["Видача або обмін карти побиту для неповнолітніх до 16 років на дату подання заяви, учнів старших шкіл і студентів", "Wydanie lub wymiana karty pobytu — małoletni, uczniowie, studenci", "50 zł"],
-  ["Визнання громадянином Польщі", "Uznanie za obywatela polskiego", "1000 zł"],
-  ["Надання громадянства Польщі Президентом", "Nadanie obywatelstwa polskiego przez Prezydenta RP", "1669 zł"]
-];
 const rows = (list) => list.map(([n, s, p]) => `<div class="row"><span class="n">${n}${s ? `<small>${s}</small>` : ""}</span><span class="p">${p}</span></div>`).join("\n        ");
 
-const STAGES = [
-  { h: "Первинна консультація та аналіз ситуації",
-    p: "Співпраця починається з детального вивчення Вашої ситуації — під час особистої зустрічі в офісі або онлайн-консультації.",
-    l: "На цьому етапі ми:",
-    li: ["аналізуємо Ваше поточне становище та підстави для легалізації", "перевіряємо документи та оцінюємо можливі ризики", "визначаємо реальні перспективи отримання карти побиту", "підбираємо найбезпечнішу та найефективнішу стратегію ведення справи"],
-    o: "Наша мета — вже після першої консультації надати Вам повне розуміння подальших дій, термінів та можливих сценаріїв розвитку процесу." },
-  { h: "Індивідуальний план ведення справи",
-    p: "Після прийняття рішення про співпрацю ми переходимо до підготовки персональної стратегії.",
-    l: "Що входить до цього етапу:",
-    li: ["укладення офіційного договору", "формування індивідуального списку необхідних документів", "розробка покрокового плану супроводу", "визначення термінів та порядку подачі документів"],
-    o: "Ви отримуєте чітку структуру дій та повний супровід без хаосу, невизначеності та зайвих помилок." },
-  { h: "Підготовка повного пакета документів",
-    p: "Ми беремо на себе всю організаційну та бюрократичну частину процесу.",
-    l: "Зокрема:",
-    li: ["підготовку заяв, анкет та необхідних формулярів", "взаємодію з роботодавцем, бухгалтерією та установами", "перевірку правильності всіх документів", "підготовку копій, перекладів та нотаріальних засвідчень", "супровід під час подачі документів до уженду"],
-    o: "Завдяки уважній підготовці та контролю деталей ми мінімізуємо ймовірність помилок та підвищуємо шанси на позитивне рішення." },
-  { h: "Повний супровід на всіх етапах",
-    p: "Протягом усього процесу ми супроводжуємо Вашу справу як офіційний представник (Pełnomocnik).",
-    l: "У межах супроводу:",
-    li: ["представляємо Ваші інтереси перед державними органами", "контролюємо хід розгляду справи", "відстежуємо статуси та терміни", "готуємо та подаємо додаткові документи за необхідності", "залишаємося з Вами на зв'язку до моменту отримання рішення"],
-    o: "Ви завжди розумієте, на якому етапі перебуває Ваша справа та які дії здійснюються з боку спеціалістів." },
-  { h: "Завершення процесу",
-    p: "",
-    l: "Після отримання позитивного рішення ми:",
-    li: ["супроводжуємо Вас під час отримання карти побиту", "консультуємо щодо подальшого легального перебування в Польщі", "за потреби допомагаємо з наступними етапами легалізації"],
-    o: "Ми супроводжуємо клієнта не лише до моменту подачі документів, а до фактичного результату." }
-];
-
-// Питання та відповіді від Юлії
-const POSTS = [
-  { slug: "cukr-vyizd", date: "Жовтень 2026", title: "Чи можна виїжджати з Польщі після подання заяви на карту побиту CUKR?",
-    lead: "Подання заяви на карту побиту CUKR не позбавляє заявника статусу UKR.",
-    body: `<p>Подання заяви на отримання карти побиту CUKR не позбавляє заявника статусу UKR. Це означає, що під час очікування на видачу карти можна виїжджати за межі Польщі, але тривалість однієї такої відсутності не повинна перевищувати 30 днів.</p>
-<h2>На що потрібно звернути увагу?</h2>
-<ul><li><b>Виїзд за кордон:</b> після подання заяви можна подорожувати, дотримуючись обмеження щодо тривалості відсутності.</li><li><b>Статус UKR:</b> саме подання заяви на CUKR не призводить до його втрати.</li><li><b>Отримання карти CUKR:</b> після отримання карти статус UKR втрачається, а перебування в Польщі надалі ґрунтується на дозволі на тимчасове перебування, наданому у зв'язку з видачею цієї карти.</li></ul>
-<h2>Чому важливо контролювати тривалість поїздки?</h2>
-<p>Якщо ви плануєте виїзд під час розгляду заяви, заздалегідь перевірте дати поїздки та переконайтеся, що ваша відсутність не перевищить дозволений період. Порушення правил перебування за статусом UKR може вплинути на ваш правовий статус і подальшу легалізацію.</p>` },
-  { slug: "cukr-termin", date: "Жовтень 2026", title: "Карта побиту CUKR: до якої дати можна подати заяву та на який термін її видають?",
-    lead: "Заяву на отримання карти побиту CUKR можна подати до 4 березня 2027 року.",
-    body: `<p>Громадяни України, які користуються тимчасовим захистом у Польщі та відповідають установленим вимогам, можуть подати заяву на отримання карти побиту CUKR. Цей документ дозволяє перейти зі статусу UKR на дозвіл на тимчасове перебування на спеціальних умовах.</p>
-<h2>До якої дати потрібно подати заяву на CUKR?</h2>
-<p>Заяву на отримання карти побиту CUKR можна подати до 4 березня 2027 року. Подання відбувається виключно в електронній формі через спеціальний портал MOS.</p>` },
-  { slug: "ukr-robota", date: "Жовтень 2026", title: "Чи можна легально працювати в Польщі зі статусом UKR? Обов'язки роботодавця та правила працевлаштування",
-    lead: "Громадяни України зі статусом UKR можуть працювати без окремого дозволу на роботу за умови дотримання вимог законодавства.",
-    body: `<p>Громадяни України, які користуються тимчасовим захистом у Польщі та мають номер PESEL зі статусом UKR, можуть працювати без отримання окремого дозволу на роботу за умови дотримання вимог законодавства.</p>
-<p>Право на роботу надає можливість працевлаштовуватися на підставі трудового договору (umowa o pracę) або цивільно-правового договору (umowa zlecenia), якщо конкретна форма зайнятості відповідає чинним правилам. Водночас для окремих посад можуть діяти спеціальні законодавчі обмеження.</p>
-<h2>Що повинен зробити роботодавець?</h2>
-<p>Щоб працевлаштування відповідало вимогам законодавства, роботодавець має виконати низку формальностей:</p>
-<ul><li>Повідомити повітове управління праці (Powiatowy Urząd Pracy) про доручення роботи іноземцю відповідно до встановленої процедури.</li><li>Дотриматися терміну повідомлення — як правило, протягом 7 днів від початку роботи.</li><li>Укласти відповідний договір, визначивши умови праці, оплату та обсяг обов'язків.</li><li>Виконати обов'язки щодо ZUS і податків, зокрема зареєструвати працівника в системі соціального страхування, якщо це передбачено для відповідного виду договору та статусу працівника.</li></ul>
-<h2>Що буде, якщо роботодавець не повідомить управління праці вчасно?</h2>
-<p>Обов'язок повідомлення про працевлаштування покладається на роботодавця. Відповідальність за невиконання цього обов'язку також несе роботодавець.</p>
-<p>Водночас правові наслідки відсутності повідомлення потрібно оцінювати з урахуванням чинних норм та конкретних обставин працевлаштування. Не варто вважати, що будь-яке порушення автоматично не має наслідків для працівника: важливо перевірити, чи зберігається його законна підстава для перебування та роботи.</p>
-<p>За порушення вимог щодо повідомлення роботодавцю може загрожувати штраф. Тому своєчасне оформлення документів залишається важливою частиною законного працевлаштування.</p>
-<h2>Чи потрібно отримувати дозвіл на роботу?</h2>
-<p>Якщо ви маєте право працювати на підставі статусу UKR, окремий дозвіл на роботу зазвичай не потрібен. Проте слід перевірити актуальність статусу, законність перебування та відповідність конкретної форми працевлаштування чинним вимогам.</p>
-<p>Якщо статус UKR втрачено або змінилася підстава перебування, правила доступу до ринку праці можуть бути іншими.</p>` },
-  { slug: "zmina-prizvyshcha", date: "Жовтень 2026", title: "Змінила прізвище після одруження: чи можна виїхати з Польщі зі старим паспортом і картою побиту?",
-    lead: "Так, виїзд може бути можливим на підставі чинного паспорта та карти побиту, оформленої на дівоче прізвище.",
-    body: `<p>Так, виїзд може бути можливим на підставі чинного паспорта та карти побиту, оформленої на дівоче прізвище. Однак перед поїздкою варто перевірити правила перетину кордону та умови повернення до Польщі.</p>
-<h2>Які документи мати при поверненні до Польщі?</h2>
-<p>Якщо новий паспорт оформлено на прізвище чоловіка, а карта побиту залишається на дівоче, рекомендується мати при собі:</p>
-<ul><li>чинний паспорт на нове прізвище;</li><li>чинну карту побиту на дівоче прізвище;</li><li>свідоцтво про шлюб, а за необхідності — його переклад польською мовою, виконаний присяжним перекладачем;</li><li>старий паспорт або його копію, якщо вони доступні.</li></ul>
-<p>Ці документи допоможуть підтвердити зміну прізвища, але не гарантують автоматичного пропуску через кордон.</p>` },
-  { slug: "prodovzhennia-pobytu", date: "Жовтень 2026", title: "Закінчується термін дії дозволу на тимчасове перебування. Як його «продовжити»?",
-    lead: "У Польщі немає процедури автоматичного продовження дозволу на тимчасове перебування.",
-    body: `<p>У Польщі немає процедури автоматичного продовження дозволу на тимчасове перебування. Щоб і надалі легально проживати в країні, необхідно подати заяву на отримання нового дозволу до закінчення терміну дії чинного.</p>
-<p>Якщо ви не плануєте залишатися в Польщі, необхідно виїхати до закінчення терміну дії дозволу, якщо немає інших підстав для легального перебування.</p>` },
-  { slug: "lyst-urzad", date: "Жовтень 2026", title: "Не отримали листа від Управління у справі легалізації перебування. Що робити?",
-    lead: "За певних умов неотриманий лист вважається врученим, навіть якщо адресат фактично його не отримав.",
-    body: `<p>Якщо лист було належним чином надіслано на адресу, вказану у заяві, але його не забрали вчасно, він повертається до Управління з позначкою «не отримано у встановлений термін». За певних умов такий лист вважається врученим, навіть якщо адресат фактично його не отримав.</p>
-<h2>Що робити в такій ситуації?</h2>
-<p>З'ясуйте, який лист було надіслано та чи встановлено в ньому термін для виконання вимог Управління.</p>
-<p>Якщо лист не стосувався усунення формальних недоліків заяви, можна звернутися до Управління через формуляр або подати письмове пояснення з проханням продовжити термін розгляду справи.</p>
-<p><b>Важливо:</b> неотримання кореспонденції не звільняє від обов'язку подати документи. Якщо лист містив вимогу усунути формальні недоліки заяви, потрібно діяти відповідно до змісту вимоги та перевірити, чи ще можна дотриматися встановленого терміну.</p>` },
-  { slug: "povidomlennia-voievody", date: "Жовтень 2026", title: "Що означає обов'язок повідомити воєводу про припинення підстави для надання дозволу на тимчасове перебування?",
-    lead: "Іноземець зобов'язаний протягом 15 робочих днів повідомити воєводу про припинення обставин, що були підставою для дозволу.",
-    body: `<blockquote lang="pl">„Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.</blockquote>
-<p>Відповідно до ст. 113 Закону Польщі «Про іноземців», іноземець, який отримав дозвіл на тимчасове перебування, зобов'язаний протягом 15 робочих днів повідомити воєводу, який видав дозвіл, про припинення обставин, що були підставою для його надання.</p>
-<p>Наприклад, це може бути завершення роботи, навчання або припинення інших обставин, на підставі яких було видано дозвіл.</p>
-<h2>Як повідомити воєводу?</h2>
-<p>Повідомлення необхідно подати в письмовій формі до відповідного воєводського управління. У ньому слід зазначити свої персональні дані, номер справи (якщо відомий) та інформацію про припинення підстави для надання дозволу.</p>
-<p><b>Важливо:</b> припинення підстави для видачі дозволу може вплинути на подальше легальне перебування в Польщі. Тому варто перевірити, чи маєте ви іншу підставу для перебування в країні.</p>` }
-];
-
-const postCards = (list) => `
+const postCards = (C, list) => `
       <div class="posts">${list.map((p) => `
         <a class="post" href="b-${p.slug}.html">
-          <time>${p.date}</time>
+          <time>${C.ui.date}</time>
           <h3>${p.title}</h3>
           <p>${p.lead}</p>
-          <span class="more">Читати →</span>
+          <span class="more">${C.ui.read}</span>
         </a>`).join("")}
       </div>`;
 
+const caseCards = (C, list) => `
+      <div class="posts">${list.map((c) => `
+        <a class="post" href="k-${c.slug}.html">
+          <time>${C.ui.caseWord} ${C.cases.indexOf(c) + 1} · ${c.tag}</time>
+          <h3>${c.title}</h3>
+          <p>${c.lead}</p>
+          <span class="more">${C.ui.readCase}</span>
+        </a>`).join("")}
+      </div>`;
+
+// Відгуки — оригінальні цитати з Google, не перекладаються
 const REVIEW_LIST = [
   { n: "sally sally", t: "I cannot recommend Julia Hajecka highly enough! She has been helping me with my permanent residency application in Poland, and the experience has been outstanding from start to finish. Julia is an amazing communicator who keeps you informed every step of the way…" },
   { n: "Vladimir Schneider", t: "Спасибо Юлии за помощь в легализации. Она быстро выявила ошибки при найме, сразу предложила решения и каким-то чудом успела организовать все документы в сжатые…" },
   { n: "Svetlana Savchenko", t: "Хочу выразить огромную благодарность Юлии за помощь в получении карты побыта! Она настоящий профессионал — всегда на связи, подробно объясняет все нюансы…" }
 ];
 
-const reviewsBlock = () => `
+const reviewsBlock = (C) => `
   <section class="reviews-section">
     <div class="wrap">
       <div class="section-head rv-head">
-        <div><span class="eyebrow">Відгуки</span><h2>Що кажуть клієнти</h2></div>
-        <div class="rv-nav"><button class="rv-btn" data-dir="-1" aria-label="Назад">←</button><button class="rv-btn" data-dir="1" aria-label="Далі">→</button></div>
+        <div><span class="eyebrow">${C.ui.rvEyebrow}</span><h2>${C.ui.rvH}</h2></div>
+        <div class="rv-nav"><button class="rv-btn" data-dir="-1" aria-label="${C.ui.prev}">←</button><button class="rv-btn" data-dir="1" aria-label="${C.ui.next}">→</button></div>
       </div>
       <div class="rv-track">${REVIEW_LIST.map((r) => `
         <div class="review">
@@ -541,44 +241,77 @@ const reviewsBlock = () => `
           <cite>${r.n}<small>Google</small></cite>
         </div>`).join("")}
         <div class="review all">
-          <p>Більше відгуків клієнтів — у профілі Google.</p>
-          <a class="btn btn-gold" href="${GOOGLE}" target="_blank" rel="noopener">Читати відгуки в Google</a>
+          <p>${C.ui.rvMore}</p>
+          <a class="btn btn-gold" href="${GOOGLE}" target="_blank" rel="noopener">${C.ui.rvBtn}</a>
         </div>
       </div>
     </div>
   </section>`;
 
-const portrait = `<div class="portrait"><img src="img/julia.jpg?v=31" alt="Julia Hajecka"></div>`;
+const portrait = (A) => `<div class="portrait"><img src="${A}img/julia.jpg?v=31" alt="Julia Hajecka"></div>`;
 
-/* ---------- Сторінки ---------- */
+// Картка для роботодавців на головній — завжди польською
+const employerCard = (href) => `
+        <div class="who-card dark">
+          <h3>Dla pracodawców</h3>
+          <p>Zatrudniasz cudzoziemców i chcesz mieć pewność, że wszystkie formalności są prawidłowo dopełnione? Wspieramy firmy w legalnym zatrudnianiu obcokrajowców.</p>
+          <ul class="checks">
+            <li><b>Zezwolenia na pracę</b> — dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</li>
+            <li><b>Oświadczenia o powierzeniu pracy cudzoziemcowi</b> — przygotowanie dokumentacji i przeprowadzenie procedury.</li>
+            <li><b>Powiadomienia o powierzeniu pracy obywatelom Ukrainy</b> — weryfikacja obowiązków i dopełnienie formalności, jeśli dana procedura ma zastosowanie.</li>
+            <li><b>Dobór właściwej procedury</b> — ustalenie, jakie dokumenty są potrzebne w konkretnej sytuacji.</li>
+            <li><b>Ograniczanie ryzyka prawnego</b> — weryfikacja formalności i minimalizowanie ryzyka sankcji za naruszenie przepisów.</li>
+          </ul>
+          <a class="btn btn-gold" href="${href}">Dla pracodawców</a>
+        </div>`;
 
-// Головна
-page({
-  file: "index.html",
-  title: "Julia Hajecka — легалізація перебування та праці іноземців у Польщі",
-  desc: "Карта побиту, Blue Card, возз'єднання сім'ї, громадянство. Супровід від консультації до рішення. Варшава.",
-  body: `
+/* ---------- Сторінки кожної мови ---------- */
+
+// Державні збори: на сторінці послуг і для роботодавців
+const feesSection = (C) => `<section class="light" id="oplaty">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">${C.servicesPage.feesEyebrow}</span>
+        <h2>${C.servicesPage.feesH}</h2>
+        <p class="lead">${C.servicesPage.feesLead}</p>
+      </div>
+      <div class="pricelist">
+        ${rows(C.fees)}
+      </div>
+    </div>
+  </section>`;
+
+for (const C of LANGS) {
+  const L = C.meta.lang;
+  const A = L === "uk" ? "" : "../";
+  const firmy = L === "pl" ? "firmy.html" : `${A}pl/firmy.html`;
+  const H = C.home;
+
+  // Головна
+  page(C, {
+    file: "index.html", title: H.title, desc: H.desc,
+    body: `
   <div class="hero">
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <span class="eyebrow">Варшава · карта побиту · Blue Card · громадянство</span>
-          <h1>Легальне перебування та праця у Польщі — без помилок і зайвих нервів</h1>
-          <p class="sub">Супроводжуємо справу від першої консультації до рішення: перевіряємо документи, подаємо заяву, контролюємо хід справи в уженді.</p>
+          <span class="eyebrow">${H.eyebrow}</span>
+          <h1>${H.h1}</h1>
+          <p class="sub">${H.sub}</p>
           <div class="hero-cta">
-            <a class="btn btn-gold" href="kontakty.html">Записатися на консультацію</a>
-            <a class="btn btn-ghost" href="poslugy.html">Послуги та ціни</a>
+            <a class="btn btn-gold" href="kontakty.html">${C.ui.consult}</a>
+            <a class="btn btn-ghost" href="poslugy.html">${H.prices}</a>
           </div>
         </div>
-        ${portrait}
+        ${portrait(A)}
       </div>
       <div class="doors">
         <a class="door" href="poslugy.html">
-          <h3>Я іноземець</h3>
-          <p>Карта побиту, Blue Card, возз'єднання сім'ї, громадянство, довідки</p>
+          <h3>${H.door1t}</h3>
+          <p>${H.door1p}</p>
           <span class="arrow">→</span>
         </a>
-        <a class="door alt" href="firmy.html">
+        <a class="door alt" href="${firmy}">
           <h3>Dla pracodawców</h3>
           <p>Legalne zatrudnienie cudzoziemców i wsparcie pracowników</p>
           <span class="arrow">→</span>
@@ -591,10 +324,10 @@ page({
     <div class="wrap">
       <div class="urgent-box">
         <div>
-          <h3>Закінчується віза або карта побиту?</h3>
-          <ul><li>Заяву потрібно подати до останнього дня легального перебування.</li><li>Що раніше почнемо — то спокійніше пройде процес.</li></ul>
+          <h3>${H.urgentH}</h3>
+          <ul>${H.urgent.map((x) => `<li>${x}</li>`).join("")}</ul>
         </div>
-        <a class="btn btn-gold" href="kontakty.html">Написати зараз</a>
+        <a class="btn btn-gold" href="kontakty.html">${H.urgentBtn}</a>
       </div>
     </div>
   </section>
@@ -602,49 +335,31 @@ page({
   <section>
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Послуги</span>
-        <h2>З чим допомагаю</h2>
-        <p class="lead">Кожна послуга — з відкритою ціною та зрозумілим обсягом роботи.</p>
+        <span class="eyebrow">${H.svcEyebrow}</span>
+        <h2>${H.svcH}</h2>
+        <p class="lead">${H.svcLead}</p>
       </div>
-      ${svcCards()}
-      <div class="center-link"><a class="btn btn-line" href="poslugy.html">Усі послуги та ціни</a></div>
+      ${svcCards(C)}
+      <div class="center-link"><a class="btn btn-line" href="poslugy.html">${H.svcAll}</a></div>
     </div>
   </section>
 
   <section class="light" id="komu">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Кому ми допомагаємо</span>
-        <h2>Реальна підтримка для іноземців і роботодавців у Польщі</h2>
-        <p class="lead">Пропонуємо спеціалізовані послуги, підібрані під індивідуальні потреби. Ми зосереджуємося на тому, щоб зрозуміти вашу ситуацію і дати дієве, практичне рішення.</p>
+        <span class="eyebrow">${H.komuEyebrow}</span>
+        <h2>${H.komuH}</h2>
+        <p class="lead">${H.komuLead}</p>
       </div>
       <div class="who-grid">
         <div class="who-card">
-          <h3>Для іноземців</h3>
-          <p>Хочете врегулювати перебування в Польщі, залагодити справи в установах або почати власну справу? Допоможемо пройти через формальності.</p>
+          <h3>${H.foreignH}</h3>
+          <p>${H.foreignP}</p>
           <ul class="checks">
-            <li><b>Легалізація перебування</b> — отримання карти тимчасового або сталого побиту.</li>
-            <li><b>Польське громадянство</b> — підготовка до подання заяви про надання або визнання громадянином Польщі.</li>
-            <li><b>Обмін документів</b> — карти побиту та посвідчення водія, а також отримання номера PESEL.</li>
-            <li><b>Оскарження рішень</b> — допомога у разі відмови у видачі документа чи дозволу.</li>
-            <li><b>Реєстрація перебування громадян ЄС</b> — формальності, пов'язані з перебуванням у Польщі.</li>
-            <li><b>Транскрипція іноземних актів цивільного стану</b> — внесення закордонних документів до польського реєстру.</li>
-            <li><b>Profil Zaufany</b> — доступ до онлайн-послуг державної адміністрації.</li>
+            ${H.foreignLi.map((x) => `<li>${x}</li>`).join("\n            ")}
           </ul>
-          <a class="btn btn-line" href="poslugy.html">Послуги та ціни</a>
-        </div>
-        <div class="who-card dark">
-          <h3>Dla pracodawców</h3>
-          <p>Zatrudniasz cudzoziemców i chcesz mieć pewność, że wszystkie formalności są prawidłowo dopełnione? Wspieramy firmy w legalnym zatrudnianiu obcokrajowców.</p>
-          <ul class="checks">
-            <li><b>Zezwolenia na pracę</b> — dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</li>
-            <li><b>Oświadczenia o powierzeniu pracy cudzoziemcowi</b> — przygotowanie dokumentacji i przeprowadzenie procedury.</li>
-            <li><b>Powiadomienia o powierzeniu pracy obywatelom Ukrainy</b> — weryfikacja obowiązków i dopełnienie formalności, jeśli dana procedura ma zastosowanie.</li>
-            <li><b>Dobór właściwej procedury</b> — ustalenie, jakie dokumenty są potrzebne w konkretnej sytuacji.</li>
-            <li><b>Ograniczanie ryzyka prawnego</b> — weryfikacja formalności i minimalizowanie ryzyka sankcji za naruszenie przepisów.</li>
-          </ul>
-          <a class="btn btn-gold" href="firmy.html">Dla pracodawców</a>
-        </div>
+          <a class="btn btn-line" href="poslugy.html">${H.prices}</a>
+        </div>${employerCard(firmy)}
       </div>
     </div>
   </section>
@@ -652,286 +367,253 @@ page({
   <section>
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Процес роботи</span>
-        <h2>Як ми працюємо</h2>
+        <span class="eyebrow">${H.stagesEyebrow}</span>
+        <h2>${H.stagesH}</h2>
       </div>
-      <div class="steps">${STAGES.map((x) => `<div class="step"><h3>${x.h}</h3></div>`).join("")}</div>
-      <div class="center-link"><a class="btn btn-line" href="yak-pratsiuiemo.html">Докладніше про етапи</a></div>
+      <div class="steps">${C.stages.map((x) => `<div class="step"><h3>${x.h}</h3></div>`).join("")}</div>
+      <div class="center-link"><a class="btn btn-line" href="yak-pratsiuiemo.html">${H.stagesMore}</a></div>
     </div>
   </section>
 
-
-  ${reviewsBlock()}
+  ${reviewsBlock(C)}
 
   <section>
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Блог</span>
-        <h2>Корисне про легалізацію</h2>
+        <span class="eyebrow">${H.blogEyebrow}</span>
+        <h2>${H.blogH}</h2>
       </div>
-      ${postCards(POSTS.slice(0, 3))}
-      <div class="center-link"><a class="btn btn-line" href="blog.html">Усі статті</a></div>
+      ${postCards(C, C.posts.slice(0, 3))}
+      <div class="center-link"><a class="btn btn-line" href="blog.html">${H.blogAll}</a></div>
     </div>
   </section>
-  ${band()}`
-});
+  ${band(C)}`
+  });
 
-// Послуги
-page({
-  file: "poslugy.html", active: "poslugy.html",
-  title: "Послуги та ціни — Julia Hajecka",
-  desc: "Карта побиту, Blue Card, резидент ЄС, громадянство, возз'єднання сім'ї, довідки, страхування. Ціни на всі послуги.",
-  body: `${pageHero({ crumbs: [["", "Послуги"]], eyebrow: "Послуги", h1: "Послуги та ціни", lead: "Оберіть послугу, щоб побачити, що саме ми робимо і скільки це коштує." })}
-  <section>
+  // Послуги
+  const S = C.servicesPage;
+  page(C, {
+    file: "poslugy.html", active: "poslugy.html", title: S.title, desc: S.desc,
+    body: `${pageHero(C, { crumbs: [["", S.eyebrow]], eyebrow: S.eyebrow, h1: S.h1, lead: S.lead, extra: `<nav class="toc" aria-label="${S.toc[0]}">
+        <span class="toc-l">${S.toc[0]}</span>
+        ${[["#pakety", S.toc[1]], ["#posluhy", S.toc[2]], ["#dodatkovi", S.toc[3]], ["#oplaty", S.toc[4]]].map(([h, t], i) => `<a href="${h}"><span>${i + 1}</span>${t}</a>`).join("")}
+      </nav>` })}
+  <section id="pakety">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Супровід процесу легалізації</span>
-        <h2>Карта тимчасового побиту: пакети супроводу</h2>
-        <p class="lead">Допомога з підготовкою документів, поданням заяви та супроводом процедури легалізації перебування в Польщі.</p>
+        <span class="eyebrow">${C.ui.packsEyebrow}</span>
+        <h2>${S.packsH}</h2>
+        <p class="lead">${S.packsLead}</p>
       </div>
-      ${packsHtml(PACKS)}
-      ${TERMS_PACKS}
+      ${packsHtml(C, C.packs)}
+      ${C.termsPacks}
     </div>
   </section>
-  <section class="light">
+  <section class="light" id="posluhy">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Усі послуги</span>
-        <h2>Оберіть послугу</h2>
+        <span class="eyebrow">${S.allEyebrow}</span>
+        <h2>${S.allH}</h2>
       </div>
-      ${svcCards()}
+      ${svcCards(C)}
     </div>
   </section>
-  <section>
+  <section id="dodatkovi">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Прайс</span>
-        <h2>Інші послуги</h2>
+        <span class="eyebrow">${S.priceEyebrow}</span>
+        <h2>${S.priceH}</h2>
       </div>
       <div class="pricelist">
-        ${rows(OTHER)}
+        ${rows(C.other)}
       </div>
-      ${TERMS}
+      ${C.terms}
     </div>
   </section>
-  <section class="light" id="oplaty">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Opłaty skarbowe</span>
-        <h2>Державні збори</h2>
-        <p class="lead">Збори сплачуються до відповідного органу окремо від вартості наших послуг.</p>
-      </div>
-      <div class="pricelist">
-        ${rows(FEES)}
-      </div>
-    </div>
-  </section>
-  ${band()}`
-});
+  ${feesSection(C)}
+  ${band(C)}`
+  });
 
-// Сторінки послуг
-for (const s of SERVICES) {
-  const others = SERVICES.filter((x) => x.slug !== s.slug).slice(0, 3);
-  page({
-    file: `p-${s.slug}.html`, active: "poslugy.html",
-    title: `${s.h1} — Julia Hajecka`,
-    desc: s.short,
-    body: `${pageHero({
-      crumbs: [["poslugy.html", "Послуги"], ["", s.name]], eyebrow: "Послуга", h1: s.h1, lead: s.intro,
-      extra: `<div class="hero-cta"><span class="pricetag">Вартість <b>${s.price}</b></span><a class="btn btn-gold" href="kontakty.html">Записатися на консультацію</a></div>`
-    })}
+  // Сторінки послуг
+  const PACKSETS = { main: C.packs, biz: C.packsBiz };
+  for (const s of C.services) {
+    const others = C.services.filter((x) => x.slug !== s.slug).slice(0, 3);
+    page(C, {
+      file: `p-${s.slug}.html`, active: "poslugy.html", title: `${s.h1} — Julia Hajecka`, desc: s.short,
+      body: `${pageHero(C, {
+        crumbs: [["poslugy.html", S.eyebrow], ["", s.name]], eyebrow: C.ui.service, h1: s.h1, lead: s.intro,
+        extra: `<div class="hero-cta"><span class="pricetag">${C.ui.price} <b>${s.price}</b></span><a class="btn btn-gold" href="kontakty.html">${C.ui.consult}</a></div>`
+      })}
   <section>
     <div class="wrap two">
       <div>
         ${s.alert ? `<div class="alert">${s.alert.text}</div>` : ""}
-        ${s.about ? `<h2 class="subh">${s.aboutTitle || "Про процедуру"}</h2>${s.about.map((p) => `<p class="plain">${p}</p>`).join("")}` : ""}
+        ${s.about ? `<h2 class="subh">${s.aboutTitle || C.ui.aboutProc}</h2>${s.about.map((p) => `<p class="plain">${p}</p>`).join("")}` : ""}
         ${s.pre || ""}
-        ${s.when ? `<h3 class="subh3">Коли це потрібно</h3><ul class="dots">${s.when.map((w) => `<li>${w}</li>`).join("")}</ul>` : ""}
-        <h2 class="subh${s.about || s.pre ? " gap" : ""}">${s.doesTitle || "Що ми робимо"}</h2>
+        ${s.when ? `<h3 class="subh3">${C.ui.when}</h3><ul class="dots">${s.when.map((w) => `<li>${w}</li>`).join("")}</ul>` : ""}
+        <h2 class="subh${s.about || s.pre ? " gap" : ""}">${s.doesTitle || C.ui.doesDefault}</h2>
         ${s.chips ? `<div class="chips">${s.chips.map((c) => `<span class="chip">${c}</span>`).join("")}</div>` : ""}
         <ul class="checks">${s.does.map((d) => `<li>${d}</li>`).join("")}</ul>
         ${s.note ? `<p class="plain">${s.note}</p>` : ""}
         ${s.which ? `<h3 class="subh3">${s.whichTitle}</h3><ul class="dots">${s.which.map((w) => `<li>${w}</li>`).join("")}</ul>` : ""}
-        ${s.forWhom ? `<h3 class="subh3">Для кого ця послуга?</h3><p class="plain">${s.forWhom}</p>` : ""}
+        ${s.forWhom ? `<h3 class="subh3">${C.ui.forWhom}</h3><p class="plain">${s.forWhom}</p>` : ""}
         ${s.post || ""}
         ${s.closing ? `<p class="closing">${s.closing}</p>` : ""}
-        <p class="plain">${s.stagesNote || "Етапи співпраці адаптуємо до особливостей кожної справи."} Детальніше — <a href="yak-pratsiuiemo.html">як ми працюємо</a>.</p>
+        <p class="plain">${s.stagesNote || C.ui.stagesDefault} ${C.ui.stagesMore} <a href="yak-pratsiuiemo.html">${C.ui.stagesLink}</a>.</p>
       </div>
       <aside class="side">
-        <span class="lbl">Вартість</span>
+        <span class="lbl">${C.ui.price}</span>
         <div class="big">${s.price}</div>
         <ul>${s.lines.map(([n, p]) => `<li>${n} <b>${p}</b></li>`).join("")}</ul>
-        <a class="btn btn-gold" href="${WA}" target="_blank" rel="noopener">Написати у WhatsApp</a>
-        <a class="btn btn-line" href="kontakty.html">Залишити заявку</a>
+        <a class="btn btn-gold" href="${WA}" target="_blank" rel="noopener">${C.ui.wa}</a>
+        <a class="btn btn-line" href="kontakty.html">${C.ui.request}</a>
       </aside>
     </div>
   </section>
   ${s.faq ? `<section class="light">
     <div class="wrap">
-      <div class="section-head"><span class="eyebrow">Поширені запитання</span><h2>Відповіді на часті питання</h2></div>
+      <div class="section-head"><span class="eyebrow">${C.ui.faqEyebrow}</span><h2>${C.ui.faqH}</h2></div>
       <div class="faq">${s.faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("")}</div>
     </div>
   </section>` : ""}
   ${s.packs ? `<section class="light">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Супровід процесу легалізації</span>
-        <h2>${PACKSETS[s.packs].title}</h2>
-        <p class="lead">${PACKSETS[s.packs].lead}</p>
+        <span class="eyebrow">${C.ui.packsEyebrow}</span>
+        <h2>${C.ui.packsets[s.packs].title}</h2>
+        <p class="lead">${C.ui.packsets[s.packs].lead}</p>
       </div>
-      ${packsHtml(PACKSETS[s.packs].list)}
-      ${TERMS_PACKS}
+      ${packsHtml(C, PACKSETS[s.packs])}
+      ${C.termsPacks}
     </div>
   </section>` : ""}
   <section>
     <div class="wrap">
-      <div class="section-head"><span class="eyebrow">Також</span><h2>Інші послуги</h2></div>
-      ${svcCards(others)}
+      <div class="section-head"><span class="eyebrow">${C.ui.also}</span><h2>${C.ui.otherServices}</h2></div>
+      ${svcCards(C, others)}
     </div>
   </section>
-  ${band()}`
-  });
-}
+  ${band(C)}`
+    });
+  }
 
-// Як працюємо
-page({
-  file: "yak-pratsiuiemo.html", active: "yak-pratsiuiemo.html",
-  title: "Як ми працюємо — Julia Hajecka",
-  desc: "П'ять етапів супроводу: консультація, план справи, документи, супровід, рішення.",
-  body: `${pageHero({ crumbs: [["", "Як працюємо"]], eyebrow: "Процес роботи", h1: "Як ми працюємо", lead: "Від першої консультації до отримання карти — п'ять зрозумілих етапів." })}
+  // Як працюємо
+  const HW = C.how;
+  page(C, {
+    file: "yak-pratsiuiemo.html", active: "yak-pratsiuiemo.html", title: HW.title, desc: HW.desc,
+    body: `${pageHero(C, { crumbs: [["", HW.crumb]], eyebrow: HW.eyebrow, h1: HW.h1, lead: HW.lead })}
   <section>
     <div class="wrap">
-      ${STAGES.map((x, i) => `<div class="stage"><div class="num">0${i + 1}</div><div><h3>${x.h}</h3>${x.p ? `<p>${x.p}</p>` : ""}<p class="lbl">${x.l}</p><ul>${x.li.map((y) => `<li>${y}</li>`).join("")}</ul><p class="out">${x.o}</p></div></div>`).join("\n      ")}
+      ${C.stages.map((x, i) => `<div class="stage"><div class="num">0${i + 1}</div><div><h3>${x.h}</h3>${x.p ? `<p>${x.p}</p>` : ""}<p class="lbl">${x.l}</p><ul>${x.li.map((y) => `<li>${y}</li>`).join("")}</ul><p class="out">${x.o}</p></div></div>`).join("\n      ")}
     </div>
   </section>
-  ${band("Почнімо з консультації", "Перша година — 300 zł. Після неї ви розумієте подальші дії, терміни та можливі сценарії.")}`
-});
+  ${band(C, HW.bandH, HW.bandP)}`
+  });
 
-// Про нас
-page({
-  file: "pro-nas.html", active: "pro-nas.html",
-  title: "Про нас — Julia Hajecka",
-  desc: "З 2017 року допомагаємо іноземцям, їхнім родинам і підприємцям у справах легалізації перебування та праці в Польщі.",
-  body: `${pageHero({ crumbs: [["", "Про нас"]], eyebrow: "Про нас", h1: "Індивідуальний підхід. Досвід. Стратегія." })}
+  // Про нас
+  const AB = C.about;
+  page(C, {
+    file: "pro-nas.html", active: "pro-nas.html", title: AB.title, desc: AB.desc,
+    body: `${pageHero(C, { crumbs: [["", AB.crumb]], eyebrow: AB.eyebrow, h1: AB.h1 })}
   <section class="about">
     <div class="wrap">
-      ${portrait}
+      ${portrait(A)}
       <div>
         <h2 class="subh">Julia Hajecka</h2>
-        <p class="role">Засновниця</p>
-        <p>З 2017 року я допомагаю іноземцям, їхнім родинам і підприємцям у справах легалізації перебування та праці в Польщі. Сьогодні поєдную власний досвід зі знаннями команди перевірених фахівців: визначаю напрям дій, стежу за єдиною стратегією та якістю обслуговування на кожному етапі.</p>
-        <p>Я не вірю в універсальні рішення. Перш ніж діяти, ми аналізуємо обставини справи, потреби клієнта та доступні правові можливості — і дивимося ширше за одну заяву: на довгострокові плани, ризики та наступні етапи перебування в Польщі.</p>
-        <p class="pull">Понад 1500 родин довірили мені свої справи. За цим числом — конкретні історії та люди, для яких легалізація означає можливість жити разом, працювати й планувати майбутнє в Польщі.</p>
+        ${AB.paras.map((p) => `<p>${p}</p>`).join("\n        ")}
+        <p class="pull">${AB.pull}</p>
       </div>
     </div>
   </section>
   <section class="light">
     <div class="wrap">
-      <div class="section-head"><span class="eyebrow">Підхід</span><h2>Принципи нашої роботи</h2></div>
+      <div class="section-head"><span class="eyebrow">${AB.prEyebrow}</span><h2>${AB.prH}</h2></div>
       <div class="grid3">
-        <div class="card"><h3>Індивідуальний підхід до кожної справи</h3><p>Не користуємося готовими схемами. Уважно аналізуємо вашу ситуацію, потреби й цілі, щоб запропонувати найкраще рішення відповідно до чинних правил.</p></div>
-        <div class="card"><h3>Зрозумілі умови співпраці</h3><p>Від початку ви знаєте, у чому полягає співпраця, скільки вона коштує і скільки часу триватиме. Прозорі умови, достовірна інформація, жодних прихованих витрат.</p></div>
-        <div class="card"><h3>Постійна підтримка і зв'язок</h3><p>Залишаємося на зв'язку на кожному етапі: відповідаємо на запитання, повідомляємо про хід справи. Доступні телефоном, поштою, у WhatsApp, Viber і Telegram.</p></div>
+        ${AB.principles.map(([h, p]) => `<div class="card"><h3>${h}</h3><p>${p}</p></div>`).join("\n        ")}
       </div>
     </div>
   </section>
-  ${reviewsBlock()}
-  ${band("Ваше майбутнє в Польщі заслуговує на продуману стратегію", "Потрібна допомога з легалізацією перебування чи праці? Напишіть нам — проаналізуємо вашу ситуацію і підкажемо можливі напрями дій.")}`
-});
+  ${reviewsBlock(C)}
+  ${band(C, AB.bandH, AB.bandP)}`
+  });
 
-// Кейси від Юлії (дані клієнтів знеособлені)
-const CASES = [
-  { tag: "Сталий побит", title: "Карта сталого побиту на підставі польського походження: від двох відмов до позитивного результату",
-    sit: ["Громадянин України звернувся до нас після тривалого очікування та невдалого попереднього супроводу справи іншим спеціалістом. Під час першого подання заявник отримав відмову, оскільки попередня довірена особа не надала до справи оригінали перекладів документів. Згодом заявник так і не отримав належної інформації про перебіг справи, а всі оригінали родинних документів залишалися у Воєводському управлінні.",
-      "Після звернення до нас заявник повторно подав документи, однак знову отримав відмову. Воєвода послався, зокрема, на те, що в попередній заяві на тимчасове перебування заявник зазначив українську національність, а також дійшов висновку, що відсутність прямого документального підтвердження польського походження по відповідній лінії родоводу не дає підстав для надання дозволу на постійне перебування.",
-      "Ситуацію ускладнювало те, що в документах заявника та його батька батьки були зазначені як українці, тоді як архівні документи попереднього покоління підтверджували польську національність. Для повноцінної оцінки справи необхідно було відновити її історію та дослідити архівні матеріали."],
-    done: ["Відновили історію справи та проаналізували наявні матеріали й архівні документи.", "Дослідили документи кількох поколінь родини для обґрунтування польського походження заявника.", "Підготували ґрунтовне оскарження відмови, аргументувавши позицію з урахуванням історичних і політичних обставин, які могли впливати на зазначення національності в офіційних документах.", "Надали правову оцінку аргументам Воєводи щодо відсутності прямого документального підтвердження походження.", "Допомогли повернути заявнику всі родинні документи, які перебували у Воєводському управлінні."],
-    res: ["Попри попередні невдачі та складну документальну ситуацію, заявник отримав дозвіл на постійне перебування (сталий побит) на підставі польського походження. Усі родинні документи також були повернуті заявнику."],
-    moral: "Цей кейс показує, що відмова не завжди означає відсутність правових підстав для отримання дозволу. У складних справах важливо не лише зібрати документи, а й відновити історію попередніх проваджень, дослідити архівні матеріали та послідовно обґрунтувати правову позицію." },
-  { tag: "Карта побиту", title: "Карту побиту отримано за 18 днів: термінове вирішення справи перед виїздом за кордон",
-    sit: ["До нас звернулася жінка, яка особисто подала повний пакет документів для отримання дозволу на тимчасове перебування (часовий побит) на підставі шлюбу. Розгляд справи затягнувся: заявниця чекала на рішення Воєводи вже понад п'ять місяців.", "Ситуація стала особливо терміновою, оскільки жінці необхідно було виїхати за кордон, а невизначеність щодо строків завершення справи ускладнювала планування поїздки."],
-    done: ["Ознайомилися з документами та матеріалами справи.", "Проаналізували поточний стан провадження та можливі подальші дії для прискорення розгляду.", "Організували подальший супровід справи з урахуванням термінової потреби заявниці отримати документ, що підтверджує наданий дозвіл."],
-    res: ["Уже через 18 днів після аналізу документів, поданих у справі, заявниця отримала карту побиту."],
-    moral: "Цей випадок показує, що навіть після тривалого очікування важливо оцінити фактичний стан справи та визначити подальші кроки, які можуть допомогти наблизити її завершення.",
-    imgs: [["img/cases/case2-decyzja.jpg", "Рішення Воєводи"], ["img/cases/case2-list.jpg", "Запрошення на отримання карти"]] },
-  { tag: "Сім'я", title: "Возз'єднання родини: карта побиту на 3 роки для матері заявниці",
-    sit: ["До нас звернулася жінка з проханням допомогти легалізувати перебування її матері в Польщі. Сама заявниця мала дозвіл на перебування резидента, однак не мала власного доходу чи нерухомості, оскільки повністю перебувала на утриманні чоловіка.", "Така ситуація вимагала індивідуального підходу: потрібно було не просто зібрати стандартний пакет документів, а належним чином обґрунтувати сімейні обставини та підтвердити фінансову ситуацію родини. У подібних справах перелік документів не завжди очевидний, а стандартних рекомендацій уженду може бути недостатньо, щоб зрозуміти, як найкраще підтвердити конкретні обставини."],
-    done: ["Проаналізували особисту та сімейну ситуацію заявниці.", "Визначили, які обставини необхідно підтвердити для розгляду справи.", "Сформували індивідуальний пакет документів з урахуванням того, що заявниця не мала власного доходу та перебувала на утриманні чоловіка.", "Підготували документи, які мали належним чином відобразити фінансову ситуацію родини та обґрунтувати підстави для легалізації перебування матері."],
-    res: ["Мати заявниці отримала карту побиту строком на 3 роки."],
-    moral: "Цей кейс демонструє, що у справах із легалізації перебування членів родини важливо враховувати не лише формальний перелік документів, а й реальні життєві обставини. Індивідуальний аналіз допомагає визначити, які докази потрібні саме у вашій ситуації, уникнути зайвих кроків і зменшити ризик затягування справи через недостатнє документальне підтвердження." },
-  { tag: "Роботодавець", title: "12 спеціалістів за 2 тижні: комплексний супровід працевлаштування та легалізації",
-    sit: ["До нас звернувся роботодавець, якому необхідно було працевлаштувати у своїй компанії 12 спеціалістів — громадян України та Білорусі. Кожен працівник мав індивідуальну міграційну ситуацію: хтось уже мав карту побиту, видану у зв'язку з роботою в попереднього роботодавця; хтось перебував у процесі розгляду заяви на дозвіл на перебування; хтось лише готувався подавати документи, а двоє працівників користувалися статусом UKR.", "Додатковою складністю було те, що більшість спеціалістів мали родини, а отже, зміна роботи могла впливати не лише на їхню власну ситуацію, а й на подальшу легалізацію перебування близьких.", "Часу на організацію процесу було обмаль, а обсяг роботи та відповідальність — значними. Потрібно було оперативно проаналізувати 12 окремих ситуацій, визначити належні процедури та підготувати документи так, щоб кожен працівник міг розпочати роботу з урахуванням вимог законодавства."],
-    done: ["Провели індивідуальний аналіз міграційного статусу кожного з 12 працівників, враховуючи наявні карти побиту, незавершені провадження та статус UKR.", "Оцінили ситуацію з працевлаштуванням і визначили необхідні документи та процедури для кожного спеціаліста.", "Врахували сімейні обставини працівників і можливий вплив зміни роботи на легалізацію перебування членів їхніх родин.", "Підготували індивідуальні комплекти документів для працевлаштування та подальшого подання заяв або внесення необхідних змін до документів, залежно від конкретної ситуації.", "Скоординували процес так, щоб роботодавець і працівники могли діяти послідовно, без зайвих затримок і плутанини в документах."],
-    res: ["Уже протягом двох тижнів від першої консультації всі 12 спеціалістів розпочали роботу в нового роботодавця. Кожен отримав підготовлений відповідно до своєї ситуації комплект документів для необхідних подальших процедур.", "Надалі всі працівники отримали необхідні карти побиту, а частина з них разом із нами вже подала документи на отримання дозволу на перебування довгострокового резидента ЄС."],
-    moral: "Цей кейс — про системну роботу з великою кількістю різних міграційних ситуацій одночасно. Коли роботодавцю потрібно швидко залучити спеціалістів, недостатньо підготувати один стандартний пакет документів для всіх. Важливо оцінити статус кожного працівника, врахувати сімейні обставини та правильно визначити подальші кроки. Саме такий підхід допомагає організувати процес у стислі строки та зменшити ризик помилок." }
-];
-const caseHtml = (c, i) => `
-        <article class="case-full">
-          <span class="tagline">Кейс ${i + 1} · ${c.tag}</span>
-          <h2>${c.title}</h2>
-          <div class="case-part"><h3>Ситуація</h3>${c.sit.map((p) => `<p>${p}</p>`).join("")}</div>
-          <div class="case-part"><h3>Що зроблено</h3><ul class="checks">${c.done.map((d) => `<li>${d}</li>`).join("")}</ul></div>
-          <div class="case-part"><h3>Результат</h3>${c.res.map((p) => `<p>${p}</p>`).join("")}</div>
-          ${c.imgs ? `<div class="case-imgs">${c.imgs.map(([src, cap]) => `<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${cap}" loading="lazy"><span>${cap}</span></a>`).join("")}</div><p class="case-cap">Дані клієнта приховано.</p>` : ""}
-          <p class="moral">${c.moral}</p>
-        </article>`;
-page({
-  file: "keisy.html", active: "keisy.html",
-  title: "Кейси — Julia Hajecka",
-  desc: "Історії справ: з чим зверталися клієнти і чим усе завершилося.",
-  body: `${pageHero({ crumbs: [["", "Кейси"]], eyebrow: "Кейси", h1: "Історії справ", lead: "Без імен і особистих даних: ситуація, що зроблено, результат." })}
+  // Кейси: компактні картки + окрема сторінка кожного кейсу
+  const CS = C.casesPage;
+  page(C, {
+    file: "keisy.html", active: "keisy.html", title: CS.title, desc: CS.desc,
+    body: `${pageHero(C, { crumbs: [["", CS.crumb]], eyebrow: CS.eyebrow, h1: CS.h1, lead: CS.lead })}
   <section>
     <div class="wrap">
-      <div class="cases-full">${CASES.map(caseHtml).join("")}
-      </div>
+      ${caseCards(C, C.cases)}
     </div>
   </section>
-  ${band()}`
-});
-
-// Блог
-page({
-  file: "blog.html", active: "blog.html",
-  title: "Блог про легалізацію у Польщі — Julia Hajecka",
-  desc: "Відповіді на поширені запитання про легалізацію перебування та праці в Польщі.",
-  body: `${pageHero({ crumbs: [["", "Блог"]], eyebrow: "Блог", h1: "Корисне про легалізацію", lead: "Відповіді на запитання, які нам найчастіше ставлять клієнти." })}
+  ${band(C)}`
+  });
+  C.cases.forEach((c, i) => {
+    page(C, {
+      file: `k-${c.slug}.html`, active: "keisy.html", title: `${c.title} — Julia Hajecka`, desc: c.lead,
+      body: `${pageHero(C, { crumbs: [["keisy.html", CS.crumb], ["", `${C.ui.caseWord} ${i + 1}`]], eyebrow: `${C.ui.caseWord} ${i + 1} · ${c.tag}`, h1: c.title, lead: c.lead })}
   <section>
     <div class="wrap">
-      ${postCards(POSTS)}
+      <article class="case-full">
+        <div class="case-part"><h3>${C.ui.caseSit}</h3>${c.sit.map((p) => `<p>${p}</p>`).join("")}</div>
+        <div class="case-part"><h3>${C.ui.caseDone}</h3><ul class="checks">${c.done.map((d) => `<li>${d}</li>`).join("")}</ul></div>
+        <div class="case-part"><h3>${C.ui.caseRes}</h3>${c.res.map((p) => `<p>${p}</p>`).join("")}</div>
+        ${c.imgs ? `<div class="case-imgs">${c.imgs.map(([src], k) => `<a href="${A}${src}" target="_blank" rel="noopener"><img src="${A}${src}" alt="${C.ui.caseImgs[k]}" loading="lazy"><span>${C.ui.caseImgs[k]}</span></a>`).join("")}</div><p class="case-cap">${C.ui.caseHidden}</p>` : ""}
+        <p class="moral">${c.moral}</p>
+      </article>
     </div>
   </section>
-  ${band()}`
-});
-for (const p of POSTS) {
-  page({
-    file: `b-${p.slug}.html`, active: "blog.html",
-    title: `${p.title} — Julia Hajecka`,
-    desc: p.lead,
-    body: `${pageHero({ crumbs: [["blog.html", "Блог"], ["", p.title]], eyebrow: p.date, h1: p.title, lead: p.lead })}
+  <section class="light">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">${CS.eyebrow}</span><h2>${C.ui.otherCases}</h2></div>
+      ${caseCards(C, C.cases.filter((x) => x !== c).slice(0, 3))}
+    </div>
+  </section>
+  ${band(C)}`
+    });
+  });
+
+  // Блог
+  const BP = C.blogPage;
+  page(C, {
+    file: "blog.html", active: "blog.html", title: BP.title, desc: BP.desc,
+    body: `${pageHero(C, { crumbs: [["", BP.crumb]], eyebrow: BP.eyebrow, h1: BP.h1, lead: BP.lead })}
+  <section>
+    <div class="wrap">
+      ${postCards(C, C.posts)}
+    </div>
+  </section>
+  ${band(C)}`
+  });
+  for (const p of C.posts) {
+    page(C, {
+      file: `b-${p.slug}.html`, active: "blog.html", title: `${p.title} — Julia Hajecka`, desc: p.lead,
+      body: `${pageHero(C, { crumbs: [["blog.html", BP.crumb], ["", p.title]], eyebrow: C.ui.date, h1: p.title, lead: p.lead })}
   <section>
     <div class="wrap">
       <div class="prose">
         ${p.body}
-        <p class="note">Стаття має інформаційний характер. У кожній справі є нюанси — напишіть, і ми розберемо саме вашу ситуацію.</p>
+        <p class="note">${C.ui.articleNote}</p>
       </div>
     </div>
   </section>
   <section class="light">
     <div class="wrap">
-      <div class="section-head"><span class="eyebrow">Блог</span><h2>Читайте також</h2></div>
-      ${postCards(POSTS.filter((x) => x.slug !== p.slug).slice(0, 3))}
+      <div class="section-head"><span class="eyebrow">${BP.eyebrow}</span><h2>${C.ui.readAlso}</h2></div>
+      ${postCards(C, C.posts.filter((x) => x.slug !== p.slug).slice(0, 3))}
     </div>
   </section>
-  ${band()}`
-  });
-}
+  ${band(C)}`
+    });
+  }
 
-// Контакти
-page({
-  file: "kontakty.html", active: "kontakty.html",
-  title: "Контакти — Julia Hajecka",
-  desc: "WhatsApp, Telegram, офіс у Blizne Łaszczyńskiego під Варшавою.",
-  body: `${pageHero({ crumbs: [["", "Контакти"]], eyebrow: "Контакти", h1: "Розкажіть про свою ситуацію", lead: "Напишіть у месенджер або залиште заявку — відповімо і запропонуємо час консультації." })}
+  // Контакти
+  const K = C.contact;
+  const mapEmbed = `https://maps.google.com/maps?cid=${MAP_CID}&hl=${C.meta.hl}&output=embed`;
+  page(C, {
+    file: "kontakty.html", active: "kontakty.html", title: K.title, desc: K.desc,
+    body: `${pageHero(C, { crumbs: [["", K.crumb]], eyebrow: K.eyebrow, h1: K.h1, lead: K.lead })}
   <section class="contact">
     <div class="wrap">
       <div>
@@ -941,195 +623,73 @@ page({
           <a class="btn btn-line" href="${IG}" target="_blank" rel="noopener">Instagram</a>
         </div>
         <ul class="clist">
-          <li><span>Телефон</span><a href="tel:+48791017254">+48 791 017 254</a></li>
-          <li><span>Email</span><div>${emailHtml("буде додано")}</div></li>
-          <li><span>Офіс</span><div>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</div></li>
-          <li><span>Години</span><div>Пн–Пт з 9:00, зустрічі за попереднім записом</div></li>
-          <li><span>Мови</span><div>Українська, Polski, Русский</div></li>
+          <li><span>${K.phone}</span><a href="tel:+48791017254">+48 791 017 254</a></li>
+          <li><span>${K.email}</span><div><a href="mailto:${EMAIL}">${EMAIL}</a></div></li>
+          <li><span>${K.office}</span><div>ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</div></li>
+          <li><span>${K.hours}</span><div>${K.hoursV}</div></li>
+          <li><span>${K.langs}</span><div>${K.langsV}</div></li>
         </ul>
       </div>
       <form id="form">
         <div class="f2">
-          <label><span>Ім'я</span><input name="name" required></label>
-          <label><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required></label>
+          <label><span>${K.fName}</span><input name="name" required></label>
+          <label><span>${K.fPhone}</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" required></label>
         </div>
         <div class="f2">
-          <label><span>Зручний месенджер</span><select name="msgr"><option>WhatsApp</option><option>Telegram</option><option>Viber</option><option>Інше</option></select></label>
-          <label><span>Мова спілкування</span><select name="lang"><option>Українська</option><option>Polski</option><option>Русский</option><option>English</option></select></label>
+          <label><span>${K.fMsgr}</span><select name="msgr"><option>WhatsApp</option><option>Telegram</option><option>Viber</option><option>${K.fOther}</option></select></label>
+          <label><span>${K.fLang}</span><select name="lang"><option>Українська</option><option>Polski</option><option>Русский</option><option>English</option></select></label>
         </div>
         <div class="f2">
-          <label><span>Ви</span><select name="who"><option>Приватна особа</option><option>Роботодавець</option></select></label>
-          <label><span>Послуга</span><select name="service">${SERVICES.map((s) => `<option>${s.name}</option>`).join("")}<option>Консультація</option><option>Інше</option></select></label>
+          <label><span>${K.fWho}</span><select name="who"><option>${K.whoPriv}</option><option>${K.whoEmp}</option></select></label>
+          <label><span>${K.fService}</span><select name="service">${C.services.map((s) => `<option>${s.name}</option>`).join("")}<option>${K.svcConsult}</option><option>${K.svcOther}</option></select></label>
         </div>
-        <label><span>Коротко про ситуацію</span><textarea name="msg"></textarea></label>
-        <button class="btn btn-gold" type="submit">Надіслати у WhatsApp</button>
-        <p class="fnote">Заявка відкриється у WhatsApp із готовим текстом — залишиться натиснути «Надіслати».</p>
+        <label><span>${K.fMsg}</span><textarea name="msg"></textarea></label>
+        <button class="btn btn-gold" type="submit">${K.fSend}</button>
+        <p class="fnote">${K.fNote}</p>
       </form>
     </div>
   </section>
   <section class="light" id="dojazd">
     <div class="wrap visit">
       <div>
-        <span class="eyebrow">Як до нас дістатися</span>
-        <h2>Плануєте візит до нашого офісу?</h2>
-        <p class="plain">Будемо раді вас бачити! Офіс розташований у Blizne Łaszczyńskiego, неподалік варшавського Бемово. Дістатися можна автомобілем або громадським транспортом.</p>
+        <span class="eyebrow">${K.visitEyebrow}</span>
+        <h2>${K.visitH}</h2>
+        <p class="plain">${K.visitP}</p>
         <p class="visit-addr">ul. Gościnna 11, piętro 3, lok. 37<br>05-082 Blizne Łaszczyńskiego</p>
         <div class="visit-btns">
-          <a class="btn btn-line" href="${MAP_DIR}" target="_blank" rel="noopener">Прокласти маршрут</a>
-          <a class="btn btn-line" href="${GOOGLE}" target="_blank" rel="noopener">Картка в Google</a>
+          <a class="btn btn-line" href="${MAP_DIR}" target="_blank" rel="noopener">${K.route}</a>
+          <a class="btn btn-line" href="${GOOGLE}" target="_blank" rel="noopener">${K.gcard}</a>
         </div>
       </div>
-      <div class="map" id="map" data-src="${MAP_EMBED}">
+      <div class="map" id="map" data-src="${mapEmbed}">
         <div class="map-ph">
           <span class="pin" aria-hidden="true">●</span>
-          <p>Карта Google Maps з'явиться після згоди на cookies.</p>
-          <button class="btn btn-gold" type="button" id="mapLoad">Показати карту</button>
+          <p>${K.mapPh}</p>
+          <button class="btn btn-gold" type="button" id="mapLoad">${K.mapBtn}</button>
         </div>
       </div>
     </div>
   </section>`
-});
+  });
+}
 
-// Для роботодавців (польською)
-page({
-  file: "firmy.html", lang: "pl", active: "firmy.html",
+/* ---------- Сторінки лише польською ---------- */
+
+// Для роботодавців
+page(pl, {
+  file: "firmy.html", active: "firmy.html",
   title: "Dla pracodawców — legalne zatrudnienie cudzoziemców | Julia Hajecka",
   desc: "Zezwolenia na pracę, oświadczenia, Blue Card i karty pobytu dla pracowników. Obsługa firm zatrudniających cudzoziemców.",
-  body: `
-  <div class="page-hero">
-    <div class="wrap">
-      <span class="eyebrow">Dla pracodawców</span>
-      <h1>Kompleksowe wsparcie dla pracodawców i cudzoziemców</h1>
-      <p>Oferujemy kompleksową obsługę w zakresie legalizacji pobytu i pracy cudzoziemców w Polsce — od pierwszych dokumentów związanych z podjęciem pracy, przez legalizację zatrudnienia, aż po zezwolenie na pobyt i kartę pobytu.</p>
-      <div class="hero-cta">
-        <a class="btn btn-gold" href="#kontakt">Zapytaj o współpracę</a>
-        <a class="btn btn-ghost" href="#cennik">Cennik</a>
-      </div>
-    </div>
-  </div>
-
-  <section>
-    <div class="wrap two-text">
-      <div>
-        <span class="eyebrow">Dlaczego z nami</span>
-        <h2>Formalności bez zbędnego stresu</h2>
-      </div>
-      <div>
-        <p class="plain">Zatrudnianie cudzoziemców wiąże się z szeregiem formalności, obowiązków oraz procedur administracyjnych. Zmieniające się przepisy, różne podstawy legalizacji pracy i pobytu oraz konieczność terminowego składania dokumentów sprawiają, że prawidłowe przeprowadzenie całego procesu może być dla pracodawcy czasochłonne i wymagające.</p>
-        <p class="plain">Wspieramy zarówno pracodawców zatrudniających cudzoziemców, jak i samych pracowników. Naszym celem jest zapewnienie Państwu bezpieczeństwa, oszczędności czasu oraz prawidłowo przygotowanej dokumentacji, zgodnej z wymaganiami właściwych urzędów.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="zakres" class="light">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Zakres współpracy</span>
-        <h2>W czym pomagamy</h2>
-      </div>
-      <div class="grid3 numbered">
-        <div class="card"><span class="no">01</span><h3>Weryfikacja możliwości zatrudnienia cudzoziemca</h3><p>Ustalamy, jaka procedura ma zastosowanie i jakie dokumenty są potrzebne w konkretnej sytuacji.</p></div>
-        <div class="card"><span class="no">02</span><h3>Legalizacja pracy obywateli Ukrainy</h3><p>Powiadomienia o powierzeniu pracy obywatelom Ukrainy — weryfikacja obowiązków i dopełnienie wymaganych formalności.</p></div>
-        <div class="card"><span class="no">03</span><h3>Oświadczenie o powierzeniu wykonywania pracy cudzoziemcowi</h3><p>Przygotowanie i złożenie oświadczenia w przypadkach, w których procedura ma zastosowanie (obywatele Armenii, Białorusi, Mołdawii i Ukrainy), oraz wsparcie przy kolejnych obowiązkach związanych z procedurą.</p></div>
-        <div class="card"><span class="no">04</span><h3>Zezwolenie na pracę — A–S</h3><p>Dobór odpowiedniej procedury i uzyskanie wymaganych dokumentów.</p></div>
-        <div class="card"><span class="no">05</span><h3>Pobyt czasowy i praca</h3><p>Jednolite zezwolenie na pobyt czasowy i pracę prowadzimy kompleksowo — od przygotowania dokumentów i złożenia wniosku aż do uzyskania karty pobytu. Cudzoziemiec nie musi samodzielnie organizować kolejnych etapów, a pracodawca otrzymuje wsparcie w zakresie dokumentów dotyczących zatrudnienia.</p></div>
-        <div class="card"><span class="no">06</span><h3>Zmiana pracodawcy przy posiadanej karcie pobytu</h3><p>Jeżeli chcą Państwo zatrudnić pracownika, który ma kartę pobytu w związku z pracą, analizujemy jego sytuację i ustalamy, jakie formalności należy przeprowadzić. Pomagamy też pracownikom, którzy kończą zatrudnienie u dotychczasowego pracodawcy.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap two-text">
-      <div>
-        <span class="eyebrow">Dokumenty i dane</span>
-        <h2>Bezpieczeństwo powierzonych dokumentów</h2>
-      </div>
-      <div>
-        <p class="plain">Współpraca z cudzoziemcami i urzędami wymaga przekazywania wielu dokumentów oraz danych. Dokumentacja przekazywana w ramach sprawy — w tym dokumenty firmy, dane rachunku bankowego, informacje podatkowe czy dokumenty ZUS — jest wykorzystywana wyłącznie w celu realizacji konkretnej procedury.</p>
-        <p class="plain">Dzięki formalnej współpracy i jasno określonemu zakresowi usług mają Państwo kontrolę nad tym, komu przekazują dokumenty i w jakim celu są one wykorzystywane. Zależy nam na tym, aby klient miał jasność co do każdego etapu prowadzonej sprawy.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="cennik" class="pricelist-section">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Cennik</span>
-        <h2>Cennik usług</h2>
-        <p class="lead">Poniżej przedstawiamy podstawowy cennik usług. Ostateczny zakres oraz wynagrodzenie są ustalane przed rozpoczęciem obsługi, w zależności od charakteru i stopnia skomplikowania sprawy.</p>
-      </div>
-      <div class="pricelist">
-        <div>
-          <h3 class="pl-h">Legalizacja pracy</h3>
-          ${rows([
-            ["Weryfikacja dokumentów pobytowych cudzoziemca przed zatrudnieniem", "", "250 zł"],
-            ["Powiadomienie o powierzeniu pracy obywatelom Ukrainy", "", "150 zł"],
-            ["Oświadczenie o powierzeniu wykonywania pracy", "kompleksowa obsługa, w tym wymagane zawiadomienia i dokumenty", "500 zł"],
-            ["Zezwolenie na pracę typu A–S", "", "od 800 zł"],
-            ["Zmiana pracodawcy przy posiadanej karcie pobytu", "", "500 zł"]
-          ])}
-        </div>
-        <div>
-          <h3 class="pl-h">Dokumenty, zawiadomienia, audyt</h3>
-          ${rows([
-            ["Dokument podróży dla cudzoziemca", "", "350 zł"],
-            ["Zawiadomienie Wojewody o zakończeniu pracy — cudzoziemiec", "", "200 zł"],
-            ["Zawiadomienie Wojewody o zakończeniu pracy — pracodawca", "", "300 zł"],
-            ["Audyt legalności zatrudnienia cudzoziemców", "dokładne sprawdzenie dokumentacji, procedur oraz potencjalnych ryzyk związanych z kontrolami Straży Granicznej lub Państwowej Inspekcji Pracy", "wycena indywidualna"]
-          ])}
-        </div>
-      </div>
-      <div class="terms">
-        <div><b>Umowa i dokument sprzedaży</b> za każdą usługę.</div>
-        <div>Ceny nie obejmują opłat skarbowych ani kosztów tłumaczeń przysięgłych.</div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <div class="section-head"><span class="eyebrow">Współpraca</span><h2>Jak to wygląda</h2></div>
-      <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-        <div class="step"><h3>Rozmowa</h3><p>Ustalamy, kogo i na jakich warunkach chcesz zatrudnić.</p></div>
-        <div class="step"><h3>Plan i wycena</h3><p>Dostajesz listę dokumentów, terminy i koszt.</p></div>
-        <div class="step"><h3>Dokumenty</h3><p>Przygotowujemy i składamy wnioski, kontaktujemy się z urzędem.</p></div>
-        <div class="step"><h3>Opieka</h3><p>Pilnujemy terminów ważności i informujemy o zmianach w przepisach.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="kontakt" class="biz">
-    <div class="wrap">
-      <div>
-        <span class="eyebrow">Kontakt</span>
-        <h2>Porozmawiajmy o Twoich pracownikach</h2>
-        <p>Napisz, ilu cudzoziemców zatrudniasz lub planujesz zatrudnić — odpowiemy i zaproponujemy termin rozmowy.</p>
-        <div class="msgs">
-          <a class="btn btn-gold" href="${WA}" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="btn btn-ghost" href="${TG}" target="_blank" rel="noopener">Telegram</a>
-          <a class="btn btn-ghost" href="tel:+48791017254">+48 791 017 254</a>
-        </div>
-      </div>
-      <ul>
-        <li>E-mail: ${emailHtml("do uzupełnienia")}</li>
-        <li>Biuro: ul. Gościnna 11, piętro 3, lok. 37, 05-082 Blizne Łaszczyńskiego</li>
-        <li>Pn–Pt od 9:00, spotkania po wcześniejszym umówieniu</li>
-        <li>Obsługa po polsku, ukraińsku i rosyjsku</li>
-      </ul>
-    </div>
-  </section>`
+  body: readFileSync(join(OUT, "content", "firmy.html"), "utf8").replaceAll("${WA}", WA).replaceAll("${TG}", TG).replaceAll("${EMAIL}", EMAIL).replace("${FEES}", feesSection(pl))
 });
 
-
-// Dokumenty prawne Zamawiającego (po polsku) — treść w content/
+// Документи RODO Замовника — тексти в content/
 for (const [file, title, h1] of [
   ["polityka-prywatnosci.html", "Polityka prywatności", "Polityka prywatności"],
   ["klauzula-informacyjna.html", "Klauzula informacyjna RODO", "Klauzula informacyjna dotycząca przetwarzania danych osobowych"]
 ]) {
-  page({
-    file, lang: "pl",
-    title: `${title} — Julia Hajecka`,
-    desc: `${title} — Julia Hajecka LEGALIZACJA POBYTU CUDZOZIEMCÓW W POLSCE.`,
+  page(pl, {
+    file, title: `${title} — Julia Hajecka`, desc: `${title} — Julia Hajecka LEGALIZACJA POBYTU CUDZOZIEMCÓW W POLSCE.`,
     body: `
   <div class="page-hero">
     <div class="wrap">
@@ -1148,9 +708,12 @@ for (const [file, title, h1] of [
 }
 
 // Видаляємо сторінки, які більше не генеруються (старі статті, перейменовані сторінки)
-import { readdirSync, unlinkSync } from "node:fs";
-for (const f of readdirSync(OUT)) {
-  if (f.endsWith(".html") && !WRITTEN.has(f)) { unlinkSync(join(OUT, f)); console.log("removed", f); }
+for (const d of ["", ...Object.values(DIR).filter(Boolean)]) {
+  const dir = join(OUT, d);
+  if (!existsSync(dir)) continue;
+  for (const f of readdirSync(dir)) {
+    if (f.endsWith(".html") && !WRITTEN.has(d + f)) { unlinkSync(join(dir, f)); console.log("removed", d + f); }
+  }
 }
 
-console.log("ok");
+console.log("ok", WRITTEN.size, "pages");
