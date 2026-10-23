@@ -653,7 +653,7 @@ footer.fat .disclaimer { margin-top: 34px; font-size: 12.5px; line-height: 1.55;
 /* Міні-навігація сторінки послуг */
 .toc { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 22px; }
 .toc-l { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .7; margin-right: 4px; width: 100%; }
-.toc a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px 8px 8px; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; color: inherit; text-decoration: none; font-weight: 600; font-size: 14.5px; transition: background .2s, border-color .2s; }
+.toc a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; color: inherit; text-decoration: none; font-weight: 600; font-size: 14.5px; transition: background .2s, border-color .2s; }
 .toc a span { width: 24px; height: 24px; border-radius: 50%; background: var(--gold-soft); color: var(--navy); display: grid; place-items: center; font-size: 12.5px; font-weight: 800; }
 .toc a:hover { background: rgba(255,255,255,.1); border-color: var(--gold-soft); }
 #pakety, #posluhy, #dodatkovi, #oplaty { scroll-margin-top: 80px; }

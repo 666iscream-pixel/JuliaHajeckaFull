@@ -12,7 +12,7 @@ import en from "./content/i18n/en.mjs";
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
-const V = "41"; // версія файлів для скидання кешу браузера
+const V = "42"; // версія файлів для скидання кешу браузера
 const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
@@ -396,7 +396,7 @@ for (const C of LANGS) {
     file: "poslugy.html", active: "poslugy.html", title: S.title, desc: S.desc,
     body: `${pageHero(C, { crumbs: [["", S.eyebrow]], eyebrow: S.eyebrow, h1: S.h1, lead: S.lead, extra: `<nav class="toc" aria-label="${S.toc[0]}">
         <span class="toc-l">${S.toc[0]}</span>
-        ${[["#pakety", S.toc[1]], ["#posluhy", S.toc[2]], ["#dodatkovi", S.toc[3]], ["#oplaty", S.toc[4]]].map(([h, t], i) => `<a href="${h}"><span>${i + 1}</span>${t}</a>`).join("")}
+        ${[["#pakety", S.toc[1]], ["#posluhy", S.toc[2]], ["#dodatkovi", S.toc[3]], ["#oplaty", S.toc[4]]].map(([h, t]) => `<a href="${h}">${t}</a>`).join("")}
       </nav>` })}
   <section id="pakety">
     <div class="wrap">
