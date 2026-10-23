@@ -12,7 +12,7 @@ import en from "./content/i18n/en.mjs";
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
-const V = "40"; // версія файлів для скидання кешу браузера
+const V = "41"; // версія файлів для скидання кешу браузера
 const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";

@@ -341,7 +341,7 @@ export default {
   meta: { lang: "en", code: "EN", name: "English", locale: "en-GB", og: "en_GB", hl: "en" },
   nav: { services: "Services", how: "How we work", about: "About us", cases: "Case studies", blog: "Blog", contacts: "Contact" },
   ui: {
-    write: "Message us", home: "Home",
+    write: "Contact us", home: "Home",
     footerTag: "Legalisation of residence and work for foreigners in Poland.",
     fServices: "Services", fAll: "All services and prices", fSite: "Site", fContacts: "Contact",
     disclaimer: "The content on the Julia Hajecka — Legalizacja pobytu cudzoziemców website is for information and educational purposes only. It does not constitute individual legal or tax advice or a formal legal opinion and does not replace an analysis of a specific case.",

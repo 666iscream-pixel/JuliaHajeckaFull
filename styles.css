@@ -363,7 +363,7 @@ footer a { color: #fff; text-decoration: none; }
 .light { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .center-link { margin-top: 30px; }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .burger { display: block; }
   .nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--cream); border-bottom: 1px solid var(--line); flex-direction: column; gap: 0; padding: 8px 20px 16px; }
   .nav.open { display: flex; }
@@ -657,3 +657,10 @@ footer.fat .disclaimer { margin-top: 34px; font-size: 12.5px; line-height: 1.55;
 .toc a span { width: 24px; height: 24px; border-radius: 50%; background: var(--gold-soft); color: var(--navy); display: grid; place-items: center; font-size: 12.5px; font-weight: 800; }
 .toc a:hover { background: rgba(255,255,255,.1); border-color: var(--gold-soft); }
 #pakety, #posluhy, #dodatkovi, #oplaty { scroll-margin-top: 80px; }
+
+/* Шапка: пункти меню і кнопка не переносяться, логотип не стискається */
+.brand { flex: none; }
+.nav a, .header .btn { white-space: nowrap; }
+.header .wrap { gap: 22px; }
+.nav { gap: 18px; }
+.header .wrap { max-width: 1280px; }
