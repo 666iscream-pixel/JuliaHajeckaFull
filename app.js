@@ -115,8 +115,3 @@ document.querySelectorAll("[data-cc-open]").forEach((b) => b.addEventListener("c
 const mapBtn = document.getElementById("mapLoad");
 if (mapBtn) mapBtn.addEventListener("click", () => { setCC("all"); if (ccBar) ccBar.hidden = true; loadMap(); });
 if (getCC() === "all") loadMap();
-
-// Банер із терміном дії (наприклад, дедлайн CUKR) ховається після вказаної дати
-document.querySelectorAll("[data-until]").forEach((el) => {
-  if (Date.now() >= new Date(el.dataset.until + "T00:00:00").getTime()) el.hidden = true;
-});
