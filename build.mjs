@@ -12,7 +12,7 @@ import en from "./content/i18n/en.mjs";
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
-const V = "43"; // версія файлів для скидання кешу браузера
+const V = "44"; // версія файлів для скидання кешу браузера
 const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
@@ -122,7 +122,7 @@ ${body}
     </div>
     <div class="fbottom">
       <span>© 2026 Julia Hajecka — Legalizacja pobytu cudzoziemców w Polsce</span>
-      <span class="flegal"><a href="${plOnly("polityka-prywatnosci.html")}">Polityka prywatności</a><a href="${plOnly("klauzula-informacyjna.html")}">Klauzula informacyjna RODO</a><a href="nota-prawna.html">Nota prawna</a><button type="button" data-cc-open>${C.ui.cookieSettings}</button></span>
+      <span class="flegal"><a href="${plOnly("polityka-prywatnosci.html")}">Polityka prywatności</a><a href="${plOnly("klauzula-informacyjna.html")}">Klauzula informacyjna RODO</a><button type="button" data-cc-open>${C.ui.cookieSettings}</button></span>
     </div>
   </div>
 </footer>
@@ -544,6 +544,7 @@ for (const C of LANGS) {
   <section>
     <div class="wrap">
       ${caseCards(C, C.cases)}
+      <p class="disclaimer">${C.ui.disclaimer}</p>
     </div>
   </section>
   ${band(C)}`
@@ -581,6 +582,7 @@ for (const C of LANGS) {
   <section>
     <div class="wrap">
       ${postCards(C, C.posts)}
+      <p class="disclaimer">${C.ui.disclaimer}</p>
     </div>
   </section>
   ${band(C)}`
@@ -668,19 +670,6 @@ for (const C of LANGS) {
         </div>
       </div>
     </div>
-  </section>`
-  });
-}
-
-// Nota prawna — для кожної мови
-for (const C of LANGS) {
-  page(C, {
-    file: "nota-prawna.html", title: C.nota.title, desc: C.nota.desc,
-    body: `${pageHero(C, { crumbs: [["", C.nota.h1]], eyebrow: "Julia Hajecka", h1: C.nota.h1 })}
-  <section>
-    <div class="wrap"><div class="prose legal">
-      ${C.nota.paras.map((p) => `<p>${p}</p>`).join("")}
-    </div></div>
   </section>`
   });
 }

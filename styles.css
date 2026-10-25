@@ -664,3 +664,6 @@ footer.fat .disclaimer { margin-top: 34px; font-size: 12.5px; line-height: 1.55;
 .header .wrap { gap: 22px; }
 .nav { gap: 18px; }
 .header .wrap { max-width: 1280px; }
+
+/* Дисклеймер внизу розділів «Кейси» і «Блог» */
+main .disclaimer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 860px; }

@@ -344,6 +344,7 @@ export default {
     write: "Napisz", home: "Strona główna",
     footerTag: "Legalizacja pobytu i pracy cudzoziemców w Polsce.",
     fServices: "Usługi", fAll: "Wszystkie usługi i ceny", fSite: "Strona", fContacts: "Kontakt",
+    disclaimer: "Treści publikowane na stronie internetowej Julia Hajecka — Legalizacja pobytu cudzoziemców mają charakter informacyjny i edukacyjny. Nie stanowią indywidualnej porady prawnej ani podatkowej lub formalnej opinii prawnej i nie zastępują analizy konkretnej sprawy.",
     cookieSettings: "Ustawienia cookies",
     ccText: "Używamy niezbędnych plików cookies. Za Twoją zgodą ładujemy też mapę Google Maps, która zapisuje własne cookies.",
     ccNecessary: "Tylko niezbędne", ccAll: "Akceptuję wszystkie",
@@ -446,15 +447,6 @@ export default {
     visitEyebrow: "Dojazd", visitH: "Planujesz wizytę w naszym biurze?",
     visitP: "Z przyjemnością Cię powitamy! Biuro znajduje się w Bliznem Łaszczyńskiego, niedaleko warszawskiego Bemowa. Możesz dotrzeć do nas samochodem lub komunikacją miejską.",
     route: "Wyznacz trasę", gcard: "Wizytówka Google", mapPh: "Mapa Google Maps pojawi się po wyrażeniu zgody na cookies.", mapBtn: "Pokaż mapę"
-  },
-  nota: {
-    title: "Nota prawna — Julia Hajecka", desc: "Nota prawna dotycząca treści publikowanych na stronie Julia Hajecka — Legalizacja pobytu cudzoziemców.",
-    h1: "Nota prawna",
-    paras: [
-      "Treści publikowane w sekcjach „Blog” i „Case studies” na stronie internetowej Julia Hajecka — Legalizacja pobytu cudzoziemców mają charakter informacyjny i edukacyjny. Nie stanowią indywidualnej porady prawnej ani podatkowej lub formalnej opinii prawnej i nie zastępują analizy konkretnej sprawy.",
-      "Opisane case studies odzwierciedlają okoliczności konkretnych spraw i nie gwarantują takiego samego rezultatu w innych sytuacjach. Decyzje w sprawach legalizacji pobytu wydaje właściwy organ.",
-      "Aby uzyskać ocenę Twojej sytuacji, <a href=\"kontakty.html\">skontaktuj się z nami</a>."
-    ]
   },
   ask: ASK, packs: PACKS, packsBiz: PACKS_BIZ, terms: TERMS, termsPacks: TERMS_PACKS,
   services: SERVICES, other: OTHER, fees: FEES, stages: STAGES, posts: POSTS, cases: CASES
