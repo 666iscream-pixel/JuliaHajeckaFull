@@ -344,7 +344,6 @@ export default {
     write: "Contact us", home: "Home",
     footerTag: "Legalisation of residence and work for foreigners in Poland.",
     fServices: "Services", fAll: "All services and prices", fSite: "Site", fContacts: "Contact",
-    disclaimer: "The content on the Julia Hajecka — Legalizacja pobytu cudzoziemców website is for information and educational purposes only. It does not constitute individual legal or tax advice or a formal legal opinion and does not replace an analysis of a specific case.",
     cookieSettings: "Cookie settings",
     ccText: "We use necessary cookies. With your consent we also load Google Maps, which sets its own cookies.",
     ccNecessary: "Necessary only", ccAll: "Accept all",
@@ -447,6 +446,15 @@ export default {
     visitEyebrow: "Getting here", visitH: "Planning to visit our office?",
     visitP: "We'll be happy to see you! The office is in Blizne Łaszczyńskiego, close to Warsaw's Bemowo district. You can get here by car or public transport.",
     route: "Get directions", gcard: "Google profile", mapPh: "The Google map will appear after you accept cookies.", mapBtn: "Show map"
+  },
+  nota: {
+    title: "Legal notice — Julia Hajecka", desc: "Legal notice on the content of the Julia Hajecka — Legalizacja pobytu cudzoziemców website.",
+    h1: "Legal notice",
+    paras: [
+      "The content in the Blog and Case studies sections of the Julia Hajecka — Legalizacja pobytu cudzoziemców website is for information and educational purposes only. It does not constitute individual legal or tax advice or a formal legal opinion and does not replace an analysis of a specific case.",
+      "The case studies describe the circumstances of specific cases and do not guarantee the same outcome in other situations. Decisions in residence cases are made by the competent authority.",
+      "For an assessment of your own situation, <a href=\"kontakty.html\">contact us</a>."
+    ]
   },
   ask: ASK, packs: PACKS, packsBiz: PACKS_BIZ, terms: TERMS, termsPacks: TERMS_PACKS,
   services: SERVICES, other: OTHER, fees: FEES, stages: STAGES, posts: POSTS, cases: CASES
