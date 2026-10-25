@@ -676,7 +676,7 @@ for (const C of LANGS) {
 for (const C of LANGS) {
   page(C, {
     file: "nota-prawna.html", title: C.nota.title, desc: C.nota.desc,
-    body: `${pageHero(C, { crumbs: [["", C.nota.h1]], eyebrow: "Nota prawna", h1: C.nota.h1 })}
+    body: `${pageHero(C, { crumbs: [["", C.nota.h1]], eyebrow: "Julia Hajecka", h1: C.nota.h1 })}
   <section>
     <div class="wrap"><div class="prose legal">
       ${C.nota.paras.map((p) => `<p>${p}</p>`).join("")}
