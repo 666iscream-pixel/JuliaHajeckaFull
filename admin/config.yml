@@ -17,8 +17,8 @@ i18n:
   structure: multiple_folders
   locales: [pl, uk, ru, en]
   default_locale: pl
-  # Języki można włączać i wyłączać osobno w każdym wpisie (polski jest zawsze, ale może zostać pusty)
-  initial_locales: all
+  # Nowy wpis powstaje tylko po polsku; pozostałe języki włącza się w menu ⋮ edytora (polski jest zawsze, ale może zostać pusty)
+  initial_locales: default
 
 collections:
   - name: blog
