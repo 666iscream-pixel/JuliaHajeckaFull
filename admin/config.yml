@@ -17,6 +17,8 @@ i18n:
   structure: multiple_folders
   locales: [pl, uk, ru, en]
   default_locale: pl
+  # Języki można włączać i wyłączać osobno w każdym wpisie (polski jest zawsze, ale może zostać pusty)
+  initial_locales: all
 
 collections:
   - name: blog
@@ -35,6 +37,7 @@ collections:
     i18n: true
     fields:
       - name: title
+        required: [uk, ru, en]
         label: Tytuł
         widget: string
         i18n: true
@@ -47,11 +50,13 @@ collections:
         format: YYYY-MM-DD
         i18n: duplicate
       - name: lead
+        required: [uk, ru, en]
         label: Krótki opis
         hint: Wyświetla się na karcie artykułu i pod tytułem.
         widget: text
         i18n: true
       - name: body
+        required: [uk, ru, en]
         label: Treść artykułu
         widget: markdown
         i18n: true
@@ -79,29 +84,35 @@ collections:
         min: 1
         i18n: duplicate
       - name: tag
+        required: [uk, ru, en]
         label: Kategoria
         hint: Krótko, np. „Rodzina”, „Karta pobytu”. Widoczna na karcie.
         widget: string
         i18n: true
       - name: title
+        required: [uk, ru, en]
         label: Tytuł
         widget: string
         i18n: true
       - name: lead
+        required: [uk, ru, en]
         label: Krótki opis
         hint: Wyświetla się na karcie i pod tytułem.
         widget: text
         i18n: true
       - name: situation
+        required: [uk, ru, en]
         label: Sytuacja
         widget: markdown
         i18n: true
       - name: done
+        required: [uk, ru, en]
         label: Co zrobiliśmy
         hint: Najlepiej jako lista punktowana.
         widget: markdown
         i18n: true
       - name: result
+        required: [uk, ru, en]
         label: Rezultat
         widget: markdown
         i18n: true
