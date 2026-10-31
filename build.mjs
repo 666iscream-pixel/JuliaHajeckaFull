@@ -600,7 +600,7 @@ for (const C of LANGS) {
         <div class="case-part"><h3>${C.ui.caseSit}</h3>${fixPaths(c.sitHtml, A)}</div>
         <div class="case-part"><h3>${C.ui.caseDone}</h3>${fixPaths(c.doneHtml, A)}</div>
         <div class="case-part"><h3>${C.ui.caseRes}</h3>${fixPaths(c.resHtml, A)}</div>
-        ${c.photos && c.photos.length ? `<div class="case-imgs">${c.photos.map((ph) => { const src = A + String(ph.src || "").replace(/^\//, ""); return `<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${ph.alt || ""}" loading="lazy">${ph.alt ? `<span>${ph.alt}</span>` : ""}</a>`; }).join("")}</div><p class="case-cap">${C.ui.caseHidden}</p>` : ""}
+        ${c.photos && c.photos.length ? `<div class="case-imgs">${c.photos.map((ph) => { const src = A + String(ph.src || "").replace(/^\//, ""); return `<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${ph.alt || ""}" loading="lazy">${ph.alt ? `<span>${ph.alt}</span>` : ""}</a>`; }).join("")}</div>` : ""}
         ${c.moral ? `<p class="moral">${c.moral}</p>` : ""}
       </article>
     </div>

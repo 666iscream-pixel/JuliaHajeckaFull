@@ -276,7 +276,6 @@ export default {
     rvEyebrow: "Opinie", rvH: "Co mówią klienci", rvMore: "Więcej opinii klientów — w profilu Google.", rvBtn: "Czytaj opinie w Google", prev: "Wstecz", next: "Dalej",
     articleNote: "Artykuł ma charakter informacyjny. Każda sprawa ma swoje niuanse — napisz, a przeanalizujemy właśnie Twoją sytuację.",
     readAlso: "Czytaj także", caseWord: "Case", caseSit: "Sytuacja", caseDone: "Co zrobiliśmy", caseRes: "Rezultat",
-    caseHidden: "Dane klienta zostały ukryte.", otherCases: "Inne case studies",
     packsets: {
       main: { title: "Pakiety wsparcia", lead: "Pomoc w przygotowaniu dokumentów, złożeniu wniosku i prowadzeniu procedury legalizacji pobytu w Polsce." },
       biz: { title: "Pakiety dla przedsiębiorców", lead: "Pobyt czasowy w związku z prowadzeniem działalności gospodarczej." }

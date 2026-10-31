@@ -276,7 +276,6 @@ export default {
     rvEyebrow: "Reviews", rvH: "What our clients say", rvMore: "More client reviews on our Google profile.", rvBtn: "Read reviews on Google", prev: "Previous", next: "Next",
     articleNote: "This article is for information only. Every case has its nuances — message us and we will look at your particular situation.",
     readAlso: "Read also", caseWord: "Case", caseSit: "Situation", caseDone: "What we did", caseRes: "Result",
-    caseHidden: "Client details have been hidden.", otherCases: "Other case studies",
     packsets: {
       main: { title: "Support packages", lead: "Help with preparing documents, submitting the application and handling the procedure to legalise your stay in Poland." },
       biz: { title: "Packages for entrepreneurs", lead: "Temporary residence based on running a business." }
