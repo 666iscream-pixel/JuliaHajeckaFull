@@ -254,89 +254,6 @@ const STAGES = [
     o: "We support our clients not just until the documents are submitted, but until the actual result." }
 ];
 
-const POSTS = [
-  { slug: "cukr-vyizd", title: "Can you leave Poland after applying for a CUKR residence card?",
-    lead: "Applying for a CUKR residence card does not take away the applicant's UKR status.",
-    body: `<p>Applying for a CUKR residence card does not take away the applicant's UKR status. This means that while waiting for the card you can travel outside Poland, but a single absence must not exceed 30 days.</p>
-<h2>What should you pay attention to?</h2>
-<ul><li><b>Travelling abroad:</b> after applying you can travel, as long as you respect the limit on the length of absence.</li><li><b>UKR status:</b> applying for CUKR does not in itself cause you to lose it.</li><li><b>Receiving the CUKR card:</b> once you collect the card, your UKR status ends and your stay in Poland is then based on the temporary residence permit granted in connection with that card.</li></ul>
-<h2>Why is it important to control the length of your trip?</h2>
-<p>If you plan to travel while your application is being processed, check your travel dates in advance and make sure your absence does not exceed the permitted period. Breaching the rules of stay under UKR status may affect your legal status and further legalisation.</p>` },
-  { slug: "cukr-termin", title: "CUKR residence card: what is the application deadline and how long is it valid?",
-    lead: "You can apply for a CUKR residence card until 4 March 2027.",
-    body: `<p>Ukrainian citizens who benefit from temporary protection in Poland and meet the requirements can apply for a CUKR residence card. This document allows them to move from UKR status to a temporary residence permit on special terms.</p>
-<h2>What is the deadline for a CUKR application?</h2>
-<p>You can apply for a CUKR residence card until 4 March 2027. Applications are submitted exclusively online via the dedicated MOS portal.</p>` },
-  { slug: "ukr-robota", title: "Can you legally work in Poland with UKR status? Employer obligations and employment rules",
-    lead: "Ukrainian citizens with UKR status can work without a separate work permit, provided the legal requirements are met.",
-    body: `<p>Ukrainian citizens who benefit from temporary protection in Poland and hold a PESEL number with UKR status can work without obtaining a separate work permit, provided the legal requirements are met.</p>
-<p>The right to work allows employment under an employment contract (umowa o pracę) or a civil-law contract (umowa zlecenia), as long as the specific form of employment complies with the applicable rules. Special statutory restrictions may apply to certain positions.</p>
-<h2>What must the employer do?</h2>
-<p>For the employment to be lawful, the employer must complete a number of formalities:</p>
-<ul><li>Notify the district labour office (Powiatowy Urząd Pracy) that work has been entrusted to a foreigner, following the established procedure.</li><li>Meet the notification deadline — as a rule, within 7 days of the start of work.</li><li>Sign an appropriate contract setting out the working conditions, pay and duties.</li><li>Fulfil ZUS and tax obligations, in particular registering the employee for social insurance where required for the type of contract and the employee's status.</li></ul>
-<h2>What if the employer does not notify the labour office on time?</h2>
-<p>The obligation to notify about the employment lies with the employer, and so does the liability for failing to do so.</p>
-<p>At the same time, the legal consequences of a missing notification must be assessed in light of the applicable rules and the specific circumstances of the employment. You should not assume that every breach automatically has no consequences for the employee: it is important to check whether they still have a legal basis to stay and work.</p>
-<p>An employer who breaches the notification requirements may face a fine. That is why completing the formalities on time remains an important part of lawful employment.</p>
-<h2>Do you need a work permit?</h2>
-<p>If you have the right to work based on UKR status, a separate work permit is usually not needed. However, you should check that your status is current, your stay is legal and the specific form of employment meets the applicable requirements.</p>
-<p>If you have lost UKR status or your basis of stay has changed, different rules on access to the labour market may apply.</p>` },
-  { slug: "zmina-prizvyshcha", title: "Changed your surname after marriage: can you leave Poland with your old passport and residence card?",
-    lead: "Yes, travel may be possible on the basis of a valid passport and a residence card issued in your maiden name.",
-    body: `<p>Yes, travel may be possible on the basis of a valid passport and a residence card issued in your maiden name. However, before travelling it is worth checking the border crossing rules and the conditions for returning to Poland.</p>
-<h2>Which documents should you carry when returning to Poland?</h2>
-<p>If your new passport is in your husband's surname and your residence card is still in your maiden name, it is recommended to carry:</p>
-<ul><li>a valid passport in the new surname;</li><li>a valid residence card in your maiden name;</li><li>your marriage certificate and, if necessary, its sworn translation into Polish;</li><li>your old passport or a copy of it, if available.</li></ul>
-<p>These documents will help confirm the change of surname, but they do not guarantee that you will automatically be allowed across the border.</p>` },
-  { slug: "prodovzhennia-pobytu", title: "Your temporary residence permit is expiring. How do you “extend” it?",
-    lead: "Poland has no procedure for automatically extending a temporary residence permit.",
-    body: `<p>Poland has no procedure for automatically extending a temporary residence permit. To continue living in the country legally, you must apply for a new permit before your current one expires.</p>
-<p>If you do not plan to stay in Poland, you must leave before your permit expires, unless you have another basis for legal stay.</p>` },
-  { slug: "lyst-urzad", title: "You did not collect a letter from the office in your residence case. What should you do?",
-    lead: "Under certain conditions an uncollected letter is deemed delivered, even if the addressee never actually received it.",
-    body: `<p>If a letter was properly sent to the address given in your application but was not collected in time, it is returned to the office marked “not collected within the time limit”. Under certain conditions such a letter is deemed delivered, even if the addressee never actually received it.</p>
-<h2>What should you do in this situation?</h2>
-<p>Find out which letter was sent and whether it set a deadline for meeting the office's requirements.</p>
-<p>If the letter did not concern correcting formal defects in your application, you can contact the office via its form or submit a written explanation asking for the deadline to be extended.</p>
-<p><b>Important:</b> not collecting correspondence does not release you from the obligation to submit documents. If the letter contained a request to correct formal defects, you need to act according to its content and check whether the deadline can still be met.</p>` },
-  { slug: "povidomlennia-voievody", title: "What does the obligation to notify the Voivode that the reason for a temporary residence permit has ceased mean?",
-    lead: "A foreigner has 15 working days to notify the Voivode that the circumstances on which the permit was based have ceased.",
-    body: `<blockquote lang="pl">„Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.</blockquote>
-<p>Under Article 113 of the Polish Act on Foreigners, a foreigner who has been granted a temporary residence permit must, within 15 working days, notify the Voivode who granted it that the circumstances on which the permit was based have ceased.</p>
-<p>This may be, for example, the end of employment or studies, or the end of other circumstances on which the permit was granted.</p>
-<h2>How do you notify the Voivode?</h2>
-<p>The notification must be submitted in writing to the relevant voivodeship office. It should include your personal details, the case number (if known) and information that the reason for granting the permit has ceased.</p>
-<p><b>Important:</b> the end of the reason for which the permit was granted may affect your further legal stay in Poland. It is therefore worth checking whether you have another basis for staying in the country.</p>` }
-];
-
-const CASES = [
-  { slug: "polske-pokhodzhennia", lead: "The applicant obtained permanent residence based on Polish descent after two refusals.", tag: "Permanent residence",
-    title: "Permanent residence card based on Polish descent: from two refusals to a positive result",
-    sit: ["A Ukrainian citizen came to us after a long wait and unsuccessful previous handling of his case by another specialist. His first application was refused because the previous representative had not submitted the original translations of the documents. After that, the applicant never received proper information about the progress of his case, and all the original family documents remained at the Voivodeship Office.", "After coming to us, the applicant reapplied but was refused again. Among other things, the Voivode pointed out that in his earlier temporary residence application the applicant had stated Ukrainian nationality, and concluded that the lack of direct documentary proof of Polish descent in the relevant line of ancestry did not justify granting a permanent residence permit.", "The situation was complicated by the fact that the applicant's and his father's documents listed the parents as Ukrainian, while archival documents of the previous generation confirmed Polish nationality. A full assessment of the case required reconstructing its history and researching archival materials."],
-    done: ["We reconstructed the history of the case and analysed the available materials and archival documents.", "We researched documents of several generations of the family to substantiate the applicant's Polish descent.", "We prepared a thorough appeal against the refusal, arguing the case in light of the historical and political circumstances that may have affected how nationality was recorded in official documents.", "We provided a legal assessment of the Voivode's arguments about the lack of direct documentary proof of descent.", "We helped the applicant recover all the family documents held at the Voivodeship Office."],
-    res: ["Despite the earlier setbacks and the difficult documentary situation, the applicant obtained a permanent residence permit based on Polish descent. All the family documents were also returned to him."],
-    moral: "This case shows that a refusal does not always mean there are no legal grounds for a permit. In complex cases it is important not only to collect documents, but also to reconstruct the history of earlier proceedings, research archival materials and argue the legal position consistently." },
-  { slug: "karta-za-18-dniv", lead: "After five months of waiting, the applicant received her residence card 18 days after we reviewed the case.", tag: "Residence card",
-    title: "Residence card in 18 days: resolving a case urgently before travelling abroad",
-    sit: ["A woman came to us who had personally submitted a complete set of documents for a temporary residence permit based on marriage. The case was dragging on: she had been waiting for the Voivode's decision for more than five months.", "The situation became particularly urgent because she needed to travel abroad, and the uncertainty about when the case would be completed made it difficult to plan the trip."],
-    done: ["We reviewed the documents and the case files.", "We analysed the current state of the proceedings and possible further steps to speed up the decision.", "We organised further handling of the case, taking into account the applicant's urgent need for a document confirming the permit."],
-    res: ["Just 18 days after we reviewed the documents in the case, the applicant received her residence card."],
-    moral: "This case shows that even after a long wait it is important to assess the actual state of the case and identify the next steps that can help bring it to a close.",
-    imgs: [["img/cases/case2-decyzja.jpg"], ["img/cases/case2-list.jpg"]] },
-  { slug: "karta-dlia-materi", lead: "The applicant's mother received a 3-year residence card, even though the applicant had no income of her own.", tag: "Family",
-    title: "Family reunification: a 3-year residence card for the applicant's mother",
-    sit: ["A woman asked us to help legalise her mother's stay in Poland. The applicant herself held a resident permit but had no income or property of her own, as she was fully supported by her husband.", "This situation required an individual approach: it was not enough to collect a standard set of documents — the family circumstances had to be properly substantiated and the family's financial situation confirmed. In such cases the list of documents is not always obvious, and the office's standard guidance may not be enough to understand how best to prove specific circumstances."],
-    done: ["We analysed the applicant's personal and family situation.", "We determined which circumstances needed to be proven for the case.", "We prepared an individual set of documents, taking into account that the applicant had no income of her own and was supported by her husband.", "We prepared documents that properly reflected the family's financial situation and substantiated the grounds for legalising the mother's stay."],
-    res: ["The applicant's mother received a residence card valid for 3 years."],
-    moral: "This case shows that in family residence cases it is important to consider not only the formal list of documents, but also real-life circumstances. An individual analysis helps identify what evidence is needed in your particular situation, avoid unnecessary steps and reduce the risk of delays caused by insufficient documentation." },
-  { slug: "12-spetsialistiv", lead: "All 12 specialists started working for their new employer within two weeks.", tag: "Employer",
-    title: "12 specialists in 2 weeks: comprehensive support with employment and legalisation",
-    sit: ["An employer came to us who needed to hire 12 specialists — citizens of Ukraine and Belarus. Each worker had an individual migration situation: some already held a residence card issued in connection with work for a previous employer; some had a residence application pending; some were only preparing to apply, and two had UKR status.", "An additional difficulty was that most of the specialists had families, so a change of job could affect not only their own situation but also the further legalisation of their relatives' stay.", "There was little time to organise the process, while the workload and responsibility were considerable. We had to quickly analyse 12 separate situations, determine the appropriate procedures and prepare the documents so that each worker could start work in compliance with the law."],
-    done: ["We carried out an individual analysis of the migration status of each of the 12 workers, taking into account existing residence cards, pending proceedings and UKR status.", "We assessed the employment situation and identified the documents and procedures required for each specialist.", "We took into account the workers' family circumstances and the possible impact of a job change on the legalisation of their family members' stay.", "We prepared individual sets of documents for employment and for subsequent applications or necessary changes, depending on each situation.", "We coordinated the process so that the employer and the workers could act consistently, without unnecessary delays or confusion over documents."],
-    res: ["Within two weeks of the first consultation, all 12 specialists had started working for the new employer. Each received a set of documents prepared for their own situation for the further procedures required.", "All the workers subsequently received the required residence cards, and some of them have already applied with us for an EU long-term resident permit."],
-    moral: "This case is about systematic work with many different migration situations at once. When an employer needs to bring in specialists quickly, one standard set of documents for everyone is not enough. It is important to assess each worker's status, consider their family circumstances and correctly determine the next steps. This is the approach that makes it possible to organise the process quickly and reduce the risk of errors." }
-];
-
 export default {
   meta: { lang: "en", code: "EN", name: "English", locale: "en-GB", og: "en_GB", hl: "en" },
   nav: { services: "Services", how: "How we work", about: "About us", cases: "Case studies", blog: "Blog", contacts: "Contact" },
@@ -359,8 +276,7 @@ export default {
     rvEyebrow: "Reviews", rvH: "What our clients say", rvMore: "More client reviews on our Google profile.", rvBtn: "Read reviews on Google", prev: "Previous", next: "Next",
     articleNote: "This article is for information only. Every case has its nuances — message us and we will look at your particular situation.",
     readAlso: "Read also", caseWord: "Case", caseSit: "Situation", caseDone: "What we did", caseRes: "Result",
-    caseHidden: "Client details have been hidden.", otherCases: "Other case studies", date: "October 2026",
-    caseImgs: ["Voivode's decision", "Invitation to collect the card"],
+    caseHidden: "Client details have been hidden.", otherCases: "Other case studies",
     packsets: {
       main: { title: "Support packages", lead: "Help with preparing documents, submitting the application and handling the procedure to legalise your stay in Poland." },
       biz: { title: "Packages for entrepreneurs", lead: "Temporary residence based on running a business." }
@@ -449,5 +365,5 @@ export default {
     route: "Get directions", gcard: "Google profile", mapPh: "The Google map will appear after you accept cookies.", mapBtn: "Show map"
   },
   ask: ASK, packs: PACKS, packsBiz: PACKS_BIZ, terms: TERMS, termsPacks: TERMS_PACKS,
-  services: SERVICES, other: OTHER, fees: FEES, stages: STAGES, posts: POSTS, cases: CASES
+  services: SERVICES, other: OTHER, fees: FEES, stages: STAGES
 };

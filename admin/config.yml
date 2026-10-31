@@ -1,0 +1,127 @@
+# Panel treści: blog i case studies.
+# Każdy wpis to osobny plik w content/blog/<język>/ lub content/cases/<język>/.
+# Po zapisaniu GitHub sam przebudowuje stronę (1–2 minuty).
+
+backend:
+  name: github
+  repo: 666iscream-pixel/JuliaHajeckaFull
+  branch: develop
+
+site_url: https://666iscream-pixel.github.io/JuliaHajeckaFull/develop/
+display_url: https://666iscream-pixel.github.io/JuliaHajeckaFull/develop/
+
+media_folder: img/uploads
+public_folder: /img/uploads
+
+i18n:
+  structure: multiple_folders
+  locales: [pl, uk, ru, en]
+  default_locale: pl
+
+collections:
+  - name: blog
+    label: Blog
+    label_singular: Artykuł
+    description: Artykuły na blogu. Najnowsze (wg daty) są wyświetlane jako pierwsze, trzy najnowsze także na stronie głównej.
+    folder: content/blog
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    identifier_field: title
+    summary: "{{title}}"
+    sortable_fields: [date, title]
+    i18n: true
+    fields:
+      - name: title
+        label: Tytuł
+        widget: string
+        i18n: true
+      - name: date
+        label: Data publikacji
+        hint: Decyduje o kolejności — nowsze artykuły są wyżej.
+        widget: datetime
+        time_format: false
+        date_format: DD.MM.YYYY
+        format: YYYY-MM-DD
+        i18n: duplicate
+      - name: lead
+        label: Krótki opis
+        hint: Wyświetla się na karcie artykułu i pod tytułem.
+        widget: text
+        i18n: true
+      - name: body
+        label: Treść artykułu
+        widget: markdown
+        i18n: true
+
+  - name: cases
+    label: Case studies
+    label_singular: Case study
+    description: Historie spraw. Kolejność ustala pole „Pozycja” (1 — pierwsza); numer „Case 1, 2, 3…” nadaje się automatycznie.
+    folder: content/cases
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    identifier_field: title
+    summary: "{{position}}. {{title}}"
+    sortable_fields: [position, title]
+    i18n: true
+    fields:
+      - name: position
+        label: Pozycja
+        hint: 1 — pierwsza na liście, 2 — druga itd.
+        widget: number
+        value_type: int
+        min: 1
+        i18n: duplicate
+      - name: tag
+        label: Kategoria
+        hint: Krótko, np. „Rodzina”, „Karta pobytu”. Widoczna na karcie.
+        widget: string
+        i18n: true
+      - name: title
+        label: Tytuł
+        widget: string
+        i18n: true
+      - name: lead
+        label: Krótki opis
+        hint: Wyświetla się na karcie i pod tytułem.
+        widget: text
+        i18n: true
+      - name: situation
+        label: Sytuacja
+        widget: markdown
+        i18n: true
+      - name: done
+        label: Co zrobiliśmy
+        hint: Najlepiej jako lista punktowana.
+        widget: markdown
+        i18n: true
+      - name: result
+        label: Rezultat
+        widget: markdown
+        i18n: true
+      - name: moral
+        label: Wniosek
+        hint: Wyróżniony akapit na końcu.
+        widget: text
+        required: false
+        i18n: true
+      - name: photos
+        label: Zdjęcia dokumentów
+        hint: Tylko z ukrytymi danymi klienta.
+        widget: list
+        required: false
+        i18n: true
+        fields:
+          - name: src
+            label: Zdjęcie
+            widget: image
+          - name: alt
+            label: Podpis
+            widget: string
+            required: false

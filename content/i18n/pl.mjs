@@ -254,89 +254,6 @@ const STAGES = [
     o: "Wspieramy klienta nie tylko do momentu złożenia dokumentów, ale do faktycznego rezultatu." }
 ];
 
-const POSTS = [
-  { slug: "cukr-vyizd", title: "Czy można wyjechać z Polski po złożeniu wniosku o kartę pobytu CUKR?",
-    lead: "Złożenie wniosku o kartę pobytu CUKR nie pozbawia wnioskodawcy statusu UKR.",
-    body: `<p>Złożenie wniosku o kartę pobytu CUKR nie pozbawia wnioskodawcy statusu UKR. Oznacza to, że w oczekiwaniu na wydanie karty można wyjeżdżać z Polski, ale jedna taka nieobecność nie powinna przekraczać 30 dni.</p>
-<h2>Na co zwrócić uwagę?</h2>
-<ul><li><b>Wyjazd za granicę:</b> po złożeniu wniosku można podróżować, przestrzegając limitu długości nieobecności.</li><li><b>Status UKR:</b> samo złożenie wniosku o CUKR nie powoduje jego utraty.</li><li><b>Otrzymanie karty CUKR:</b> po odebraniu karty status UKR wygasa, a pobyt w Polsce opiera się na zezwoleniu na pobyt czasowy udzielonym w związku z wydaniem tej karty.</li></ul>
-<h2>Dlaczego warto kontrolować długość wyjazdu?</h2>
-<p>Jeśli planujesz wyjazd w trakcie rozpatrywania wniosku, sprawdź wcześniej daty podróży i upewnij się, że Twoja nieobecność nie przekroczy dozwolonego okresu. Naruszenie zasad pobytu w ramach statusu UKR może wpłynąć na Twój status prawny i dalszą legalizację.</p>` },
-  { slug: "cukr-termin", title: "Karta pobytu CUKR: do kiedy można złożyć wniosek i na jaki okres jest wydawana?",
-    lead: "Wniosek o kartę pobytu CUKR można złożyć do 4 marca 2027 roku.",
-    body: `<p>Obywatele Ukrainy korzystający w Polsce z ochrony czasowej i spełniający określone wymogi mogą złożyć wniosek o kartę pobytu CUKR. Ten dokument pozwala przejść ze statusu UKR na zezwolenie na pobyt czasowy na szczególnych zasadach.</p>
-<h2>Do kiedy trzeba złożyć wniosek o CUKR?</h2>
-<p>Wniosek o kartę pobytu CUKR można złożyć do 4 marca 2027 roku. Składa się go wyłącznie w formie elektronicznej przez specjalny portal MOS.</p>` },
-  { slug: "ukr-robota", title: "Czy można legalnie pracować w Polsce ze statusem UKR? Obowiązki pracodawcy i zasady zatrudnienia",
-    lead: "Obywatele Ukrainy ze statusem UKR mogą pracować bez odrębnego zezwolenia na pracę, jeśli spełnione są wymogi prawa.",
-    body: `<p>Obywatele Ukrainy korzystający w Polsce z ochrony czasowej i posiadający numer PESEL ze statusem UKR mogą pracować bez uzyskiwania odrębnego zezwolenia na pracę, pod warunkiem przestrzegania przepisów.</p>
-<p>Prawo do pracy pozwala na zatrudnienie na podstawie umowy o pracę lub umowy zlecenia, jeśli dana forma zatrudnienia jest zgodna z obowiązującymi zasadami. Jednocześnie dla niektórych stanowisk mogą obowiązywać szczególne ograniczenia ustawowe.</p>
-<h2>Co musi zrobić pracodawca?</h2>
-<p>Aby zatrudnienie było zgodne z prawem, pracodawca musi dopełnić kilku formalności:</p>
-<ul><li>Powiadomić powiatowy urząd pracy o powierzeniu pracy cudzoziemcowi zgodnie z ustaloną procedurą.</li><li>Dotrzymać terminu powiadomienia — z reguły w ciągu 7 dni od rozpoczęcia pracy.</li><li>Zawrzeć odpowiednią umowę, określając warunki pracy, wynagrodzenie i zakres obowiązków.</li><li>Wykonać obowiązki wobec ZUS i podatkowe, w tym zgłosić pracownika do ubezpieczeń społecznych, jeśli wymaga tego dany rodzaj umowy i status pracownika.</li></ul>
-<h2>Co, jeśli pracodawca nie powiadomi urzędu pracy w terminie?</h2>
-<p>Obowiązek powiadomienia o zatrudnieniu spoczywa na pracodawcy. Odpowiedzialność za jego niedopełnienie również ponosi pracodawca.</p>
-<p>Jednocześnie skutki prawne braku powiadomienia trzeba oceniać z uwzględnieniem obowiązujących przepisów i konkretnych okoliczności zatrudnienia. Nie należy zakładać, że każde naruszenie automatycznie nie ma skutków dla pracownika: ważne jest sprawdzenie, czy zachowuje on legalną podstawę pobytu i pracy.</p>
-<p>Za naruszenie obowiązku powiadomienia pracodawcy może grozić grzywna. Dlatego terminowe dopełnienie formalności pozostaje ważną częścią legalnego zatrudnienia.</p>
-<h2>Czy trzeba uzyskać zezwolenie na pracę?</h2>
-<p>Jeśli masz prawo do pracy na podstawie statusu UKR, odrębne zezwolenie na pracę zwykle nie jest potrzebne. Warto jednak sprawdzić aktualność statusu, legalność pobytu i zgodność konkretnej formy zatrudnienia z obowiązującymi wymogami.</p>
-<p>Jeśli status UKR został utracony lub zmieniła się podstawa pobytu, zasady dostępu do rynku pracy mogą być inne.</p>` },
-  { slug: "zmina-prizvyshcha", title: "Zmiana nazwiska po ślubie: czy można wyjechać z Polski ze starym paszportem i kartą pobytu?",
-    lead: "Tak, wyjazd może być możliwy na podstawie ważnego paszportu i karty pobytu wydanej na nazwisko panieńskie.",
-    body: `<p>Tak, wyjazd może być możliwy na podstawie ważnego paszportu i karty pobytu wydanej na nazwisko panieńskie. Przed podróżą warto jednak sprawdzić zasady przekraczania granicy i warunki powrotu do Polski.</p>
-<h2>Jakie dokumenty mieć przy powrocie do Polski?</h2>
-<p>Jeśli nowy paszport wydano na nazwisko męża, a karta pobytu pozostaje na nazwisko panieńskie, zaleca się mieć przy sobie:</p>
-<ul><li>ważny paszport na nowe nazwisko;</li><li>ważną kartę pobytu na nazwisko panieńskie;</li><li>akt małżeństwa, a w razie potrzeby jego tłumaczenie na język polski wykonane przez tłumacza przysięgłego;</li><li>stary paszport lub jego kopię, jeśli są dostępne.</li></ul>
-<p>Te dokumenty pomogą potwierdzić zmianę nazwiska, ale nie gwarantują automatycznego przekroczenia granicy.</p>` },
-  { slug: "prodovzhennia-pobytu", title: "Kończy się zezwolenie na pobyt czasowy. Jak je „przedłużyć”?",
-    lead: "W Polsce nie ma procedury automatycznego przedłużenia zezwolenia na pobyt czasowy.",
-    body: `<p>W Polsce nie ma procedury automatycznego przedłużenia zezwolenia na pobyt czasowy. Aby nadal legalnie mieszkać w kraju, trzeba złożyć wniosek o nowe zezwolenie przed upływem ważności obecnego.</p>
-<p>Jeśli nie planujesz zostać w Polsce, musisz wyjechać przed upływem ważności zezwolenia, chyba że masz inną podstawę legalnego pobytu.</p>` },
-  { slug: "lyst-urzad", title: "Nie odebrałeś listu z urzędu w sprawie legalizacji pobytu. Co robić?",
-    lead: "W pewnych warunkach nieodebrany list uznaje się za doręczony, nawet jeśli adresat go faktycznie nie otrzymał.",
-    body: `<p>Jeśli list został prawidłowo wysłany na adres podany we wniosku, ale nie został odebrany w terminie, wraca do urzędu z adnotacją „nie podjęto w terminie”. W pewnych warunkach taki list uznaje się za doręczony, nawet jeśli adresat faktycznie go nie otrzymał.</p>
-<h2>Co zrobić w takiej sytuacji?</h2>
-<p>Ustal, jaki list został wysłany i czy wyznaczono w nim termin na spełnienie wymogów urzędu.</p>
-<p>Jeśli list nie dotyczył usunięcia braków formalnych wniosku, można zwrócić się do urzędu przez formularz lub złożyć pisemne wyjaśnienie z prośbą o przedłużenie terminu.</p>
-<p><b>Ważne:</b> nieodebranie korespondencji nie zwalnia z obowiązku złożenia dokumentów. Jeśli list zawierał wezwanie do usunięcia braków formalnych, trzeba postąpić zgodnie z jego treścią i sprawdzić, czy wciąż można dotrzymać wyznaczonego terminu.</p>` },
-  { slug: "povidomlennia-voievody", title: "Co oznacza obowiązek zawiadomienia wojewody o ustaniu przyczyny udzielenia zezwolenia na pobyt czasowy?",
-    lead: "Cudzoziemiec ma 15 dni roboczych na zawiadomienie wojewody o ustaniu przyczyny udzielenia zezwolenia.",
-    body: `<blockquote>„Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.</blockquote>
-<p>Cudzoziemiec, który otrzymał zezwolenie na pobyt czasowy, ma obowiązek w ciągu 15 dni roboczych zawiadomić wojewodę, który wydał zezwolenie, o ustaniu okoliczności, które były podstawą jego udzielenia.</p>
-<p>Może to być na przykład zakończenie pracy, studiów lub ustanie innych okoliczności, na podstawie których wydano zezwolenie.</p>
-<h2>Jak zawiadomić wojewodę?</h2>
-<p>Zawiadomienie należy złożyć na piśmie we właściwym urzędzie wojewódzkim. Należy w nim podać swoje dane osobowe, numer sprawy (jeśli jest znany) i informację o ustaniu przyczyny udzielenia zezwolenia.</p>
-<p><b>Ważne:</b> ustanie przyczyny udzielenia zezwolenia może wpłynąć na dalszy legalny pobyt w Polsce. Dlatego warto sprawdzić, czy masz inną podstawę pobytu w kraju.</p>` }
-];
-
-const CASES = [
-  { slug: "polske-pokhodzhennia", lead: "Wnioskodawca uzyskał pobyt stały ze względu na polskie pochodzenie po dwóch odmowach.", tag: "Pobyt stały",
-    title: "Karta pobytu stałego na podstawie polskiego pochodzenia: od dwóch odmów do pozytywnego wyniku",
-    sit: ["Obywatel Ukrainy zwrócił się do nas po długim oczekiwaniu i nieudanym wcześniejszym prowadzeniu sprawy przez innego specjalistę. Przy pierwszym złożeniu wnioskodawca otrzymał odmowę, ponieważ poprzedni pełnomocnik nie dostarczył do sprawy oryginałów tłumaczeń dokumentów. Później wnioskodawca nie otrzymał rzetelnej informacji o przebiegu sprawy, a wszystkie oryginały dokumentów rodzinnych pozostawały w Urzędzie Wojewódzkim.", "Po zgłoszeniu się do nas wnioskodawca ponownie złożył dokumenty, jednak znów otrzymał odmowę. Wojewoda powołał się m.in. na to, że w poprzednim wniosku o pobyt czasowy wnioskodawca wskazał narodowość ukraińską, oraz uznał, że brak bezpośredniego potwierdzenia dokumentami polskiego pochodzenia w danej linii rodowodu nie daje podstaw do udzielenia zezwolenia na pobyt stały.", "Sytuację komplikowało to, że w dokumentach wnioskodawcy i jego ojca rodzice zostali wskazani jako Ukraińcy, podczas gdy dokumenty archiwalne poprzedniego pokolenia potwierdzały narodowość polską. Pełna ocena sprawy wymagała odtworzenia jej historii i zbadania materiałów archiwalnych."],
-    done: ["Odtworzyliśmy historię sprawy i przeanalizowaliśmy dostępne materiały oraz dokumenty archiwalne.", "Zbadaliśmy dokumenty kilku pokoleń rodziny, aby uzasadnić polskie pochodzenie wnioskodawcy.", "Przygotowaliśmy rzetelne odwołanie od odmowy, argumentując stanowisko z uwzględnieniem okoliczności historycznych i politycznych, które mogły wpływać na wpisywanie narodowości w oficjalnych dokumentach.", "Przedstawiliśmy ocenę prawną argumentów Wojewody dotyczących braku bezpośredniego potwierdzenia pochodzenia.", "Pomogliśmy odzyskać wszystkie dokumenty rodzinne, które znajdowały się w Urzędzie Wojewódzkim."],
-    res: ["Mimo wcześniejszych niepowodzeń i trudnej sytuacji dokumentowej wnioskodawca uzyskał zezwolenie na pobyt stały ze względu na polskie pochodzenie. Wszystkie dokumenty rodzinne również zostały mu zwrócone."],
-    moral: "Ten przypadek pokazuje, że odmowa nie zawsze oznacza brak podstaw prawnych do uzyskania zezwolenia. W złożonych sprawach ważne jest nie tylko zebranie dokumentów, ale też odtworzenie historii wcześniejszych postępowań, zbadanie materiałów archiwalnych i konsekwentne uzasadnienie stanowiska prawnego." },
-  { slug: "karta-za-18-dniv", lead: "Po pięciu miesiącach oczekiwania wnioskodawczyni otrzymała kartę pobytu 18 dni po analizie sprawy.", tag: "Karta pobytu",
-    title: "Karta pobytu w 18 dni: pilne zakończenie sprawy przed wyjazdem za granicę",
-    sit: ["Zwróciła się do nas kobieta, która osobiście złożyła pełny komplet dokumentów o zezwolenie na pobyt czasowy w związku z małżeństwem. Rozpatrywanie sprawy się przeciągało: wnioskodawczyni czekała na decyzję Wojewody już ponad pięć miesięcy.", "Sytuacja stała się szczególnie pilna, ponieważ kobieta musiała wyjechać za granicę, a niepewność co do terminu zakończenia sprawy utrudniała zaplanowanie podróży."],
-    done: ["Zapoznaliśmy się z dokumentami i aktami sprawy.", "Przeanalizowaliśmy aktualny stan postępowania i możliwe dalsze działania w celu przyspieszenia rozpatrzenia.", "Zorganizowaliśmy dalsze prowadzenie sprawy z uwzględnieniem pilnej potrzeby uzyskania dokumentu potwierdzającego udzielone zezwolenie."],
-    res: ["Już 18 dni po analizie dokumentów złożonych w sprawie wnioskodawczyni otrzymała kartę pobytu."],
-    moral: "Ten przypadek pokazuje, że nawet po długim oczekiwaniu warto ocenić faktyczny stan sprawy i ustalić dalsze kroki, które mogą pomóc przybliżyć jej zakończenie.",
-    imgs: [["img/cases/case2-decyzja.jpg"], ["img/cases/case2-list.jpg"]] },
-  { slug: "karta-dlia-materi", lead: "Matka wnioskodawczyni otrzymała kartę pobytu na 3 lata, choć sama wnioskodawczyni nie miała własnego dochodu.", tag: "Rodzina",
-    title: "Łączenie z rodziną: karta pobytu na 3 lata dla matki wnioskodawczyni",
-    sit: ["Zwróciła się do nas kobieta z prośbą o pomoc w legalizacji pobytu jej matki w Polsce. Sama wnioskodawczyni miała zezwolenie na pobyt rezydenta, ale nie miała własnego dochodu ani nieruchomości, ponieważ w pełni pozostawała na utrzymaniu męża.", "Taka sytuacja wymagała indywidualnego podejścia: trzeba było nie tylko zebrać standardowy komplet dokumentów, ale też właściwie uzasadnić okoliczności rodzinne i potwierdzić sytuację finansową rodziny. W podobnych sprawach lista dokumentów nie zawsze jest oczywista, a standardowe zalecenia urzędu mogą nie wystarczyć, by zrozumieć, jak najlepiej potwierdzić konkretne okoliczności."],
-    done: ["Przeanalizowaliśmy sytuację osobistą i rodzinną wnioskodawczyni.", "Ustaliliśmy, jakie okoliczności trzeba potwierdzić do rozpatrzenia sprawy.", "Przygotowaliśmy indywidualny komplet dokumentów z uwzględnieniem tego, że wnioskodawczyni nie miała własnego dochodu i pozostawała na utrzymaniu męża.", "Przygotowaliśmy dokumenty, które właściwie odzwierciedlały sytuację finansową rodziny i uzasadniały podstawy legalizacji pobytu matki."],
-    res: ["Matka wnioskodawczyni otrzymała kartę pobytu na okres 3 lat."],
-    moral: "Ten przypadek pokazuje, że w sprawach legalizacji pobytu członków rodziny ważne jest uwzględnienie nie tylko formalnej listy dokumentów, ale też rzeczywistych okoliczności życiowych. Indywidualna analiza pomaga ustalić, jakie dowody są potrzebne w Twojej sytuacji, uniknąć zbędnych kroków i zmniejszyć ryzyko przewlekłości z powodu niewystarczającego udokumentowania." },
-  { slug: "12-spetsialistiv", lead: "Wszystkich 12 specjalistów rozpoczęło pracę u nowego pracodawcy w ciągu dwóch tygodni.", tag: "Pracodawca",
-    title: "12 specjalistów w 2 tygodnie: kompleksowe wsparcie zatrudnienia i legalizacji",
-    sit: ["Zwrócił się do nas pracodawca, który musiał zatrudnić w swojej firmie 12 specjalistów — obywateli Ukrainy i Białorusi. Każdy pracownik miał indywidualną sytuację migracyjną: ktoś miał już kartę pobytu wydaną w związku z pracą u poprzedniego pracodawcy; ktoś był w trakcie rozpatrywania wniosku o zezwolenie na pobyt; ktoś dopiero przygotowywał się do złożenia dokumentów, a dwie osoby korzystały ze statusu UKR.", "Dodatkową trudnością było to, że większość specjalistów miała rodziny, a więc zmiana pracy mogła wpływać nie tylko na ich własną sytuację, ale też na dalszą legalizację pobytu bliskich.", "Czasu na organizację procesu było mało, a zakres pracy i odpowiedzialność — duże. Trzeba było szybko przeanalizować 12 odrębnych sytuacji, ustalić właściwe procedury i przygotować dokumenty tak, aby każdy pracownik mógł rozpocząć pracę zgodnie z przepisami."],
-    done: ["Przeprowadziliśmy indywidualną analizę statusu migracyjnego każdego z 12 pracowników, uwzględniając posiadane karty pobytu, niezakończone postępowania i status UKR.", "Oceniliśmy sytuację zatrudnienia i ustaliliśmy wymagane dokumenty oraz procedury dla każdego specjalisty.", "Uwzględniliśmy sytuację rodzinną pracowników i możliwy wpływ zmiany pracy na legalizację pobytu członków ich rodzin.", "Przygotowaliśmy indywidualne komplety dokumentów do zatrudnienia i dalszego składania wniosków lub wprowadzenia niezbędnych zmian, zależnie od konkretnej sytuacji.", "Skoordynowaliśmy proces tak, aby pracodawca i pracownicy mogli działać konsekwentnie, bez zbędnych opóźnień i chaosu w dokumentach."],
-    res: ["Już w ciągu dwóch tygodni od pierwszej konsultacji wszystkich 12 specjalistów rozpoczęło pracę u nowego pracodawcy. Każdy otrzymał komplet dokumentów przygotowany do swojej sytuacji na potrzeby dalszych procedur.", "Następnie wszyscy pracownicy otrzymali wymagane karty pobytu, a część z nich wraz z nami złożyła już dokumenty o zezwolenie na pobyt rezydenta długoterminowego UE."],
-    moral: "Ten przypadek dotyczy systemowej pracy z wieloma różnymi sytuacjami migracyjnymi jednocześnie. Gdy pracodawca musi szybko zatrudnić specjalistów, nie wystarczy przygotować jednego standardowego kompletu dokumentów dla wszystkich. Ważne jest ocenienie statusu każdego pracownika, uwzględnienie sytuacji rodzinnej i właściwe ustalenie dalszych kroków. Właśnie takie podejście pozwala zorganizować proces w krótkim czasie i zmniejszyć ryzyko błędów." }
-];
-
 export default {
   meta: { lang: "pl", code: "PL", name: "Polski", locale: "pl-PL", og: "pl_PL", hl: "pl" },
   nav: { services: "Usługi", how: "Jak pracujemy", about: "O nas", cases: "Case studies", blog: "Blog", contacts: "Kontakt" },
@@ -359,8 +276,7 @@ export default {
     rvEyebrow: "Opinie", rvH: "Co mówią klienci", rvMore: "Więcej opinii klientów — w profilu Google.", rvBtn: "Czytaj opinie w Google", prev: "Wstecz", next: "Dalej",
     articleNote: "Artykuł ma charakter informacyjny. Każda sprawa ma swoje niuanse — napisz, a przeanalizujemy właśnie Twoją sytuację.",
     readAlso: "Czytaj także", caseWord: "Case", caseSit: "Sytuacja", caseDone: "Co zrobiliśmy", caseRes: "Rezultat",
-    caseHidden: "Dane klienta zostały ukryte.", otherCases: "Inne case studies", date: "Październik 2026",
-    caseImgs: ["Decyzja Wojewody", "Zaproszenie po odbiór karty"],
+    caseHidden: "Dane klienta zostały ukryte.", otherCases: "Inne case studies",
     packsets: {
       main: { title: "Pakiety wsparcia", lead: "Pomoc w przygotowaniu dokumentów, złożeniu wniosku i prowadzeniu procedury legalizacji pobytu w Polsce." },
       biz: { title: "Pakiety dla przedsiębiorców", lead: "Pobyt czasowy w związku z prowadzeniem działalności gospodarczej." }
@@ -449,5 +365,5 @@ export default {
     route: "Wyznacz trasę", gcard: "Wizytówka Google", mapPh: "Mapa Google Maps pojawi się po wyrażeniu zgody na cookies.", mapBtn: "Pokaż mapę"
   },
   ask: ASK, packs: PACKS, packsBiz: PACKS_BIZ, terms: TERMS, termsPacks: TERMS_PACKS,
-  services: SERVICES, other: OTHER, fees: FEES, stages: STAGES, posts: POSTS, cases: CASES
+  services: SERVICES, other: OTHER, fees: FEES, stages: STAGES
 };

@@ -1,4 +1,5 @@
 # Публікація прев'ю: main — у корені, develop — у /develop/
+# Сторінки збирає build.mjs з текстів у content/ (статті й кейси редагує адмінка /admin)
 name: Pages preview
 
 on:
@@ -30,11 +31,21 @@ jobs:
         with:
           ref: develop
           path: develop
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build pages
+        run: |
+          # гілка без package.json містить уже готові сторінки
+          for b in main develop; do
+            if [ -f "$b/package.json" ]; then (cd "$b" && npm ci --no-audit --no-fund && node build.mjs); fi
+          done
       - name: Assemble site
         run: |
           mkdir -p _site/develop
-          rsync -a --exclude .git --exclude .github --exclude build.mjs --exclude content main/ _site/
-          rsync -a --exclude .git --exclude .github --exclude build.mjs --exclude content develop/ _site/develop/
+          EX="--exclude .git --exclude .github --exclude .gitignore --exclude build.mjs --exclude content --exclude node_modules --exclude package.json --exclude package-lock.json"
+          rsync -a $EX main/ _site/
+          rsync -a $EX develop/ _site/develop/
           # прев'ю не повинно потрапляти в пошук
           find _site -name '*.html' -exec sed -i 's#<head>#<head>\n  <meta name="robots" content="noindex, nofollow">#' {} +
       - uses: actions/configure-pages@v5

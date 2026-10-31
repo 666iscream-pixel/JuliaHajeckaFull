@@ -1,6 +1,7 @@
 // Генерує статичні сторінки: node build.mjs
 // Чотири мовні версії: українська в корені, польська, російська й англійська — у підпапках pl/, ru/, en/.
-// Усі тексти — у content/i18n/<мова>.mjs; тут лише шаблони.
+// Усі тексти — у content/i18n/<мова>.mjs; статті блогу й кейси — у content/blog і content/cases
+// (окремий файл на запис і мову, їх редагує адмінка /admin). Тут лише шаблони.
 import { writeFileSync, readFileSync, mkdirSync, readdirSync, unlinkSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -8,6 +9,8 @@ import uk from "./content/i18n/uk.mjs";
 import pl from "./content/i18n/pl.mjs";
 import ru from "./content/i18n/ru.mjs";
 import en from "./content/i18n/en.mjs";
+import YAML from "yaml";
+import { marked } from "marked";
 
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
@@ -30,21 +33,57 @@ const WRITTEN = new Set();
 // Сторінки лише польською: для роботодавців і юридичні документи
 const PL_ONLY = ["polityka-prywatnosci.html", "klauzula-informacyjna.html"];
 
+
+/* ---------- Блог і кейси з файлів адмінки ---------- */
+
+// Файл запису: YAML між "---" і текст у Markdown після нього
+function readEntries(kind, lang) {
+  const dir = join(OUT, "content", kind, lang);
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((f) => f.endsWith(".md")).map((f) => {
+    const raw = readFileSync(join(dir, f), "utf8").replace(/^﻿/, "");
+    const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+    const data = m ? YAML.parse(m[1]) || {} : {};
+    return { ...data, slug: f.slice(0, -3), body: m ? m[2] : raw };
+  }).filter((e) => e.title && e.draft !== true);
+}
+const mdHtml = (t) => (t ? marked.parse(String(t)) : "");
+// Місяць і рік мовою сторінки: «Жовтень 2026»
+const monthYear = (d, locale) => {
+  const dt = new Date(d);
+  if (isNaN(dt)) return "";
+  const m = dt.toLocaleDateString(locale, { month: "long", timeZone: "UTC" });
+  return m.charAt(0).toUpperCase() + m.slice(1) + " " + dt.getUTCFullYear();
+};
+for (const C of LANGS) {
+  const L = C.meta.lang;
+  C.posts = readEntries("blog", L)
+    .map((p) => ({ ...p, date: p.date instanceof Date ? p.date.toISOString().slice(0, 10) : String(p.date || ""), html: mdHtml(p.body) }))
+    .sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : a.slug.localeCompare(b.slug)));
+  C.cases = readEntries("cases", L)
+    .map((c) => ({ ...c, sitHtml: mdHtml(c.situation), doneHtml: mdHtml(c.done).replace(/<ul>/g, '<ul class="checks">'), resHtml: mdHtml(c.result) }))
+    .sort((a, b) => (Number(a.position) || 999) - (Number(b.position) || 999) || a.slug.localeCompare(b.slug));
+}
+// На яких мовах є запис (для перемикача мов і hreflang)
+const hasEntry = (kind, slug) => LANGS.filter((x) => x[kind].some((e) => e.slug === slug)).map((x) => x.meta.lang);
+// Шляхи до картинок з адмінки рахуються від кореня сайту
+const fixPaths = (html, A) => html.replace(/(src|href)="\/?(img\/)/g, `$1="${A}$2`);
+
 /* ---------- Шаблон сторінки ---------- */
 
-function page(C, { file, title, desc, body, active = "" }) {
+function page(C, { file, title, desc, body, active = "", only = null, fallback = "index.html" }) {
   const L = C.meta.lang;
   const A = L === "uk" ? "" : "../";            // шлях до кореня сайту
   const plOnly = (f) => (L === "pl" ? f : `${A}pl/${f}`);
   const isPlOnly = PL_ONLY.includes(file);
   const href = (x, f) => `${A}${DIR[x.meta.lang]}${f}`;
-  const altLinks = isPlOnly ? "" : LANGS.map((x) => `  <link rel="alternate" hreflang="${x.meta.lang}" href="${SITE}/${DIR[x.meta.lang]}${file === "index.html" ? "" : file}">`).join("\n") + "\n";
+  const altLinks = isPlOnly ? "" : LANGS.filter((x) => !only || only.includes(x.meta.lang)).map((x) => `  <link rel="alternate" hreflang="${x.meta.lang}" href="${SITE}/${DIR[x.meta.lang]}${file === "index.html" ? "" : file}">`).join("\n") + "\n";
   const NAV = [["poslugy.html", C.nav.services], ["firmy.html", "Dla pracodawców"], ["yak-pratsiuiemo.html", C.nav.how], ["pro-nas.html", C.nav.about], ["keisy.html", C.nav.cases], ["blog.html", C.nav.blog], ["kontakty.html", C.nav.contacts]];
   const langs = `<div class="langdd" id="langdd">
       <button class="langdd-btn" type="button" aria-haspopup="true" aria-expanded="false">${C.meta.code}<span class="car">▾</span></button>
       <div class="langdd-menu">${LANGS.map((x) => x === C
         ? `<span class="on">${x.meta.name}</span>`
-        : `<a href="${href(x, isPlOnly ? "index.html" : file)}" data-setlang="${x.meta.lang}" hreflang="${x.meta.lang}">${x.meta.name}</a>`).join("")}</div>
+        : `<a href="${href(x, isPlOnly ? "index.html" : only && !only.includes(x.meta.lang) ? fallback : file)}" data-setlang="${x.meta.lang}" hreflang="${x.meta.lang}">${x.meta.name}</a>`).join("")}</div>
     </div>`;
   const icon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>`;
   const html = `<!doctype html>
@@ -202,7 +241,7 @@ const rows = (list) => list.map(([n, s, p]) => `<div class="row"><span class="n"
 const postCards = (C, list) => `
       <div class="posts">${list.map((p) => `
         <a class="post" href="b-${p.slug}.html">
-          <time>${C.ui.date}</time>
+          <time>${monthYear(p.date, C.meta.locale)}</time>
           <h3>${p.title}</h3>
           <p>${p.lead}</p>
           <span class="more">${C.ui.read}</span>
@@ -551,16 +590,16 @@ for (const C of LANGS) {
   });
   C.cases.forEach((c, i) => {
     page(C, {
-      file: `k-${c.slug}.html`, active: "keisy.html", title: `${c.title} — Julia Hajecka`, desc: c.lead,
+      file: `k-${c.slug}.html`, active: "keisy.html", title: `${c.title} — Julia Hajecka`, desc: c.lead, only: hasEntry("cases", c.slug), fallback: "keisy.html",
       body: `${pageHero(C, { crumbs: [["keisy.html", CS.crumb], ["", `${C.ui.caseWord} ${i + 1}`]], eyebrow: `${C.ui.caseWord} ${i + 1} · ${c.tag}`, h1: c.title, lead: c.lead })}
   <section>
     <div class="wrap">
       <article class="case-full">
-        <div class="case-part"><h3>${C.ui.caseSit}</h3>${c.sit.map((p) => `<p>${p}</p>`).join("")}</div>
-        <div class="case-part"><h3>${C.ui.caseDone}</h3><ul class="checks">${c.done.map((d) => `<li>${d}</li>`).join("")}</ul></div>
-        <div class="case-part"><h3>${C.ui.caseRes}</h3>${c.res.map((p) => `<p>${p}</p>`).join("")}</div>
-        ${c.imgs ? `<div class="case-imgs">${c.imgs.map(([src], k) => `<a href="${A}${src}" target="_blank" rel="noopener"><img src="${A}${src}" alt="${C.ui.caseImgs[k]}" loading="lazy"><span>${C.ui.caseImgs[k]}</span></a>`).join("")}</div><p class="case-cap">${C.ui.caseHidden}</p>` : ""}
-        <p class="moral">${c.moral}</p>
+        <div class="case-part"><h3>${C.ui.caseSit}</h3>${fixPaths(c.sitHtml, A)}</div>
+        <div class="case-part"><h3>${C.ui.caseDone}</h3>${fixPaths(c.doneHtml, A)}</div>
+        <div class="case-part"><h3>${C.ui.caseRes}</h3>${fixPaths(c.resHtml, A)}</div>
+        ${c.photos && c.photos.length ? `<div class="case-imgs">${c.photos.map((ph) => { const src = A + String(ph.src || "").replace(/^\//, ""); return `<a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${ph.alt || ""}" loading="lazy">${ph.alt ? `<span>${ph.alt}</span>` : ""}</a>`; }).join("")}</div><p class="case-cap">${C.ui.caseHidden}</p>` : ""}
+        ${c.moral ? `<p class="moral">${c.moral}</p>` : ""}
       </article>
     </div>
   </section>
@@ -589,12 +628,12 @@ for (const C of LANGS) {
   });
   for (const p of C.posts) {
     page(C, {
-      file: `b-${p.slug}.html`, active: "blog.html", title: `${p.title} — Julia Hajecka`, desc: p.lead,
-      body: `${pageHero(C, { crumbs: [["blog.html", BP.crumb], ["", p.title]], eyebrow: C.ui.date, h1: p.title, lead: p.lead })}
+      file: `b-${p.slug}.html`, active: "blog.html", title: `${p.title} — Julia Hajecka`, desc: p.lead, only: hasEntry("posts", p.slug), fallback: "blog.html",
+      body: `${pageHero(C, { crumbs: [["blog.html", BP.crumb], ["", p.title]], eyebrow: monthYear(p.date, C.meta.locale), h1: p.title, lead: p.lead })}
   <section>
     <div class="wrap">
       <div class="prose">
-        ${p.body}
+        ${fixPaths(p.html, A)}
         <p class="note">${C.ui.articleNote}</p>
       </div>
     </div>
