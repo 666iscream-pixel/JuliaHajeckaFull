@@ -1,7 +1,7 @@
 ---
 position: 1
 tag: Pobyt stały
-title: '??Karta pobytu stałego na podstawie polskiego pochodzenia: od dwóch odmów do pozytywnego wyniku'
+title: 'Karta pobytu stałego na podstawie polskiego pochodzenia: od dwóch odmów do pozytywnego wyniku'
 lead: Wnioskodawca uzyskał pobyt stały ze względu na polskie pochodzenie po dwóch odmowach.
 situation: |-
   Obywatel Ukrainy zwrócił się do nas po długim oczekiwaniu i nieudanym wcześniejszym prowadzeniu sprawy przez innego specjalistę. Przy pierwszym złożeniu wnioskodawca otrzymał odmowę, ponieważ poprzedni pełnomocnik nie dostarczył do sprawy oryginałów tłumaczeń dokumentów. Później wnioskodawca nie otrzymał rzetelnej informacji o przebiegu sprawy, a wszystkie oryginały dokumentów rodzinnych pozostawały w Urzędzie Wojewódzkim.
