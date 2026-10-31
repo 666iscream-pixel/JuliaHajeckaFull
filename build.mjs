@@ -15,7 +15,7 @@ import { marked } from "marked";
 const OUT = dirname(fileURLToPath(import.meta.url));
 // Адреса сайту для прев'ю посилань; при запуску замінити на https://pobyt-legalny.com
 const SITE = "https://666iscream-pixel.github.io/JuliaHajeckaFull/develop";
-const V = "44"; // версія файлів для скидання кешу браузера
+const V = "45"; // версія файлів для скидання кешу браузера
 const GOOGLE = "https://share.google/FwD8Ak1ugBSy3pjfN";
 const WA = "https://wa.me/48791017254";
 const TG = "https://t.me/jhajecka";
@@ -552,12 +552,14 @@ for (const C of LANGS) {
   const AB = C.about;
   page(C, {
     file: "pro-nas.html", active: "pro-nas.html", title: AB.title, desc: AB.desc,
-    body: `${pageHero(C, { crumbs: [["", AB.crumb]], eyebrow: AB.eyebrow, h1: AB.h1 })}
-  <section class="about">
+    body: `
+  <section class="about about-top">
     <div class="wrap">
       ${portrait(A)}
       <div>
-        <h2 class="subh">Julia Hajecka</h2>
+        <span class="eyebrow">${AB.eyebrow}</span>
+        <h1>Julia Hajecka</h1>
+        <p class="about-motto">${AB.h1}</p>
         ${AB.paras.map((p) => `<p>${p}</p>`).join("\n        ")}
         <p class="pull">${AB.pull}</p>
       </div>

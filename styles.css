@@ -667,3 +667,9 @@ footer.fat .disclaimer { margin-top: 34px; font-size: 12.5px; line-height: 1.55;
 
 /* Дисклеймер внизу розділів «Кейси» і «Блог» */
 main .disclaimer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 860px; }
+
+/* «Про нас»: одразу фото й розповідь, гасло — підзаголовком під ім'ям */
+.about-top { padding-top: 64px; }
+.about-top h1 { font-size: clamp(34px, 4.4vw, 52px); color: var(--navy); margin-top: 10px; }
+.about .about-motto { margin-top: 10px; font-size: 18px; font-weight: 600; color: var(--gold); letter-spacing: .01em; }
+@media (max-width: 640px) { .about-top { padding-top: 36px; } }
