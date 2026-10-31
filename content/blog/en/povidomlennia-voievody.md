@@ -3,6 +3,7 @@ title: What does the obligation to notify the Voivode that the reason for a temp
 date: 2026-10-08
 lead: A foreigner has 15 working days to notify the Voivode that the circumstances on which the permit was based have ceased.
 ---
+
 > „Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.
 
 Under Article 113 of the Polish Act on Foreigners, a foreigner who has been granted a temporary residence permit must, within 15 working days, notify the Voivode who granted it that the circumstances on which the permit was based have ceased.

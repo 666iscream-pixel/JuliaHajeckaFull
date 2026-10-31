@@ -1,8 +1,9 @@
 ---
-title: Co oznacza obowiązek zawiadomienia wojewody o ustaniu przyczyny udzielenia zezwolenia na pobyt czasowy?
+title: ??Co oznacza obowiązek zawiadomienia wojewody o ustaniu przyczyny udzielenia zezwolenia na pobyt czasowy?
 date: 2026-10-08
 lead: Cudzoziemiec ma 15 dni roboczych na zawiadomienie wojewody o ustaniu przyczyny udzielenia zezwolenia.
 ---
+
 > „Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.
 
 Cudzoziemiec, który otrzymał zezwolenie na pobyt czasowy, ma obowiązek w ciągu 15 dni roboczych zawiadomić wojewodę, który wydał zezwolenie, o ustaniu okoliczności, które były podstawą jego udzielenia.

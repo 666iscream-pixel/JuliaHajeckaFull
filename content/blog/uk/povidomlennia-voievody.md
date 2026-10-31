@@ -3,6 +3,7 @@ title: Що означає обов'язок повідомити воєводу
 date: 2026-10-08
 lead: Іноземець зобов'язаний протягом 15 робочих днів повідомити воєводу про припинення обставин, що були підставою для дозволу.
 ---
+
 > „Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.
 
 Відповідно до ст. 113 Закону Польщі «Про іноземців», іноземець, який отримав дозвіл на тимчасове перебування, зобов'язаний протягом 15 робочих днів повідомити воєводу, який видав дозвіл, про припинення обставин, що були підставою для його надання.

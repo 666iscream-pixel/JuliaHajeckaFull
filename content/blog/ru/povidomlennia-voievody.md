@@ -3,6 +3,7 @@ title: Что означает обязанность уведомить вое�
 date: 2026-10-08
 lead: Иностранец обязан в течение 15 рабочих дней уведомить воеводу о прекращении обстоятельств, которые были основанием для разрешения.
 ---
+
 > „Zgodnie z art. 113 ustawy o cudzoziemcach, cudzoziemiec, któremu udzielono zezwolenia na pobyt czasowy, zawiadamia wojewodę, który udzielił tego zezwolenia, w terminie 15 dni roboczych, o ustaniu przyczyny udzielenia zezwolenia”.
 
 Согласно ст. 113 Закона Польши «Об иностранцах», иностранец, получивший разрешение на временное пребывание, обязан в течение 15 рабочих дней уведомить воеводу, выдавшего разрешение, о прекращении обстоятельств, которые были основанием для его предоставления.
