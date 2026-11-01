@@ -4,11 +4,11 @@
 
 backend:
   name: github
-  repo: 666iscream-pixel/JuliaHajeckaFull
+  repo: JHStrona/Pobyt-Legalny
   branch: develop
 
-site_url: https://666iscream-pixel.github.io/JuliaHajeckaFull/develop/
-display_url: https://666iscream-pixel.github.io/JuliaHajeckaFull/develop/
+site_url: https://jhstrona.github.io/Pobyt-Legalny/develop/
+display_url: https://jhstrona.github.io/Pobyt-Legalny/develop/
 
 media_folder: img/uploads
 public_folder: /img/uploads
